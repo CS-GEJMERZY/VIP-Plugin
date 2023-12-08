@@ -13,3 +13,38 @@ VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to e
 
 ## Configuration
 Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically created in **_csgo/addons/counterstrikesharp/configs/plugins/VIP-Plugin_**
+```
+{
+  "Settings": {
+    "Prefix": "[VIP-Plugin] "
+  },
+  "Groups": [
+    {
+      "Permissions": "@vip-plugin/vip",
+      "Name": "VIP",
+      "ExtraJumps": 1,
+      "NoFallDamage": true,
+      "SpawnHP": 105,
+      "SpawnArmor": 100,
+      "SpawnHelmet": true,
+      "SpawnDefuser": true,
+      "SpawnMoney": 2000,
+      "RoundWonMoney": 1000,
+      "KillMoney": 200,
+      "HeadshotKillMoney": 300,
+      "BombPlantMoney": 500,
+      "BombDefuseMoney": 500,
+      "KillHP": 2,
+      "HeadshotKillHP": 5,
+      "ConnectMessage": "VIP {playername} joined the server",
+      "DisconnectMessage": "VIP {playername} left the server",
+      "SmokeGrenade": 1,
+      "HEGrenade": 1,
+      "FlashGrenade": 1,
+      "Molotov": 1,
+      "DecoyGrenade": 0
+    }
+  ],
+  "ConfigVersion": 1
+}
+```
