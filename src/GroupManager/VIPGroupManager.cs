@@ -6,7 +6,7 @@ public class VIPGroupManager
     private readonly List<VIPGroup> _groups;
     public VIPGroupManager(List<VIPGroup> groups)
     {
-        this._groups = groups;
+        _groups = groups;
     }
 
     public int GetPlayerGroup(CCSPlayerController player)
