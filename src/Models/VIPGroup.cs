@@ -105,6 +105,9 @@ public class VIPGroup
     [JsonPropertyName("DecoyGrenade")]
     public int DecoyGrenade { get; set; } = 0;
 
+    [JsonPropertyName("Zeus")]
+    public bool Zeus { get; set; } = true;
+
     internal void ValidateData()
     {
         foreach (var property in GetType().GetProperties())

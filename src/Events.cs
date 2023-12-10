@@ -151,15 +151,35 @@ public partial class VIPlugin
 
 		}
 
-
 		for (int i = 0; i < playerGroup.DecoyGrenade; i++)
 		{
 			player.GiveNamedItem(CsItem.DecoyGrenade);
 		}
 
+        bool hasZeus = false;
+
+        foreach (var weapon in player!.PlayerPawn!.Value!.WeaponServices!.MyWeapons)
+        {
+            if (weapon.IsValid && weapon!.Value!.IsValid)
+            {
+                if (weapon.Value.DesignerName == "weapon_taser")
+                {
+                    hasZeus = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasZeus)
+        {
+            player.GiveNamedItem(CsItem.Zeus);
+        }
 
 
-		VIPPlayer.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot);
+
+        AddTimer(0.5f,() => { 
+			VIPPlayer.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot); 
+		});
 	}
 
 	[GameEventHandler]
