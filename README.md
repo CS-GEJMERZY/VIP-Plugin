@@ -42,7 +42,8 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
       "HEGrenade": 1,
       "FlashGrenade": 1,
       "Molotov": 1,
-      "DecoyGrenade": 0
+      "DecoyGrenade": 0,
+      "Zeus": true
     }
   ],
   "ConfigVersion": 1
