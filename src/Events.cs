@@ -61,7 +61,11 @@ public partial class VIPlugin
 				Server.PrintToChatAll(PluginMessageFormatter.FormatColor(message));
 			}
 		}
-		PlayerCache.Remove(player);
+
+		if(PlayerCache.ContainsKey(player))
+		{
+            PlayerCache.Remove(player);
+        }
 	}
 
 
