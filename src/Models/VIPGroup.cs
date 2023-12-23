@@ -79,6 +79,10 @@ public class VIPGroup
     [JsonPropertyName("HeadshotKillHP")]
     public int HeadshotKillHP { get; set; } = 5;
 
+    [NonNegative]
+    [JsonPropertyName("MaxHP")]
+    public int MaxHP { get; set; } = 120;
+
     [JsonPropertyName("ConnectMessage")]
     public string ConnectMessage { get; set; } = "VIP {playername} joined the server";
 

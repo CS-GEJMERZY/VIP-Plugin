@@ -236,17 +236,21 @@ public partial class VIPlugin
 			if (@event.Headshot)
 			{
 				attacker.InGameMoneyServices!.Account += playerGroup.HeadshotKillMoney;
-				attacker.PlayerPawn!.Value!.Health += playerGroup.HeadshotKillHP;
 
-				//VIPPlayer.RefreshUI(attacker);
-			}
+				int newHP = Math.Max(attacker.PlayerPawn!.Value!.Health + playerGroup.HeadshotKillHP, playerGroup.MaxHP);
+				attacker.PlayerPawn!.Value!.Health = newHP;
+
+                //VIPPlayer.RefreshUI(attacker);
+            }
 			else
 			{
 				attacker.InGameMoneyServices!.Account += playerGroup.KillMoney;
-				attacker.PlayerPawn!.Value!.Health += playerGroup.KillHP;
 
-				//VIPPlayer.RefreshUI(attacker);
-			}
+                int newHP = Math.Max(attacker.PlayerPawn!.Value!.Health + playerGroup.KillHP, playerGroup.MaxHP);
+                attacker.PlayerPawn!.Value!.Health = newHP;
+
+                //VIPPlayer.RefreshUI(attacker);
+            }
 		}
 
 		return HookResult.Continue;
