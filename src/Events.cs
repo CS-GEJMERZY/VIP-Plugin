@@ -239,7 +239,7 @@ public partial class VIPlugin
 			{
 				attacker.InGameMoneyServices!.Account += playerGroup.HeadshotKillMoney;
 
-				int newHP = Math.Max(attacker.PlayerPawn!.Value!.Health + playerGroup.HeadshotKillHP, playerGroup.MaxHP);
+				int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup.HeadshotKillHP, playerGroup.MaxHP);
 				attacker.PlayerPawn!.Value!.Health = newHP;
 
                 //VIPPlayer.RefreshUI(attacker);
@@ -248,7 +248,7 @@ public partial class VIPlugin
 			{
 				attacker.InGameMoneyServices!.Account += playerGroup.KillMoney;
 
-                int newHP = Math.Max(attacker.PlayerPawn!.Value!.Health + playerGroup.KillHP, playerGroup.MaxHP);
+                int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup.KillHP, playerGroup.MaxHP);
                 attacker.PlayerPawn!.Value!.Health = newHP;
 
                 //VIPPlayer.RefreshUI(attacker);
