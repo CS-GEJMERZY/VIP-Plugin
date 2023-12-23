@@ -51,6 +51,9 @@ public class VIPGroup
     [JsonPropertyName("SpawnMoney")]
     public int SpawnMoney { get; set; } = 2000;
 
+    [JsonPropertyName("GiveSpawnMoneyPistolRound")]
+    public bool GiveSpawnMoneyPistolRound { get; set; } = false;
+
     [NonNegative]
     [JsonPropertyName("RoundWonMoney")]
     public int RoundWonMoney { get; set; } = 1000;
@@ -70,6 +73,7 @@ public class VIPGroup
     [NonNegative]
     [JsonPropertyName("BombDefuseMoney")]
     public int BombDefuseMoney { get; set; } = 500;
+
 
     [NonNegative]
     [JsonPropertyName("KillHP")]

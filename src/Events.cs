@@ -105,6 +105,8 @@ public partial class VIPlugin
 		VIPGroup playerGroup = Config.Groups[playerGroupID];
 
 		player.PlayerPawn!.Value!.Health = playerGroup.SpawnHP; // HP
+
+		if(!(IsPistolRound() && !playerGroup.GiveSpawnMoneyPistolRound))
 		player.InGameMoneyServices!.Account += playerGroup.SpawnMoney; // Money
 
 		player.PlayerPawn.Value.ArmorValue = playerGroup.SpawnArmor; // Armor

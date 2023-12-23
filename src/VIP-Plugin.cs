@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Cvars;
 
 namespace VIP;
 
@@ -78,4 +79,18 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
             }
         }
     }
+
+    public bool IsPistolRound()
+    {
+        var gameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules;
+        if (gameRules == null) return false;
+
+        var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
+        var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
+
+        
+        return gameRules.TotalRoundsPlayed == 0 || (halftime && maxrounds / 2 == gameRules.TotalRoundsPlayed) ||
+               gameRules.GameRestart;
+    }
+
 }
