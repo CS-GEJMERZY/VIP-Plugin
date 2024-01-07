@@ -9,37 +9,40 @@ namespace VIP;
 
 public partial class VIPlugin
 {
-    private void OnClientAuthorized(int playerSlot, SteamID steamID)
+    [GameEventHandler]
+    public HookResult EventPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
     {
-        CCSPlayerController? player = Utilities.GetPlayerFromSlot(playerSlot);
+        CCSPlayerController player = @event.Userid;
 
-        if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || player.AuthorizedSteamID == null)
+        if (player == null || !player.IsValid || player.IsBot || player.IsHLTV)
         {
-            return;
+            return HookResult.Continue;
         }
 
 
         AddTimer(1.0f, () =>
-		{
-			PlayerCache.Add(player, new VIPPlayer());
-			PlayerCache[player].LoadGroup(player, GroupManager!);
+        {
+            PlayerCache.Add(player, new VIPPlayer());
+            PlayerCache[player].LoadGroup(player, GroupManager!);
 
-			int GroupID = PlayerCache[player].GroupID;
-			if (GroupID != -1)
-			{
-				if (Config.Groups[GroupID].ConnectMessage != string.Empty)
-				{
-					string message = Config.Groups[GroupID].ConnectMessage;
-					message = message.Replace("{playername}", player.PlayerName);
+            int GroupID = PlayerCache[player].GroupID;
+            if (GroupID != -1)
+            {
+                if (Config.Groups[GroupID].ConnectMessage != string.Empty)
+                {
+                    string message = Config.Groups[GroupID].ConnectMessage;
+                    message = message.Replace("{playername}", player.PlayerName);
 
-					Server.PrintToChatAll(PluginMessageFormatter.FormatColor(message));
-				}
-			}
+                    Server.PrintToChatAll(PluginMessageFormatter.FormatColor(message));
+                }
+            }
 
-		});
-	}
+        });
 
-	private void OnClientDisconnect(int playerSlot)
+        return HookResult.Continue;
+    }
+
+    private void OnClientDisconnect(int playerSlot)
 	{
 		CCSPlayerController player = Utilities.GetPlayerFromSlot(playerSlot);
 

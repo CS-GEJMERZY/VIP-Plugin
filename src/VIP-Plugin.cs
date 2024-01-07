@@ -27,8 +27,7 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
     }
 
     public override void Load(bool hotReload)
-    {
-        RegisterListener<OnClientAuthorized>(OnClientAuthorized);
+    { 
         RegisterListener<OnClientDisconnect>(OnClientDisconnect);
 
         RegisterListener<Listeners.OnTick>(() =>
