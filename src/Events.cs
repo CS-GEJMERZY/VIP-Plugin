@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Utils;
 
@@ -8,18 +9,17 @@ namespace VIP;
 
 public partial class VIPlugin
 {
-	[GameEventHandler]
-	public HookResult EventPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
-	{
-		CCSPlayerController player = @event.Userid;
+    private void OnClientAuthorized(int playerSlot, SteamID steamID)
+    {
+        CCSPlayerController? player = Utilities.GetPlayerFromSlot(playerSlot);
 
-		if (player == null || !player.IsValid || player.IsBot || player.IsHLTV)
-		{
-			return HookResult.Continue;
-		}
+        if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || player.AuthorizedSteamID == null)
+        {
+            return;
+        }
 
 
-		AddTimer(1.0f, () =>
+        AddTimer(1.0f, () =>
 		{
 			PlayerCache.Add(player, new VIPPlayer());
 			PlayerCache[player].LoadGroup(player, GroupManager!);
@@ -37,8 +37,6 @@ public partial class VIPlugin
 			}
 
 		});
-
-		return HookResult.Continue;
 	}
 
 	private void OnClientDisconnect(int playerSlot)

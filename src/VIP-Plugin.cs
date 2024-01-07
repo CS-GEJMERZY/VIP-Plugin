@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
+using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace VIP;
 
@@ -11,7 +12,7 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "0.0.2";
+    public override string ModuleVersion => "0.0.3";
 
     public PluginConfig Config { get; set; }
     internal VIPGroupManager? GroupManager { get; set; }
@@ -27,7 +28,9 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
     public override void Load(bool hotReload)
     {
-        RegisterListener<Listeners.OnClientDisconnect>((slot) => { OnClientDisconnect(slot); });
+        RegisterListener<OnClientAuthorized>(OnClientAuthorized);
+        RegisterListener<OnClientDisconnect>(OnClientDisconnect);
+
         RegisterListener<Listeners.OnTick>(() =>
         {
             foreach (var player in Utilities.GetPlayers()
@@ -60,22 +63,22 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         if (!PlayerCache.ContainsKey(player))
         {
-            commandInfo.ReplyToCommand("You have not been registered yet by the plugin.");
+            player!.PrintToChat("You have not been registered yet by the plugin.");
             return;
         }
 
-        commandInfo.ReplyToCommand($"Your group id: {PlayerCache[player].GroupID}");
+        player!.PrintToChat($"Your group id: {PlayerCache[player].GroupID}");
         foreach (var group in Config.Groups)
         {
             bool hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);
 
             if (hasPerms)
             {
-                commandInfo.ReplyToCommand($"{group.Name} {group.Permissions} | HAS");
+                player!.PrintToChat($"{group.Name} {group.Permissions} | HAS");
             }
             else
             {
-                commandInfo.ReplyToCommand($"{group.Name} {group.Permissions} | DOESN'T HAVE");
+                player!.PrintToChat($"{group.Name} {group.Permissions} | DOESN'T HAVE");
             }
         }
     }
