@@ -49,6 +49,11 @@ public partial class VIPlugin
 		if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || player.IsHLTV)
 		{
 			return;
+		}	
+
+		if(!PlayerCache.ContainsKey(player))
+		{
+			return;
 		}
 
 		int GroupID = PlayerCache[player].GroupID;
