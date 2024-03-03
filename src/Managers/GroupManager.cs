@@ -1,10 +1,11 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
+namespace VIP;
 public class GroupManager
 {
-    private readonly List<VIPGroup> _groups;
-    public GroupManager(List<VIPGroup> groups)
+    private readonly List<VipGroupData> _groups;
+    public GroupManager(List<VipGroupData> groups)
     {
         _groups = groups;
     }

@@ -17,7 +17,7 @@ public class NonNegativeAttribute : Attribute
     }
 }
 
-public class VIPGroup
+public class VipGroupData
 {
     [JsonPropertyName("Permissions")]
     public string Permissions { get; set; } = "@vip-plugin/vip";
@@ -133,7 +133,7 @@ public class VIPGroup
         }
     }
 
-    public VIPGroup()
+    public VipGroupData()
     {
         ValidateData();
     }

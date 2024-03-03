@@ -21,7 +21,7 @@ public partial class VipPlugin
 
         AddTimer(1.0f, () =>
         {
-            PlayerCache.Add(player, new VIPPlayer());
+            PlayerCache.Add(player, new PlayerData());
             PlayerCache[player].LoadGroup(player, groupManager!);
 
             int GroupID = PlayerCache[player].GroupID;
@@ -134,7 +134,7 @@ public partial class VipPlugin
     {
         if (!player.IsValid || !player.PawnIsAlive || player.PlayerPawn == null) { return; }
 
-        VIPGroup playerGroup = Config!.Groups[playerGroupID];
+        VipGroupData playerGroup = Config!.Groups[playerGroupID];
 
         player.PlayerPawn!.Value!.Health = playerGroup.SpawnHP; // HP
 
@@ -217,7 +217,7 @@ public partial class VipPlugin
 
         AddTimer(0.5f, () =>
         {
-            VIPPlayer.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot);
+            PlayerData.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot);
         });
     }
 
@@ -239,7 +239,7 @@ public partial class VipPlugin
             int playerGroupID = PlayerCache[player].GroupID;
             if (playerGroupID != -1)
             {
-                VIPGroup playerGroup = Config!.Groups[playerGroupID];
+                VipGroupData playerGroup = Config!.Groups[playerGroupID];
 
                 player.InGameMoneyServices!.Account += playerGroup.RoundWonMoney;
             }
@@ -266,7 +266,7 @@ public partial class VipPlugin
         int playerGroupID = PlayerCache[attacker].GroupID;
         if (playerGroupID != -1)
         {
-            VIPGroup playerGroup = Config!.Groups[playerGroupID];
+            VipGroupData playerGroup = Config!.Groups[playerGroupID];
 
             if (@event.Headshot)
             {
@@ -309,7 +309,7 @@ public partial class VipPlugin
         int playerGroupID = PlayerCache[player].GroupID;
         if (playerGroupID != -1)
         {
-            VIPGroup playerGroup = Config!.Groups[playerGroupID];
+            VipGroupData playerGroup = Config!.Groups[playerGroupID];
             player.InGameMoneyServices!.Account += playerGroup.BombPlantMoney;
 
             //VIPPlayer.RefreshUI(player);
@@ -336,7 +336,7 @@ public partial class VipPlugin
         int playerGroupID = PlayerCache[player].GroupID;
         if (playerGroupID != -1)
         {
-            VIPGroup playerGroup = Config!.Groups[playerGroupID];
+            VipGroupData playerGroup = Config!.Groups[playerGroupID];
             player.InGameMoneyServices!.Account += playerGroup.BombDefuseMoney;
 
 
@@ -360,7 +360,7 @@ public partial class VipPlugin
         int playerGroupID = PlayerCache[player].GroupID;
         if (playerGroupID != -1)
         {
-            VIPGroup playerGroup = Config!.Groups[playerGroupID];
+            VipGroupData playerGroup = Config!.Groups[playerGroupID];
             if (@event.Hitgroup == 0 &&
                 !new[] { "inferno", "hegrenade", "knife" }.Contains(@event.Weapon) &&
                 playerGroup.NoFallDamage)
@@ -384,10 +384,10 @@ public partial class VipPlugin
             return;
         }
 
-        VIPPlayer playerData = PlayerCache[player];
+        PlayerData playerData = PlayerCache[player];
         if (playerData.GroupID == -1) { return; }
 
-        VIPGroup playerGroup = Config!.Groups[playerData.GroupID];
+        VipGroupData playerGroup = Config!.Groups[playerData.GroupID];
         if (playerGroup.ExtraJumps == 0)
         {
             return;

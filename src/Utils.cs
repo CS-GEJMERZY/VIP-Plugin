@@ -37,23 +37,6 @@ public partial class VipPlugin
         return players[randomIndex];
     }
 
-    private List<CCSPlayerController> GetValidPlayers()
-    {
-        return Utilities.GetPlayers().Where(IsPlayerValid).ToList();
-    }
-
-    public bool IsPlayerValid(CCSPlayerController player)
-    {
-        return !(player == null || !player.IsValid || !player.PlayerPawn.IsValid || player.IsBot);
-    }
-
-    public void GivePlayerRandomVIP(CCSPlayerController player)
-    {
-        foreach (var permission in Config!.RandomVIP.PermissionsGranted)
-        {
-            AdminManager.AddPlayerPermissions(player, permission);
-        }
-    }
 
     public bool IsPistolRound()
     {

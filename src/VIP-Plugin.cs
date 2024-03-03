@@ -12,7 +12,7 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public PluginConfig? Config { get; set; }
     internal GroupManager? groupManager { get; set; }
 
-    internal Dictionary<CCSPlayerController, VIPPlayer> PlayerCache = new Dictionary<CCSPlayerController, VIPPlayer>();
+    internal Dictionary<CCSPlayerController, PlayerData> PlayerCache = new Dictionary<CCSPlayerController, PlayerData>();
 
     public void OnConfigParsed(PluginConfig _Config)
     {
@@ -42,7 +42,7 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
             {
                 if (player != null && player.IsValid && !player.IsBot && !player.IsHLTV)
                 {
-                    PlayerCache.Add(player, new VIPPlayer());
+                    PlayerCache.Add(player, new PlayerData());
                     PlayerCache[player].LoadGroup(player, groupManager!);
                 }
             }

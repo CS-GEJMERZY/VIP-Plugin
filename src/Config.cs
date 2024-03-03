@@ -9,7 +9,7 @@ public class PluginConfig : BasePluginConfig
     public SettingsData Settings { get; set; } = new SettingsData();
 
     [JsonPropertyName("Groups")]
-    public List<VIPGroup> Groups { get; set; } = new List<VIPGroup>();
+    public List<VipGroupData> Groups { get; set; } = new List<VipGroupData>();
 
     [JsonPropertyName("RandomVIP")]
     public RandomVIPData RandomVIP { get; set; } = new RandomVIPData();
@@ -19,7 +19,7 @@ public class PluginConfig : BasePluginConfig
 
         if (Groups.Count == 0)
         {
-            Groups.Add(new VIPGroup());
+            Groups.Add(new VipGroupData());
         }
     }
 }
