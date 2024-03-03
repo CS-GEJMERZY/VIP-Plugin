@@ -43,14 +43,9 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
                 if (player != null && player.IsValid && !player.IsBot && !player.IsHLTV)
                 {
                     PlayerCache.Add(player, new PlayerData());
-                    PlayerCache[player].LoadGroup(player, groupManager!);
+                    PlayerCache[player].GroupId = PlayerManager.GetPlayerGroup(player, groupManager!);
                 }
             }
         }
     }
-
-
-
-
-
 }

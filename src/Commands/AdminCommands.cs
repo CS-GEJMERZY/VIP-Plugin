@@ -19,7 +19,7 @@ public partial class VipPlugin
             return;
         }
 
-        player!.PrintToChat($"Your group id: {PlayerCache[player].GroupID}");
+        player!.PrintToChat($"Your group id: {PlayerCache[player].GroupId}");
         foreach (var group in Config!.Groups)
         {
             bool hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);

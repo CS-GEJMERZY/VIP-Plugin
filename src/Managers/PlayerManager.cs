@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 
 namespace VIP;
@@ -26,13 +21,35 @@ public class PlayerManager
         player.ExecuteClientCommand("slot" + slot);
     }
 
-    public static void AddMoney(CCSPlayerController playerController, int amount)
-    {
-        throw new NotImplementedException();
-    }
 
     public static int GetPlayerGroup(CCSPlayerController player, GroupManager groupManager)
     {
-        return  groupManager.GetPlayerGroup(player);
+        return groupManager.GetPlayerGroup(player);
+    }
+    public static int GetHealth(CCSPlayerController player)
+    {
+        return player!.PlayerPawn!.Value!.Health;
+    }
+
+    public static void SetHealth(CCSPlayerController player, int amount)
+    {
+        player!.PlayerPawn!.Value!.Health = amount;
+    }
+
+    public static void AddHealth(CCSPlayerController player, int amount)
+
+    {
+        int newHealth = GetHealth(player) + amount;
+        SetHealth(player, newHealth);
+    }
+
+    public static void AddMoney(CCSPlayerController player, int amount)
+    {
+        player!.InGameMoneyServices!.Account += amount;
+    }
+
+    public static void SetArmor(CCSPlayerController player, int amount)
+    {
+        player!.PlayerPawn!.Value!.ArmorValue = amount;
     }
 }
