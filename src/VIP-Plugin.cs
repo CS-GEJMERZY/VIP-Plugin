@@ -12,7 +12,7 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "0.0.4";
+    public override string ModuleVersion => "0.0.5";
 
     public PluginConfig Config { get; set; }
     internal VIPGroupManager? GroupManager { get; set; }
@@ -27,7 +27,7 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
     }
 
     public override void Load(bool hotReload)
-    { 
+    {
         RegisterListener<OnClientDisconnect>(OnClientDisconnect);
 
         RegisterListener<Listeners.OnTick>(() =>
@@ -90,7 +90,7 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
         var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
 
-        
+
         return gameRules.TotalRoundsPlayed == 0 || (halftime && maxrounds / 2 == gameRules.TotalRoundsPlayed) ||
                gameRules.GameRestart;
     }
