@@ -1,6 +1,5 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
-using CounterStrikeSharp.API.Modules.Entities;
 
 namespace Plugin.Managers
 {
@@ -43,11 +42,13 @@ namespace Plugin.Managers
 
         private bool HasRequiredPhrase(CCSPlayerController player)
         {
+            if (nightVipData.RequiredNickPhrase == string.Empty) return true;
             return player.PlayerName.Contains(nightVipData.RequiredNickPhrase, StringComparison.OrdinalIgnoreCase);
         }
 
         private bool HasRequiredTag(CCSPlayerController player)
         {
+            if (nightVipData.RequiredScoreboardTag == string.Empty) return true;
             return player.Clan == nightVipData.RequiredScoreboardTag;
         }
 

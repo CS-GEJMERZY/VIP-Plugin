@@ -3,7 +3,6 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Utils;
-using Plugin.Managers;
 
 namespace Plugin;
 
@@ -90,13 +89,13 @@ public partial class VipPlugin
             return HookResult.Continue;
         }
 
-        if(nightVipManager.IsNightVipTime() && nightVipManager.PlayerQualifies(player))
+        if (nightVipManager.IsNightVipTime() && nightVipManager.PlayerQualifies(player))
         {
-           
-       
-                 nightVipManager.GiveNightVip(player);
-               
-            
+
+
+            nightVipManager.GiveNightVip(player);
+
+
         }
 
         int playerGroupID = PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);

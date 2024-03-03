@@ -15,6 +15,7 @@ namespace Plugin.Models
 
         [JsonPropertyName("RequiredNickPhrase")]
         public string RequiredNickPhrase { get; set; } = "Katujemy.eu";
+
         [JsonPropertyName("RequiredScoreboardTag")]
         public string RequiredScoreboardTag { get; set; } = "Katujemy.eu";
 
