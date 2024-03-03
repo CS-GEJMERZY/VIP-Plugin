@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Utils;
@@ -15,9 +10,9 @@ public partial class VIPlugin
     public int GetTeamScore(CsTeam team)
     {
         var teamManagers = Utilities.FindAllEntitiesByDesignerName<CCSTeam>("cs_team_manager");
-        foreach(var manager in teamManagers)
+        foreach (var manager in teamManagers)
         {
-            if((int)team == manager.TeamNum)
+            if ((int)team == manager.TeamNum)
             {
                 return manager.Score;
             }
@@ -53,7 +48,7 @@ public partial class VIPlugin
 
     public void GivePlayerRandomVIP(CCSPlayerController player)
     {
-        foreach(var permission in Config.RandomVIP.permissions)
+        foreach (var permission in Config.RandomVIP.permissions)
         {
             AdminManager.AddPlayerPermissions(player, permission);
         }

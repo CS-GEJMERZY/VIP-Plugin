@@ -27,7 +27,7 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
     }
 
     public override void Load(bool hotReload)
-    { 
+    {
         RegisterListener<OnClientDisconnect>(OnClientDisconnect);
 
         RegisterListener<Listeners.OnTick>(() =>
@@ -90,7 +90,7 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
         var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
         var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
 
-        
+
         return gameRules.TotalRoundsPlayed == 0 || (halftime && maxrounds / 2 == gameRules.TotalRoundsPlayed) ||
                gameRules.GameRestart;
     }
