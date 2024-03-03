@@ -52,6 +52,6 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
     "repeatPicking": 3,
     "permissions": []
   },
-  "ConfigVersion": 1
+  "ConfigVersion": 2
 }
 ```
