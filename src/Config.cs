@@ -13,6 +13,8 @@ public class PluginConfig : BasePluginConfig
 
     [JsonPropertyName("RandomVIP")]
     public Models.RandomVIPData RandomVIP { get; set; } = new Models.RandomVIPData();
+    [JsonPropertyName("NightVIP")]
+    public Models.NightVIPData NightVIP { get; set; } = new Models.NightVIPData();
 
     public PluginConfig()
     {

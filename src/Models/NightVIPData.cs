@@ -13,6 +13,11 @@ namespace Plugin.Models
         [JsonPropertyName("EndHour")]
         public int EndHour { get; set; } = 8;
 
+        [JsonPropertyName("RequiredNickPhrase")]
+        public string RequiredNickPhrase { get; set; } = "Katujemy.eu";
+        [JsonPropertyName("RequiredScoreboardTag")]
+        public string RequiredScoreboardTag { get; set; } = "Katujemy.eu";
+
         [JsonPropertyName("PermissionsGranted ")]
         public List<string> PermissionsGranted { get; set; } = new List<string>();
 

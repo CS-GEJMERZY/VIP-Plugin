@@ -20,7 +20,8 @@ namespace Plugin.Managers
 
         public void ProcessRound(IStringLocalizer Localizer)
         {
-            var players = PlayerManager.GetValidPlayers();
+            var players = PlayerManager.GetValidPlayers().Where(
+                player => Managers.PermissionManager.HasAnyPermission(player, randomVipData.PermissionExclude)).ToList();
             if (players.Count == 0) { return; }
 
             var randomPlayer = ChooseRandomPlayer(players);

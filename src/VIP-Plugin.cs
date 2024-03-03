@@ -13,6 +13,7 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public PluginConfig? Config { get; set; }
     internal Managers.GroupManager? groupManager { get; set; }
     internal Managers.RandomVipManager? randomVipManager { get; set; }
+    internal Managers.NightVipManager? nightVipManager { get; set; }
 
     internal Dictionary<CCSPlayerController, Models.PlayerData> PlayerCache = new Dictionary<CCSPlayerController, Models.PlayerData>();
 
@@ -22,6 +23,7 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
         groupManager = new Managers.GroupManager(Config.Groups);
         randomVipManager = new Managers.RandomVipManager(Config.RandomVIP);
+        nightVipManager = new Managers.NightVipManager(Config.NightVIP);
     }
 
     public override void Load(bool hotReload)
