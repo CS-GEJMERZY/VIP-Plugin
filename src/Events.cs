@@ -69,9 +69,9 @@ public partial class VipPlugin
     {
         int currentRound = GetTeamScore(CsTeam.CounterTerrorist) + GetTeamScore(CsTeam.Terrorist);
 
-        if (randomVipManager.RandomVip(currentRound))
+        if (randomVipManager.IsRound(currentRound))
         {
-            randomVipManager.ProcessRound(currentRound);
+            randomVipManager.ProcessRound(Localizer);
         }
 
         return HookResult.Continue;
@@ -83,13 +83,7 @@ public partial class VipPlugin
     public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
     {
         CCSPlayerController player = @event.Userid;
-        if (!PlayerManager.IsValid(player) || player.IsBot)
-        {
-            return HookResult.Continue;
-        }
-
-        // They key might not be present before the player is fully authorized in EventPlayerConnectFull
-        if (!PlayerCache.ContainsKey(player))
+        if (!PlayerManager.IsValid(player) || player.IsBot || !PlayerCache.ContainsKey(player))
         {
             return HookResult.Continue;
         }
