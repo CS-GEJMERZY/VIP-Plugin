@@ -1,25 +1,29 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
-namespace VIP;
-public class GroupManager
+namespace Plugin.Managers
 {
-    private readonly List<VipGroupData> _groups;
-    public GroupManager(List<VipGroupData> groups)
+    public class GroupManager
     {
-        _groups = groups;
-    }
-
-    public int GetPlayerGroup(CCSPlayerController player)
-    {
-        for (int i = 0; i < _groups.Count; i++)
+        private readonly List<Models.VipGroupData> _groups;
+        public GroupManager(List<Models.VipGroupData> groups)
         {
-            if (AdminManager.PlayerHasPermissions(player, _groups[i].Permissions))
-            {
-                return i;
-            }
+            _groups = groups;
         }
 
-        return -1;
+        public int GetPlayerGroup(CCSPlayerController player)
+        {
+            for (int i = 0; i < _groups.Count; i++)
+            {
+                if (AdminManager.PlayerHasPermissions(player, _groups[i].Permissions))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
     }
 }
+
+

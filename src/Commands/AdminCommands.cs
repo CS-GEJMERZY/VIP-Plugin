@@ -2,8 +2,7 @@
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
-
-namespace VIP;
+namespace Plugin;
 
 public partial class VipPlugin
 {
@@ -13,7 +12,7 @@ public partial class VipPlugin
     {
         if (player == null) { return; }
 
-        if (!PlayerCache.ContainsKey(player))
+        if (PlayerCache.ContainsKey(player))
         {
             player!.PrintToChat(Localizer["not_registered"]);
             return;

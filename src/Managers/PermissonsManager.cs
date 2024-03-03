@@ -1,15 +1,27 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
-namespace VIP;
-
-public class PermissionManager
+namespace Plugin.Managers
 {
-    public static void AddPermissions(CCSPlayerController player, List<string> permissions)
+    public class PermissionManager
     {
-        foreach (var perm in permissions)
+        public static void AddPermissions(CCSPlayerController player, List<string> permissions)
         {
-            AdminManager.AddPlayerPermissions(player, perm);
+            foreach (var perm in permissions)
+            {
+                AdminManager.AddPlayerPermissions(player, perm);
+            }
+        }
+
+        public static bool HasAnyPermission(CCSPlayerController player, List<string> permissions)
+        {
+            foreach (var perm in permissions)
+            {
+                if (AdminManager.PlayerHasPermissions(player, perm)) return true;
+            }
+
+            return false;
         }
     }
 }
+

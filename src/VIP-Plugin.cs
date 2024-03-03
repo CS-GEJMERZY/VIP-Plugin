@@ -1,7 +1,8 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using static CounterStrikeSharp.API.Core.Listeners;
-namespace VIP;
+
+namespace Plugin;
 
 public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
 {
@@ -10,17 +11,17 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public override string ModuleVersion => "1.0.0";
 
     public PluginConfig? Config { get; set; }
-    internal GroupManager? groupManager { get; set; }
-    internal RandomVipManager? randomVipManager { get; set; }
+    internal Managers.GroupManager? groupManager { get; set; }
+    internal Managers.RandomVipManager? randomVipManager { get; set; }
 
-    internal Dictionary<CCSPlayerController, PlayerData> PlayerCache = new Dictionary<CCSPlayerController, PlayerData>();
+    internal Dictionary<CCSPlayerController, Models.PlayerData> PlayerCache = new Dictionary<CCSPlayerController, Models.PlayerData>();
 
     public void OnConfigParsed(PluginConfig _Config)
     {
         Config = _Config;
 
-        groupManager = new GroupManager(Config.Groups);
-        randomVipManager = new RandomVipManager(Config.RandomVIP);
+        groupManager = new Managers.GroupManager(Config.Groups);
+        randomVipManager = new Managers.RandomVipManager(Config.RandomVIP);
     }
 
     public override void Load(bool hotReload)
@@ -44,8 +45,8 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
             {
                 if (player != null && player.IsValid && !player.IsBot && !player.IsHLTV)
                 {
-                    PlayerCache.Add(player, new PlayerData());
-                    PlayerCache[player].GroupId = PlayerManager.GetPlayerGroup(player, groupManager!);
+                    PlayerCache.Add(player, new Models.PlayerData());
+                    PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);
                 }
             }
         }
