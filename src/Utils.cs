@@ -1,11 +1,12 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
+using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace VIP;
 
-public partial class VIPlugin
+public partial class VipPlugin
 {
     public int GetTeamScore(CsTeam team)
     {
@@ -23,7 +24,7 @@ public partial class VIPlugin
 
     private void AnnouncePickingProcess()
     {
-        for (int i = 0; i < Config.RandomVIP.repeatPicking; i++)
+        for (int i = 0; i < Config!.RandomVIP.RepeatPicking; i++)
         {
             Server.PrintToChatAll(Localizer["picking"]);
         }
@@ -48,9 +49,22 @@ public partial class VIPlugin
 
     public void GivePlayerRandomVIP(CCSPlayerController player)
     {
-        foreach (var permission in Config.RandomVIP.permissions)
+        foreach (var permission in Config!.RandomVIP.PermissionsGranted)
         {
             AdminManager.AddPlayerPermissions(player, permission);
         }
+    }
+
+    public bool IsPistolRound()
+    {
+        var gameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules;
+        if (gameRules == null) return false;
+
+        var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
+        var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
+
+
+        return gameRules.TotalRoundsPlayed == 0 || (halftime && maxrounds / 2 == gameRules.TotalRoundsPlayed) ||
+               gameRules.GameRestart;
     }
 }

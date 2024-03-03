@@ -15,7 +15,7 @@ public class VIPPlayer
         TempData = new PlayerTempData();
     }
 
-    public void LoadGroup(CCSPlayerController player, VIPGroupManager groupManager)
+    public void LoadGroup(CCSPlayerController player, GroupManager groupManager)
     {
         this.GroupID = groupManager.GetPlayerGroup(player);
     }

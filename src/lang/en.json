@@ -1,4 +1,5 @@
 ﻿{
   "picking": "{default}[Katujemy.eu] {green]Picking a random VIP...",
-  "winner": "{default}[Katujemy.eu] {yellow}Player {red}{0} {yellow}won Random VIP! Congratulations!"
+  "winner": "{default}[Katujemy.eu] {yellow}Player {red}{0} {yellow}won Random VIP! Congratulations!",
+  "not_registered": "You have not been registered yet by the plugin."
 }
