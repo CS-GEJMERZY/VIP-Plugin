@@ -1,3 +1,4 @@
+﻿using System.Linq;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
@@ -74,8 +75,35 @@ public partial class VIPlugin
         }
 	}
 
-
 	[GameEventHandler]
+	public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+	{
+		int currentRound = GetTeamScore(CsTeam.CounterTerrorist) + GetTeamScore(CsTeam.Terrorist);
+		var validPlayers = GetValidPlayers();
+        if (validPlayers.Count == 0)
+        {
+            return HookResult.Continue; 
+        }
+
+        if (currentRound == Config.RandomVIP.afterRound && Config.RandomVIP.enabled)
+		{
+
+
+			CCSPlayerController playerWin = ChooseRandomPlayer(validPlayers);
+
+
+			AnnouncePickingProcess();
+
+
+            Server.PrintToChatAll(Localizer["winner", playerWin.PlayerName]);
+        }
+		return HookResult.Continue;
+
+    }
+
+
+
+    [GameEventHandler]
 	public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
 	{
 		CCSPlayerController player = @event.Userid;

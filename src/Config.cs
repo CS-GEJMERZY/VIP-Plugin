@@ -11,6 +11,9 @@ public class PluginConfig : BasePluginConfig
     [JsonPropertyName("Groups")]
     public List<VIPGroup> Groups { get; set; } = new List<VIPGroup>();
 
+    [JsonPropertyName("RandomVIP")]
+    public RandomVIPData RandomVIP { get; set; } = new RandomVIPData();
+
     public PluginConfig()
     {
 
