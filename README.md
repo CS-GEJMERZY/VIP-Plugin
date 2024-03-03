@@ -46,6 +46,12 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
       "Zeus": true
     }
   ],
+  "RandomVIP": {
+    "enabled": false,
+    "afterRound": 3,
+    "repeatPicking": 3,
+    "permissions": []
+  },
   "ConfigVersion": 1
 }
 ```
