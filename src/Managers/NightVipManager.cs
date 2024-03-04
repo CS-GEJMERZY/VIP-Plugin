@@ -20,13 +20,13 @@ namespace Plugin.Managers
             if (nightVipData.StartHour <= nightVipData.EndHour)
             {
                 // Overnight scenario (e.g., 8:00 to 22:00)
-                
+
                 return currentHour >= nightVipData.StartHour && currentHour < nightVipData.EndHour;
             }
             else
             {
                 // Normal scenario (e.g., 22:00 to 8:00)
-                return currentHour >= nightVipData.StartHour ||  currentHour < nightVipData.EndHour;
+                return currentHour >= nightVipData.StartHour || currentHour < nightVipData.EndHour;
             }
         }
 

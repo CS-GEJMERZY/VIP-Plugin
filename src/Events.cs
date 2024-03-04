@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Utils;
+using Plugin.Managers;
 
 namespace Plugin;
 
@@ -13,7 +14,7 @@ public partial class VipPlugin
     {
         CCSPlayerController player = @event.Userid;
 
-        if (player == null || !player.IsValid || player.IsBot || player.IsHLTV)
+        if (!PlayerManager.IsValid(player) || player.IsBot || player.IsHLTV)
         {
             return HookResult.Continue;
         }
@@ -45,7 +46,7 @@ public partial class VipPlugin
     {
         CCSPlayerController player = Utilities.GetPlayerFromSlot(playerSlot);
 
-        if (!Managers.PlayerManager.IsValid(player) || !PlayerCache.ContainsKey(player)) return;
+        if (!PlayerManager.IsValid(player) || !PlayerCache.ContainsKey(player)) return;
 
         int GroupId = PlayerCache[player].GroupId;
         if (GroupId != -1)
@@ -82,7 +83,7 @@ public partial class VipPlugin
     {
         CCSPlayerController player = @event.Userid;
 
-        if (!Managers.PlayerManager.IsValid(player) || player.IsBot || !PlayerCache.ContainsKey(player))
+        if (PlayerManager.IsValid(player) || player.IsBot || !PlayerCache.ContainsKey(player))
         {
             return HookResult.Continue;
         }
@@ -109,16 +110,16 @@ public partial class VipPlugin
 
     private void PlayerSpawnn_TimerGive(CCSPlayerController player, int playerGroupID)
     {
-        if (!Managers.PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
+        if (!PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
 
         Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
 
-        Managers.PlayerManager.SetHealth(player, playerGroup.SpawnHP);
+        PlayerManager.SetHealth(player, playerGroup.SpawnHP);
 
         if (!(IsPistolRound() && !playerGroup.GiveSpawnMoneyPistolRound))
-            Managers.PlayerManager.AddMoney(player, playerGroup.SpawnMoney);
+            PlayerManager.AddMoney(player, playerGroup.SpawnMoney);
 
-        Managers.PlayerManager.SetArmor(player, playerGroup.SpawnArmor);
+        PlayerManager.SetArmor(player, playerGroup.SpawnArmor);
 
         if (playerGroup.SpawnHelmet) { player.GiveNamedItem(CsItem.KevlarHelmet); }
 
@@ -192,7 +193,7 @@ public partial class VipPlugin
 
         AddTimer(0.5f, () =>
         {
-            Managers.PlayerManager.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot);
+            PlayerManager.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot);
         });
     }
 
@@ -201,7 +202,7 @@ public partial class VipPlugin
     {
         foreach (CCSPlayerController player in Utilities.GetPlayers())
         {
-            if (player == null || !player.IsValid || !player.PlayerPawn.IsValid || player.IsBot)
+            if (!PlayerManager.IsValid(player) || player.IsBot)
             {
                 continue;
             }
@@ -216,7 +217,7 @@ public partial class VipPlugin
             {
                 Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
 
-                Managers.PlayerManager.AddMoney(player, playerGroup.RoundWonMoney);
+                PlayerManager.AddMoney(player, playerGroup.RoundWonMoney);
             }
         }
 
@@ -228,7 +229,7 @@ public partial class VipPlugin
     {
         CCSPlayerController attacker = @event.Attacker;
 
-        if (!Managers.PlayerManager.IsValid(attacker) ||
+        if (PlayerManager.IsValid(attacker) ||
             attacker.IsBot ||
             !PlayerCache.ContainsKey(attacker)) return HookResult.Continue;
 
@@ -241,17 +242,17 @@ public partial class VipPlugin
 
         if (@event.Headshot)
         {
-            Managers.PlayerManager.AddMoney(attacker, playerGroup.HeadshotKillMoney);
+            PlayerManager.AddMoney(attacker, playerGroup.HeadshotKillMoney);
 
             int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup.HeadshotKillHP, playerGroup.MaxHP);
-            Managers.PlayerManager.SetHealth(attacker, newHP);
+            PlayerManager.SetHealth(attacker, newHP);
         }
         else
         {
             attacker.InGameMoneyServices!.Account += playerGroup.KillMoney;
 
             int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup.KillHP, playerGroup.MaxHP);
-            Managers.PlayerManager.SetHealth(attacker, newHP);
+            PlayerManager.SetHealth(attacker, newHP);
         }
 
 
@@ -263,7 +264,7 @@ public partial class VipPlugin
     {
         CCSPlayerController player = @event.Userid;
 
-        if (!Managers.PlayerManager.IsValid(player) ||
+        if (!PlayerManager.IsValid(player) ||
       player.IsBot ||
       !PlayerCache.ContainsKey(player)) return HookResult.Continue;
 
@@ -271,7 +272,7 @@ public partial class VipPlugin
         if (playerGroupID != -1)
         {
             Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
-            Managers.PlayerManager.AddMoney(player, playerGroup.BombPlantMoney);
+            PlayerManager.AddMoney(player, playerGroup.BombPlantMoney);
         }
 
         return HookResult.Continue;
@@ -283,7 +284,7 @@ public partial class VipPlugin
         CCSPlayerController player = @event.Userid;
 
 
-        if (!Managers.PlayerManager.IsValid(player) ||
+        if (!PlayerManager.IsValid(player) ||
       player.IsBot ||
       !PlayerCache.ContainsKey(player)) return HookResult.Continue;
 
@@ -291,7 +292,7 @@ public partial class VipPlugin
         if (playerGroupID != -1)
         {
             Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
-            Managers.PlayerManager.AddMoney(player, playerGroup.BombDefuseMoney);
+            PlayerManager.AddMoney(player, playerGroup.BombDefuseMoney);
 
 
 
@@ -305,9 +306,9 @@ public partial class VipPlugin
     public HookResult OnPlayerHurt(EventPlayerHurt @event, GameEventInfo info)
     {
         CCSPlayerController player = @event.Userid;
-        if (!Managers.PlayerManager.IsValid(player) ||
-    player.IsBot ||
-    !PlayerCache.ContainsKey(player)) return HookResult.Continue;
+        if (!PlayerManager.IsValid(player) ||
+         player.IsBot ||
+        !PlayerCache.ContainsKey(player)) return HookResult.Continue;
 
         int playerGroupID = PlayerCache[player].GroupId;
         if (playerGroupID == -1) return HookResult.Continue;
@@ -317,7 +318,7 @@ public partial class VipPlugin
             !new[] { "inferno", "hegrenade", "knife" }.Contains(@event.Weapon) &&
             playerGroup.NoFallDamage)
         {
-            Managers.PlayerManager.AddHealth(player, @event.DmgHealth);
+            PlayerManager.AddHealth(player, @event.DmgHealth);
         }
 
 
@@ -326,7 +327,7 @@ public partial class VipPlugin
 
     private void OnTick(CCSPlayerController player)
     {
-        if (!Managers.PlayerManager.IsValid(player) ||
+        if (!PlayerManager.IsValid(player) ||
         player.IsBot ||
         !PlayerCache.ContainsKey(player)) return;
 

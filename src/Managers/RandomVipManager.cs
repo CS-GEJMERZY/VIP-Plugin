@@ -1,7 +1,6 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using Microsoft.Extensions.Localization;
-using Plugin.Models;
 
 namespace Plugin.Managers
 {

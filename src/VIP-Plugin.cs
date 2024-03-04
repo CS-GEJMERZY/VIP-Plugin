@@ -45,7 +45,7 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
         {
             foreach (CCSPlayerController player in Utilities.GetPlayers())
             {
-                if (player != null && player.IsValid && !player.IsBot && !player.IsHLTV)
+                if (Managers.PlayerManager.IsValid(player) && !player.IsHLTV)
                 {
                     PlayerCache.Add(player, new Models.PlayerData());
                     PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);
