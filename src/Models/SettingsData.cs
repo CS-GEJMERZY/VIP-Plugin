@@ -1,7 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-public class SettingsData
+namespace Plugin.Models
 {
-    [JsonPropertyName("Prefix")]
-    public string Prefix { get; set; } = "[VIP-Plugin] ";
+    public class SettingsData
+    {
+        [JsonPropertyName("Prefix")]
+        public string Prefix { get; set; } = "[VIP-Plugin] ";
+    }
 }

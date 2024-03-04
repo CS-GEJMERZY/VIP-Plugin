@@ -1,36 +1,36 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
-using CounterStrikeSharp.API.Modules.Admin;
-using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Cvars;
 using static CounterStrikeSharp.API.Core.Listeners;
 
-namespace VIP;
+namespace Plugin;
 
-public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
+public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "0.0.4";
+    public override string ModuleVersion => "1.0.0";
 
-    public PluginConfig Config { get; set; }
-    internal VIPGroupManager? GroupManager { get; set; }
+    public PluginConfig? Config { get; set; }
+    internal Managers.GroupManager? groupManager { get; set; }
+    internal Managers.RandomVipManager? randomVipManager { get; set; }
+    internal Managers.NightVipManager? nightVipManager { get; set; }
 
-    internal Dictionary<CCSPlayerController, VIPPlayer> PlayerCache = new Dictionary<CCSPlayerController, VIPPlayer>();
+    internal Dictionary<CCSPlayerController, Models.PlayerData> PlayerCache = new Dictionary<CCSPlayerController, Models.PlayerData>();
 
-    public void OnConfigParsed(PluginConfig config)
+    public void OnConfigParsed(PluginConfig _Config)
     {
-        Config = config;
+        Config = _Config;
 
-        GroupManager = new VIPGroupManager(Config.Groups);
+        groupManager = new Managers.GroupManager(Config.Groups);
+        randomVipManager = new Managers.RandomVipManager(Config.RandomVIP);
+        nightVipManager = new Managers.NightVipManager(Config.NightVIP);
     }
 
     public override void Load(bool hotReload)
-    { 
+    {
         RegisterListener<OnClientDisconnect>(OnClientDisconnect);
 
-        RegisterListener<Listeners.OnTick>(() =>
+        RegisterListener<OnTick>(() =>
         {
             foreach (var player in Utilities.GetPlayers()
                          .Where(player => player is { IsValid: true, IsBot: false, PawnIsAlive: true }))
@@ -45,54 +45,12 @@ public partial class VIPlugin : BasePlugin, IPluginConfig<PluginConfig>
         {
             foreach (CCSPlayerController player in Utilities.GetPlayers())
             {
-                if (player != null && player.IsValid && !player.IsBot && !player.IsHLTV)
+                if (Managers.PlayerManager.IsValid(player) && !player.IsHLTV)
                 {
-                    PlayerCache.Add(player, new VIPPlayer());
-                    PlayerCache[player].LoadGroup(player, GroupManager!);
+                    PlayerCache.Add(player, new Models.PlayerData());
+                    PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);
                 }
             }
         }
     }
-
-    [RequiresPermissions("@css/root")]
-    [ConsoleCommand("css_vipdebug", "VIP PLUGIN DEBUG")]
-    public void OnShopCommand(CCSPlayerController? player, CommandInfo commandInfo)
-    {
-        if (player == null) { return; }
-
-        if (!PlayerCache.ContainsKey(player))
-        {
-            player!.PrintToChat("You have not been registered yet by the plugin.");
-            return;
-        }
-
-        player!.PrintToChat($"Your group id: {PlayerCache[player].GroupID}");
-        foreach (var group in Config.Groups)
-        {
-            bool hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);
-
-            if (hasPerms)
-            {
-                player!.PrintToChat($"{group.Name} {group.Permissions} | HAS");
-            }
-            else
-            {
-                player!.PrintToChat($"{group.Name} {group.Permissions} | DOESN'T HAVE");
-            }
-        }
-    }
-
-    public bool IsPistolRound()
-    {
-        var gameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules;
-        if (gameRules == null) return false;
-
-        var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
-        var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
-
-        
-        return gameRules.TotalRoundsPlayed == 0 || (halftime && maxrounds / 2 == gameRules.TotalRoundsPlayed) ||
-               gameRules.GameRestart;
-    }
-
 }

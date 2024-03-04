@@ -1,20 +1,20 @@
-using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
-using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Utils;
+using Plugin.Managers;
 
-namespace VIP;
+namespace Plugin;
 
-public partial class VIPlugin
+public partial class VipPlugin
 {
     [GameEventHandler]
     public HookResult EventPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
     {
         CCSPlayerController player = @event.Userid;
 
-        if (player == null || !player.IsValid || player.IsBot || player.IsHLTV)
+        if (!PlayerManager.IsValid(player) || player.IsBot || player.IsHLTV)
         {
             return HookResult.Continue;
         }
@@ -22,18 +22,18 @@ public partial class VIPlugin
 
         AddTimer(1.0f, () =>
         {
-            PlayerCache.Add(player, new VIPPlayer());
-            PlayerCache[player].LoadGroup(player, GroupManager!);
+            PlayerCache.Add(player, new Models.PlayerData());
+            PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);
 
-            int GroupID = PlayerCache[player].GroupID;
+            int GroupID = PlayerCache[player].GroupId;
             if (GroupID != -1)
             {
-                if (Config.Groups[GroupID].ConnectMessage != string.Empty)
+                if (Config!.Groups[GroupID].ConnectMessage != string.Empty)
                 {
                     string message = Config.Groups[GroupID].ConnectMessage;
                     message = message.Replace("{playername}", player.PlayerName);
 
-                    Server.PrintToChatAll(PluginMessageFormatter.FormatColor(message));
+                    Server.PrintToChatAll(Models.PluginMessageFormatter.FormatColor(message));
                 }
             }
 
@@ -43,130 +43,132 @@ public partial class VIPlugin
     }
 
     private void OnClientDisconnect(int playerSlot)
-	{
-		CCSPlayerController player = Utilities.GetPlayerFromSlot(playerSlot);
+    {
+        CCSPlayerController player = Utilities.GetPlayerFromSlot(playerSlot);
 
-		if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || player.IsHLTV)
-		{
-			return;
-		}	
+        if (!PlayerManager.IsValid(player) || !PlayerCache.ContainsKey(player)) return;
 
-		if(!PlayerCache.ContainsKey(player))
-		{
-			return;
-		}
+        int GroupId = PlayerCache[player].GroupId;
+        if (GroupId != -1)
+        {
+            if (Config!.Groups[GroupId].DisconnectMessage != string.Empty)
+            {
+                string message = Config.Groups[GroupId].DisconnectMessage;
+                message = message.Replace("{playername}", player.PlayerName);
 
-		int GroupID = PlayerCache[player].GroupID;
-		if (GroupID != -1)
-		{
-			if (Config.Groups[GroupID].DisconnectMessage != string.Empty)
-			{
-				string message = Config.Groups[GroupID].DisconnectMessage;
-				message = message.Replace("{playername}", player.PlayerName);
-
-				Server.PrintToChatAll(PluginMessageFormatter.FormatColor(message));
-			}
-		}
-
-		if(PlayerCache.ContainsKey(player))
-		{
-            PlayerCache.Remove(player);
+                Server.PrintToChatAll(Models.PluginMessageFormatter.FormatColor(message));
+            }
         }
-	}
 
+        PlayerCache.Remove(player);
+    }
 
-	[GameEventHandler]
-	public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
-	{
-		CCSPlayerController player = @event.Userid;
-		if (player == null || !player.IsValid || !player.PlayerPawn.IsValid || player.IsBot)
-		{
-			return HookResult.Continue;
-		}
+    [GameEventHandler]
+    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    {
+        int currentRound = GetTeamScore(CsTeam.CounterTerrorist) + GetTeamScore(CsTeam.Terrorist);
 
-		// They key might not be present before the player is fully authorized in EventPlayerConnectFull
-		if (!PlayerCache.ContainsKey(player))
-		{
-			return HookResult.Continue;
-		}
+        if (randomVipManager!.IsRound(currentRound))
+        {
+            randomVipManager!.ProcessRound(Localizer);
+        }
 
-		PlayerCache[player].LoadGroup(player, GroupManager!);
-		int playerGroupID = PlayerCache[player].GroupID;
-		if (playerGroupID == -1)
-		{
-			return HookResult.Continue;
-		}
-		AddTimer(1.0f, () =>
-		{
-			PlayerSpawnn_TimerGive(player, playerGroupID);
-		});
-
-		return HookResult.Continue;
-	}
-
-	private void PlayerSpawnn_TimerGive(CCSPlayerController player, int playerGroupID)
-	{
-		if (!player.IsValid || !player.PawnIsAlive || player.PlayerPawn == null) { return; }
-
-		VIPGroup playerGroup = Config.Groups[playerGroupID];
-
-		player.PlayerPawn!.Value!.Health = playerGroup.SpawnHP; // HP
-
-		if(!(IsPistolRound() && !playerGroup.GiveSpawnMoneyPistolRound))
-		player.InGameMoneyServices!.Account += playerGroup.SpawnMoney; // Money
-
-		player.PlayerPawn.Value.ArmorValue = playerGroup.SpawnArmor; // Armor
-
-		if (playerGroup.SpawnHelmet) { player.GiveNamedItem(CsItem.KevlarHelmet); }
-
-
-		if (playerGroup.SpawnDefuser && player.TeamNum is (int)CsTeam.CounterTerrorist && !player.PawnHasDefuser)
-		{
-			player.GiveNamedItem("item_defuser"); // Defuser
-		}
-
-		// grenades
-
-		for (int i = 0; i < playerGroup.SmokeGrenade; i++)
-		{
-			player.GiveNamedItem(CsItem.SmokeGrenade);
-		}
+        return HookResult.Continue;
+    }
 
 
 
-		for (int i = 0; i < playerGroup.HEGrenade; i++)
-		{
-			player.GiveNamedItem(CsItem.HEGrenade);
-		}
+    [GameEventHandler]
+    public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+    {
+        CCSPlayerController player = @event.Userid;
+
+        if (PlayerManager.IsValid(player) || player.IsBot || !PlayerCache.ContainsKey(player))
+        {
+            return HookResult.Continue;
+        }
+
+        if (nightVipManager!.IsNightVipTime() && nightVipManager.PlayerQualifies(player))
+        {
+
+
+            nightVipManager.GiveNightVip(player);
+        }
+
+        int playerGroupID = PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);
+        if (playerGroupID != -1)
+        {
+            AddTimer(1.0f, () =>
+            {
+                PlayerSpawnn_TimerGive(player, playerGroupID);
+            });
+        }
+
+
+        return HookResult.Continue;
+    }
+
+    private void PlayerSpawnn_TimerGive(CCSPlayerController player, int playerGroupID)
+    {
+        if (!PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
+
+        Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
+
+        PlayerManager.SetHealth(player, playerGroup.SpawnHP);
+
+        if (!(IsPistolRound() && !playerGroup.GiveSpawnMoneyPistolRound))
+            PlayerManager.AddMoney(player, playerGroup.SpawnMoney);
+
+        PlayerManager.SetArmor(player, playerGroup.SpawnArmor);
+
+        if (playerGroup.SpawnHelmet) { player.GiveNamedItem(CsItem.KevlarHelmet); }
+
+
+        if (playerGroup.SpawnDefuser && player.TeamNum is (int)CsTeam.CounterTerrorist && !player.PawnHasDefuser)
+        {
+            player.GiveNamedItem("item_defuser");
+        }
+
+
+        for (int i = 0; i < playerGroup.SmokeGrenade; i++)
+        {
+            player.GiveNamedItem(CsItem.SmokeGrenade);
+        }
+
+
+        for (int i = 0; i < playerGroup.HEGrenade; i++)
+        {
+            player.GiveNamedItem(CsItem.HEGrenade);
+        }
 
 
 
-		for (int i = 0; i < playerGroup.FlashGrenade; i++)
-		{
-			player.GiveNamedItem(CsItem.FlashbangGrenade);
-		}
+        for (int i = 0; i < playerGroup.FlashGrenade; i++)
+        {
+            player.GiveNamedItem(CsItem.FlashbangGrenade);
+        }
 
 
 
-		for (int i = 0; i < playerGroup.Molotov; i++)
-		{
-			switch (player.TeamNum)
-			{
-				case (int)CsTeam.Terrorist:
-					player.GiveNamedItem(CsItem.Molotov);
-					break;
+        for (int i = 0; i < playerGroup.Molotov; i++)
+        {
+            switch (player.TeamNum)
+            {
+                case (int)CsTeam.Terrorist:
+                    player.GiveNamedItem(CsItem.Molotov);
+                    break;
 
-				case (int)CsTeam.CounterTerrorist:
-					player.GiveNamedItem(CsItem.IncendiaryGrenade);
-					break;
-			}
+                case (int)CsTeam.CounterTerrorist:
+                    player.GiveNamedItem(CsItem.IncendiaryGrenade);
+                    break;
+            }
 
-		}
+        }
 
-		for (int i = 0; i < playerGroup.DecoyGrenade; i++)
-		{
-			player.GiveNamedItem(CsItem.DecoyGrenade);
-		}
+        for (int i = 0; i < playerGroup.DecoyGrenade; i++)
+        {
+            player.GiveNamedItem(CsItem.DecoyGrenade);
+        }
 
         bool hasZeus = false;
 
@@ -189,217 +191,187 @@ public partial class VIPlugin
 
 
 
-        AddTimer(0.5f,() => { 
-			VIPPlayer.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot); 
-		});
-	}
+        AddTimer(0.5f, () =>
+        {
+            PlayerManager.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot);
+        });
+    }
 
-	[GameEventHandler]
-	public HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
-	{
-		foreach (CCSPlayerController player in Utilities.GetPlayers())
-		{
-			if (player == null || !player.IsValid || !player.PlayerPawn.IsValid || player.IsBot)
-			{
-				continue;
-			}
-
-			if (!PlayerCache.ContainsKey(player))
-			{
-				return HookResult.Continue;
-			}
-
-			int playerGroupID = PlayerCache[player].GroupID;
-			if (playerGroupID != -1)
-			{
-				VIPGroup playerGroup = Config.Groups[playerGroupID];
-
-				player.InGameMoneyServices!.Account += playerGroup.RoundWonMoney;
-			}
-		}
-
-		return HookResult.Continue;
-	}
-
-	[GameEventHandler]
-	public HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
-	{
-		CCSPlayerController attacker = @event.Attacker;
-
-		if (attacker == null || !attacker.IsValid || attacker.IsBot)
-		{
-			return HookResult.Continue;
-		}
-
-		if (!PlayerCache.ContainsKey(attacker))
-		{
-			return HookResult.Continue;
-		}
-
-		int playerGroupID = PlayerCache[attacker].GroupID;
-		if (playerGroupID != -1)
-		{
-			VIPGroup playerGroup = Config.Groups[playerGroupID];
-
-			if (@event.Headshot)
-			{
-				attacker.InGameMoneyServices!.Account += playerGroup.HeadshotKillMoney;
-
-				int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup.HeadshotKillHP, playerGroup.MaxHP);
-				attacker.PlayerPawn!.Value!.Health = newHP;
-
-                //VIPPlayer.RefreshUI(attacker);
+    [GameEventHandler]
+    public HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
+    {
+        foreach (CCSPlayerController player in Utilities.GetPlayers())
+        {
+            if (!PlayerManager.IsValid(player) || player.IsBot)
+            {
+                continue;
             }
-			else
-			{
-				attacker.InGameMoneyServices!.Account += playerGroup.KillMoney;
 
-                int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup.KillHP, playerGroup.MaxHP);
-                attacker.PlayerPawn!.Value!.Health = newHP;
-
-                //VIPPlayer.RefreshUI(attacker);
+            if (!PlayerCache.ContainsKey(player))
+            {
+                return HookResult.Continue;
             }
-		}
 
-		return HookResult.Continue;
-	}
+            int playerGroupID = PlayerCache[player].GroupId;
+            if (playerGroupID != -1)
+            {
+                Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
 
-	[GameEventHandler]
-	public HookResult OnBombPlanted(EventBombPlanted @event, GameEventInfo info)
-	{
-		CCSPlayerController player = @event.Userid;
+                PlayerManager.AddMoney(player, playerGroup.RoundWonMoney);
+            }
+        }
 
-		if (player == null || !player.IsValid || player.IsBot || player.IsHLTV)
-		{
-			return HookResult.Continue;
-		}
+        return HookResult.Continue;
+    }
 
-		if (!PlayerCache.ContainsKey(player))
-		{
-			return HookResult.Continue;
-		}
+    [GameEventHandler]
+    public HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
+    {
+        CCSPlayerController attacker = @event.Attacker;
 
-		int playerGroupID = PlayerCache[player].GroupID;
-		if (playerGroupID != -1)
-		{
-			VIPGroup playerGroup = Config.Groups[playerGroupID];
-			player.InGameMoneyServices!.Account += playerGroup.BombPlantMoney;
-
-			//VIPPlayer.RefreshUI(player);
-		}
-
-		return HookResult.Continue;
-	}
-
-	[GameEventHandler]
-	public HookResult OnBombDefused(EventBombDefused @event, GameEventInfo info)
-	{
-		CCSPlayerController player = @event.Userid;
-
-		if (player == null || !player.IsValid || player.IsBot || player.IsHLTV)
-		{
-			return HookResult.Continue;
-		}
-
-		if (!PlayerCache.ContainsKey(player))
-		{
-			return HookResult.Continue;
-		}
-
-		int playerGroupID = PlayerCache[player].GroupID;
-		if (playerGroupID != -1)
-		{
-			VIPGroup playerGroup = Config.Groups[playerGroupID];
-			player.InGameMoneyServices!.Account += playerGroup.BombDefuseMoney;
+        if (PlayerManager.IsValid(attacker) ||
+            attacker.IsBot ||
+            !PlayerCache.ContainsKey(attacker)) return HookResult.Continue;
 
 
-		}
 
-		return HookResult.Continue;
-	}
+        int playerGroupID = PlayerCache[attacker].GroupId;
+        if (playerGroupID == -1) return HookResult.Continue;
+
+        Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
+
+        if (@event.Headshot)
+        {
+            PlayerManager.AddMoney(attacker, playerGroup.HeadshotKillMoney);
+
+            int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup.HeadshotKillHP, playerGroup.MaxHP);
+            PlayerManager.SetHealth(attacker, newHP);
+        }
+        else
+        {
+            attacker.InGameMoneyServices!.Account += playerGroup.KillMoney;
+
+            int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup.KillHP, playerGroup.MaxHP);
+            PlayerManager.SetHealth(attacker, newHP);
+        }
 
 
-	[GameEventHandler(HookMode.Post)]
-	public HookResult OnPlayerHurt(EventPlayerHurt @event, GameEventInfo info)
-	{
-		CCSPlayerController player = @event.Userid;
-		if (player == null || !player.IsValid || player.IsBot || player.IsHLTV)
-		{
-			return HookResult.Continue;
-		}
+        return HookResult.Continue;
+    }
 
-		if (!PlayerCache.ContainsKey(player)) { return HookResult.Continue; }
+    [GameEventHandler]
+    public HookResult OnBombPlanted(EventBombPlanted @event, GameEventInfo info)
+    {
+        CCSPlayerController player = @event.Userid;
 
-		int playerGroupID = PlayerCache[player].GroupID;
-		if (playerGroupID != -1)
-		{
-			VIPGroup playerGroup = Config.Groups[playerGroupID];
-			if (@event.Hitgroup == 0 &&
-				!new[] { "inferno", "hegrenade", "knife" }.Contains(@event.Weapon) &&
-				playerGroup.NoFallDamage)
-			{
-				player.PlayerPawn!.Value!.Health += @event.DmgHealth;
-			}
-		}
+        if (!PlayerManager.IsValid(player) ||
+      player.IsBot ||
+      !PlayerCache.ContainsKey(player)) return HookResult.Continue;
 
-		return HookResult.Continue;
-	}
+        int playerGroupID = PlayerCache[player].GroupId;
+        if (playerGroupID != -1)
+        {
+            Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
+            PlayerManager.AddMoney(player, playerGroup.BombPlantMoney);
+        }
 
-	private void OnTick(CCSPlayerController player)
-	{
-		if (player == null)
-		{
-			return;
-		}
+        return HookResult.Continue;
+    }
 
-		if (!PlayerCache.ContainsKey(player))
-		{
-			return;
-		}
+    [GameEventHandler]
+    public HookResult OnBombDefused(EventBombDefused @event, GameEventInfo info)
+    {
+        CCSPlayerController player = @event.Userid;
 
-		VIPPlayer playerData = PlayerCache[player];
-		if (playerData.GroupID == -1) { return; }
 
-		VIPGroup playerGroup = Config.Groups[playerData.GroupID];
-		if (playerGroup.ExtraJumps == 0)
-		{
-			return;
-		}
+        if (!PlayerManager.IsValid(player) ||
+      player.IsBot ||
+      !PlayerCache.ContainsKey(player)) return HookResult.Continue;
 
-		CCSPlayerPawn pawn = player.PlayerPawn!.Value!;
+        int playerGroupID = PlayerCache[player].GroupId;
+        if (playerGroupID != -1)
+        {
+            Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
+            PlayerManager.AddMoney(player, playerGroup.BombDefuseMoney);
 
-		if (pawn != null)
-		{
-			var flags = (PlayerFlags)pawn.Flags;
-			var buttons = player.Buttons;
 
-			var lastFlags = PlayerCache[player].TempData.LastFlags;
-			var lastButtons = PlayerCache[player].TempData.LastButtons;
 
-			if ((lastFlags & PlayerFlags.FL_ONGROUND) != 0 &&
-				 (flags & PlayerFlags.FL_ONGROUND) == 0 &&
-				 (lastButtons & PlayerButtons.Jump) == 0 &&
-				 (buttons & PlayerButtons.Jump) != 0)
-			{
-				PlayerCache[player].TempData.JumpsUsed++;
-			}
-			else if ((flags & PlayerFlags.FL_ONGROUND) != 0)
-			{
-				PlayerCache[player].TempData.JumpsUsed = 0;
-			}
-			else if ((lastButtons & PlayerButtons.Jump) == 0 &&
-				(buttons & PlayerButtons.Jump) != 0 &&
-				PlayerCache[player].TempData.JumpsUsed <= playerGroup.ExtraJumps)
-			{
-				PlayerCache[player].TempData.JumpsUsed++;
+        }
 
-				const float Z_VELOCITY = (float)250.0;
-				pawn.AbsVelocity.Z = Z_VELOCITY;
+        return HookResult.Continue;
+    }
 
-			}
 
-			PlayerCache[player].TempData.LastFlags = flags;
-			PlayerCache[player].TempData.LastButtons = buttons;
-		}
-	}
+    [GameEventHandler(HookMode.Post)]
+    public HookResult OnPlayerHurt(EventPlayerHurt @event, GameEventInfo info)
+    {
+        CCSPlayerController player = @event.Userid;
+        if (!PlayerManager.IsValid(player) ||
+         player.IsBot ||
+        !PlayerCache.ContainsKey(player)) return HookResult.Continue;
+
+        int playerGroupID = PlayerCache[player].GroupId;
+        if (playerGroupID == -1) return HookResult.Continue;
+
+        Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
+        if (@event.Hitgroup == 0 &&
+            !new[] { "inferno", "hegrenade", "knife" }.Contains(@event.Weapon) &&
+            playerGroup.NoFallDamage)
+        {
+            PlayerManager.AddHealth(player, @event.DmgHealth);
+        }
+
+
+        return HookResult.Continue;
+    }
+
+    private void OnTick(CCSPlayerController player)
+    {
+        if (!PlayerManager.IsValid(player) ||
+        player.IsBot ||
+        !PlayerCache.ContainsKey(player)) return;
+
+        Models.PlayerData playerData = PlayerCache[player];
+        if (playerData.GroupId == -1) { return; }
+
+        Models.VipGroupData playerGroup = Config!.Groups[playerData.GroupId];
+        if (playerGroup.ExtraJumps == 0)
+        {
+            return;
+        }
+
+        CCSPlayerPawn pawn = player.PlayerPawn!.Value!;
+
+
+        var flags = (PlayerFlags)pawn.Flags;
+        var buttons = player.Buttons;
+
+        var lastFlags = PlayerCache[player].LastFlags;
+        var lastButtons = PlayerCache[player].LastButtons;
+
+        if ((lastFlags & PlayerFlags.FL_ONGROUND) != 0 &&
+             (flags & PlayerFlags.FL_ONGROUND) == 0 &&
+             (lastButtons & PlayerButtons.Jump) == 0 &&
+             (buttons & PlayerButtons.Jump) != 0)
+        {
+            PlayerCache[player].JumpsUsed++;
+        }
+        else if ((flags & PlayerFlags.FL_ONGROUND) != 0)
+        {
+            PlayerCache[player].JumpsUsed = 0;
+        }
+        else if ((lastButtons & PlayerButtons.Jump) == 0 &&
+            (buttons & PlayerButtons.Jump) != 0 &&
+            PlayerCache[player].JumpsUsed <= playerGroup.ExtraJumps)
+        {
+            PlayerCache[player].JumpsUsed++;
+
+            const float Z_VELOCITY = (float)250.0;
+            pawn.AbsVelocity.Z = Z_VELOCITY;
+
+        }
+
+        PlayerCache[player].LastFlags = flags;
+        PlayerCache[player].LastButtons = buttons;
+    }
 }

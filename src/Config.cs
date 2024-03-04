@@ -1,22 +1,27 @@
 using System.Text.Json.Serialization;
 using CounterStrikeSharp.API.Core;
 
-namespace VIP;
+namespace Plugin;
 
 public class PluginConfig : BasePluginConfig
 {
     [JsonPropertyName("Settings")]
-    public SettingsData Settings { get; set; } = new SettingsData();
+    public Models.SettingsData Settings { get; set; } = new Models.SettingsData();
 
     [JsonPropertyName("Groups")]
-    public List<VIPGroup> Groups { get; set; } = new List<VIPGroup>();
+    public List<Models.VipGroupData> Groups { get; set; } = new List<Models.VipGroupData>();
+
+    [JsonPropertyName("RandomVIP")]
+    public Models.RandomVIPData RandomVIP { get; set; } = new Models.RandomVIPData();
+    [JsonPropertyName("NightVIP")]
+    public Models.NightVIPData NightVIP { get; set; } = new Models.NightVIPData();
 
     public PluginConfig()
     {
 
         if (Groups.Count == 0)
         {
-            Groups.Add(new VIPGroup());
+            Groups.Add(new Models.VipGroupData());
         }
     }
 }

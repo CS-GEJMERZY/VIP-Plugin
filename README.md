@@ -29,6 +29,7 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
       "SpawnHelmet": true,
       "SpawnDefuser": true,
       "SpawnMoney": 2000,
+      "GiveSpawnMoneyPistolRound": false,
       "RoundWonMoney": 1000,
       "KillMoney": 200,
       "HeadshotKillMoney": 300,
@@ -36,6 +37,7 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
       "BombDefuseMoney": 500,
       "KillHP": 2,
       "HeadshotKillHP": 5,
+      "MaxHP": 120,
       "ConnectMessage": "VIP {playername} joined the server",
       "DisconnectMessage": "VIP {playername} left the server",
       "SmokeGrenade": 1,
@@ -46,6 +48,23 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
       "Zeus": true
     }
   ],
+  "RandomVIP": {
+    "Enabled ": false,
+    "AfterRound ": 3,
+    "MinimumPlayers": 2,
+    "RepeatPicking ": 3,
+    "PermissionsGranted ": [],
+    "PermissionExclude": []
+  },
+  "NightVIP": {
+    "Enabled": false,
+    "StartHour": 22,
+    "EndHour": 8,
+    "RequiredNickPhrase": "Katujemy.eu",
+    "RequiredScoreboardTag": "Katujemy.eu",
+    "PermissionsGranted ": [],
+    "PermissionExclude": []
+  },
   "ConfigVersion": 1
 }
 ```

@@ -1,25 +1,28 @@
 ﻿using System.Reflection;
 using CounterStrikeSharp.API.Modules.Utils;
 
-namespace VIP;
-
-
-public class PluginMessageFormatter
+namespace Plugin.Models
 {
-    public static string FormatColor(string message)
+    public class PluginMessageFormatter
     {
-        string result = message;
-        foreach (FieldInfo field in typeof(ChatColors).GetFields())
+        public static string FormatColor(string message)
         {
-            string pattern = $"{{{field.Name}}}";
-
-            if (result.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+            string result = message;
+            foreach (FieldInfo field in typeof(ChatColors).GetFields())
             {
-                result = result.Replace(pattern, field.GetValue(null)!.ToString(), StringComparison.OrdinalIgnoreCase);
+                string pattern = $"{{{field.Name}}}";
+
+                if (result.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+                {
+                    result = result.Replace(pattern, field.GetValue(null)!.ToString(), StringComparison.OrdinalIgnoreCase);
+                }
+
             }
 
+            return result;
         }
-
-        return result;
     }
+
 }
+
+
