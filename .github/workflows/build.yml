@@ -1,25 +1,25 @@
-name: Build & Publish
-"on":
-  push:
-    branches:
-      - "*"
-    paths:
+name: Build & Release
+
+on:
+  push: 
+    branches: ["*"]
+    paths: 
       - src/**
-      - .github/workflows/build.yml
-  pull_request:
-    branches:
-      - "*"
-    paths:
-      - src/**
-      - .github/workflows/build.yml
+      - .github/workflows/build.yml 
+  workflow_dispatch: 
+    inputs:
+      release_version:
+        description: 'Version number for the release'
+        required: true 
+        default: '1.0.0'
+
 env:
-  BUILD_NUMBER: "${{ github.run_number }}"
   PROJECT_PATH: src/VIP-Plugin.csproj
   PROJECT_NAME: VIP-Plugin
   OUTPUT_PATH: ./VIP-Plugin
+
 jobs:
-  Build:
-    permissions: write-all
+  Build: 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,44 +29,35 @@ jobs:
           dotnet-version: 7.0.x
       - name: Restore
         run: "dotnet restore ${{ env.PROJECT_PATH }}"
-      - name: Build
-        run: >-
-          dotnet build ${{ env.PROJECT_PATH }} -c VIP-Plugin -o ${{
-          env.OUTPUT_PATH }}
-  Publish:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Build 
+        run: dotnet build ${{ env.PROJECT_PATH }} -c ${{ env.PROJECT_NAME }} -o ${{ env.OUTPUT_PATH }}
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PROJECT_NAME }}
+          path: ${{ env.OUTPUT_PATH }}
+
+  Publish: 
+    if: github.event_name == 'workflow_dispatch'
     permissions: write-all
     runs-on: ubuntu-latest
     needs: Build
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: Download Build Artifacts 
+        uses: actions/download-artifact@v3
         with:
-          dotnet-version: 7.0.x
-      - name: Restore
-        run: "dotnet restore ${{ env.PROJECT_PATH }}"
-      - name: Build
-        run: >-
-          dotnet publish ${{ env.PROJECT_PATH }} -c VIP-Plugin -o ${{
-          env.OUTPUT_PATH }}
+          name: ${{ env.PROJECT_NAME }}
+          path: ${{ env.OUTPUT_PATH }}
       - name: Zip
         uses: thedoctor0/zip-release@0.7.6
         with:
           type: zip
-          filename: "${{ env.PROJECT_NAME }}-v${{ env.BUILD_NUMBER }}.zip"
-          path: "${{ env.OUTPUT_PATH }}"
-      - name: VIP-Plugin
+          filename: "${{ env.PROJECT_NAME }}-v${{ github.event.inputs.release_version }}.zip" 
+          path:  ${{ env.PROJECT_NAME }}
+      - name: Publish 
         uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: "${{ env.PROJECT_NAME }}-v${{ env.BUILD_NUMBER }}.zip"
-          name: "v${{ env.BUILD_NUMBER }}"
-          tag: "build-${{ env.BUILD_NUMBER }}"
-          body: >
-            ## Installation
-
-            1. Download the [latest
-            release](https://github.com/CS-GEJMERZY/VIP-Plugin/releases/latest)
-
-            2. Unzip the package and upload files to
-            **_csgo/addons/counterstrikesharp/plugins_**
+          artifacts: "${{ env.PROJECT_NAME }}-v${{ github.event.inputs.release_version }}.zip"
+          name: "v${{ github.event.inputs.release_version }}" 
+          tag: "v${{ github.event.inputs.release_version }}" 
+          body: 
