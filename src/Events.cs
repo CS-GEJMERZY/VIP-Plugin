@@ -45,9 +45,7 @@ public partial class VipPlugin
     {
         CCSPlayerController player = Utilities.GetPlayerFromSlot(playerSlot);
 
-        if (Managers.PlayerManager.IsValid(player) || !PlayerCache.ContainsKey(player)) return;
-
-
+        if (!Managers.PlayerManager.IsValid(player) || !PlayerCache.ContainsKey(player)) return;
 
         int GroupId = PlayerCache[player].GroupId;
         if (GroupId != -1)
@@ -84,18 +82,16 @@ public partial class VipPlugin
     {
         CCSPlayerController player = @event.Userid;
 
-        if (Managers.PlayerManager.IsValid(player) || player.IsBot || !PlayerCache.ContainsKey(player))
+        if (!Managers.PlayerManager.IsValid(player) || player.IsBot || !PlayerCache.ContainsKey(player))
         {
             return HookResult.Continue;
         }
 
-        if (nightVipManager.IsNightVipTime() && nightVipManager.PlayerQualifies(player))
+        if (nightVipManager!.IsNightVipTime() && nightVipManager.PlayerQualifies(player))
         {
 
 
             nightVipManager.GiveNightVip(player);
-
-
         }
 
         int playerGroupID = PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);
@@ -113,7 +109,7 @@ public partial class VipPlugin
 
     private void PlayerSpawnn_TimerGive(CCSPlayerController player, int playerGroupID)
     {
-        if (Managers.PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
+        if (!Managers.PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
 
         Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
 
@@ -232,7 +228,7 @@ public partial class VipPlugin
     {
         CCSPlayerController attacker = @event.Attacker;
 
-        if (Managers.PlayerManager.IsValid(attacker) ||
+        if (!Managers.PlayerManager.IsValid(attacker) ||
             attacker.IsBot ||
             !PlayerCache.ContainsKey(attacker)) return HookResult.Continue;
 
@@ -267,7 +263,7 @@ public partial class VipPlugin
     {
         CCSPlayerController player = @event.Userid;
 
-        if (Managers.PlayerManager.IsValid(player) ||
+        if (!Managers.PlayerManager.IsValid(player) ||
       player.IsBot ||
       !PlayerCache.ContainsKey(player)) return HookResult.Continue;
 
@@ -287,7 +283,7 @@ public partial class VipPlugin
         CCSPlayerController player = @event.Userid;
 
 
-        if (Managers.PlayerManager.IsValid(player) ||
+        if (!Managers.PlayerManager.IsValid(player) ||
       player.IsBot ||
       !PlayerCache.ContainsKey(player)) return HookResult.Continue;
 
@@ -309,7 +305,7 @@ public partial class VipPlugin
     public HookResult OnPlayerHurt(EventPlayerHurt @event, GameEventInfo info)
     {
         CCSPlayerController player = @event.Userid;
-        if (Managers.PlayerManager.IsValid(player) ||
+        if (!Managers.PlayerManager.IsValid(player) ||
     player.IsBot ||
     !PlayerCache.ContainsKey(player)) return HookResult.Continue;
 
@@ -330,7 +326,7 @@ public partial class VipPlugin
 
     private void OnTick(CCSPlayerController player)
     {
-        if (Managers.PlayerManager.IsValid(player) ||
+        if (!Managers.PlayerManager.IsValid(player) ||
         player.IsBot ||
         !PlayerCache.ContainsKey(player)) return;
 
