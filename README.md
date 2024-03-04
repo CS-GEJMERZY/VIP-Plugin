@@ -51,6 +51,7 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
   "RandomVIP": {
     "Enabled ": false,
     "AfterRound ": 3,
+    "MinimumPlayers": 2,
     "RepeatPicking ": 3,
     "PermissionsGranted ": [],
     "PermissionExclude": []
