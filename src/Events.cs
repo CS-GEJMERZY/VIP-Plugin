@@ -83,7 +83,7 @@ public partial class VipPlugin
     {
         CCSPlayerController player = @event.Userid;
 
-        if (PlayerManager.IsValid(player) || player.IsBot || !PlayerCache.ContainsKey(player))
+        if (!PlayerManager.IsValid(player) || player.IsBot || !PlayerCache.ContainsKey(player))
         {
             return HookResult.Continue;
         }
