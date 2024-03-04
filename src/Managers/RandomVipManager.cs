@@ -1,6 +1,7 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using Microsoft.Extensions.Localization;
+using Plugin.Models;
 
 namespace Plugin.Managers
 {
@@ -22,7 +23,8 @@ namespace Plugin.Managers
         {
             var players = PlayerManager.GetValidPlayers().Where(
                 player => Managers.PermissionManager.HasAnyPermission(player, randomVipData.PermissionExclude)).ToList();
-            if (players.Count == 0) { return; }
+            if (players.Count == 0 ||
+                players.Count < randomVipData.MinimumPlayers) { return; }
 
             var randomPlayer = ChooseRandomPlayer(players);
 

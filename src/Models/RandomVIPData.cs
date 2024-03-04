@@ -10,6 +10,9 @@ namespace Plugin.Models
         [JsonPropertyName("AfterRound ")]
         public int AfterRound { get; set; } = 3;
 
+        [JsonPropertyName("MinimumPlayers ")]
+        public int MinimumPlayers { get; set; } = 2;
+
         [JsonPropertyName("RepeatPicking ")]
         public int RepeatPicking { get; set; } = 3;
 
@@ -19,7 +22,5 @@ namespace Plugin.Models
         [JsonPropertyName("PermissionExclude")]
         public List<string> PermissionExclude { get; set; } = new List<string>();
     }
-
-
 }
 
