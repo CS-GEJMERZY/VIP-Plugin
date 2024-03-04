@@ -30,7 +30,7 @@ jobs:
       - name: Restore
         run: "dotnet restore ${{ env.PROJECT_PATH }}"
       - name: Build 
-        run: dotnet build ${{ env.PROJECT_PATH }} -c ${{ env.PROJECT_NAME }} -o ${{ env.OUTPUT_PATH }}
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c ${{ env.PROJECT_NAME }} -o ${{ env.OUTPUT_PATH }}
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
