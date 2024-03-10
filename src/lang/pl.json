@@ -1,5 +1,5 @@
 ﻿{
-  "picking": "{default}[Katujemy.eu] {green}]Trwa losowanie VIPa...",
-  "winner": "{default}[Katujemy.eu] {yellow}Gracz {red}{0} {żółty}został VIPem! Gratulacje!",
+  "picking": "{default}[Katujemy.eu] {green}Trwa losowanie VIPa...",
+  "winner": "{default}[Katujemy.eu] {yellow}Gracz {red}{0} {yellow}został VIPem! Gratulacje!",
   "not_registered" :  "Nie zostałeś zarejestrowany przez plugin."
 }
