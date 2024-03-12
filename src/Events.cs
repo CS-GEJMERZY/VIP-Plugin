@@ -229,7 +229,7 @@ public partial class VipPlugin
     {
         CCSPlayerController attacker = @event.Attacker;
 
-        if (PlayerManager.IsValid(attacker) ||
+        if (!PlayerManager.IsValid(attacker) ||
             attacker.IsBot ||
             !PlayerCache.ContainsKey(attacker)) return HookResult.Continue;
 
