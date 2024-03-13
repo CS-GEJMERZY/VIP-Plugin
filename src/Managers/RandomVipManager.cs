@@ -21,7 +21,7 @@ namespace Plugin.Managers
         public void ProcessRound(IStringLocalizer Localizer)
         {
             var players = PlayerManager.GetValidPlayers().Where(
-                player => PermissionManager.HasAnyPermission(player, RandomVipData.PermissionExclude)).ToList();
+                player => !PermissionManager.HasAnyPermission(player, RandomVipData.PermissionExclude)).ToList();
             if (players.Count == 0 ||
                 players.Count < RandomVipData.MinimumPlayers) { return; }
 
