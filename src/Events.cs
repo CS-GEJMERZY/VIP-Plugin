@@ -315,7 +315,7 @@ public partial class VipPlugin
 
         Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
         if (@event.Hitgroup == 0 &&
-            !new[] { "inferno", "hegrenade", "knife" }.Contains(@event.Weapon) &&
+            !new[] { "inferno", "hegrenade", "knife", "zeus" }.Contains(@event.Weapon) &&
             playerGroup.NoFallDamage)
         {
             PlayerManager.AddHealth(player, @event.DmgHealth);
