@@ -48,7 +48,7 @@ namespace Plugin.Managers
 
         private CCSPlayerController ChooseRandomPlayer(List<CCSPlayerController> players)
         {
-            Random random = new Random();
+            Random random = new();
             int randomIndex = random.Next(0, players.Count);
             return players[randomIndex];
         }

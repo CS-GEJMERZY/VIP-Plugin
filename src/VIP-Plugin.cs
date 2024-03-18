@@ -1,5 +1,7 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Memory;
+using Microsoft.Extensions.Logging;
 using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace Plugin;
@@ -8,14 +10,16 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "1.0.3";
+    public override string ModuleVersion => "1.0.5";
 
-    public PluginConfig? Config { get; set; }
+    public required PluginConfig Config { get; set; }
     internal Managers.GroupManager? groupManager { get; set; }
     internal Managers.RandomVipManager? randomVipManager { get; set; }
     internal Managers.NightVipManager? nightVipManager { get; set; }
 
-    internal Dictionary<CCSPlayerController, Models.PlayerData> PlayerCache = new Dictionary<CCSPlayerController, Models.PlayerData>();
+    internal Dictionary<CCSPlayerController, Models.PlayerData> PlayerCache = new();
+
+    internal static ILogger? _logger;
 
     public void OnConfigParsed(PluginConfig _Config)
     {
@@ -28,6 +32,9 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
 
     public override void Load(bool hotReload)
     {
+        _logger = Logger;
+
+        VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
         RegisterListener<OnClientDisconnect>(OnClientDisconnect);
 
         RegisterListener<OnTick>(() =>
@@ -52,5 +59,10 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
                 }
             }
         }
+    }
+
+    public override void Unload(bool hotReload)
+    {
+        VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
     }
 }
