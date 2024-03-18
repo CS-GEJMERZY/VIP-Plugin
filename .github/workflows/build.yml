@@ -2,7 +2,7 @@ name: Build & Release
 
 on:
   push: 
-    branches: ["*"]
+    # branches: ["*"]
     paths: 
       - src/**
       - .github/workflows/build.yml 
