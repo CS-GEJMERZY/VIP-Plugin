@@ -308,23 +308,23 @@ public partial class VipPlugin
         var entity = h.GetParam<CEntityInstance>(0);
         var damageInfo = h.GetParam<CTakeDamageInfo>(1);
 
+        if (damageInfo.BitsDamageType != (int)DamageTypes_t.DMG_FALL) return HookResult.Continue;
+
         if (entity.DesignerName != "player") return HookResult.Continue;
 
         var player = new CCSPlayerController(pointer: new CCSPlayerPawn(pointer: entity.Handle)!.Controller!.Value!.Handle);
 
         if (!PlayerManager.IsValid(player) ||
-          player.IsBot ||
-         !PlayerCache.TryGetValue(player, out Models.PlayerData? value))
+            player.IsBot ||
+            !PlayerCache.TryGetValue(player, out Models.PlayerData? value))
         {
             return HookResult.Continue;
         }
 
         int playerGroupID = value.GroupId;
-        if (playerGroupID == -1) return HookResult.Continue;
-        if ((damageInfo.BitsDamageType & (int)DamageTypes_t.DMG_FALL) != 0)
-        {
-            damageInfo.Damage = 0;
-        }
+        if (playerGroupID == -1 || !Config!.Groups[playerGroupID].NoFallDamage) return HookResult.Continue;
+
+        damageInfo.Damage = 0;
 
         return HookResult.Stop;
     }
