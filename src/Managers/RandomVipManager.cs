@@ -45,8 +45,7 @@ namespace Plugin.Managers
             }
         }
 
-
-        private CCSPlayerController ChooseRandomPlayer(List<CCSPlayerController> players)
+        private static CCSPlayerController ChooseRandomPlayer(List<CCSPlayerController> players)
         {
             Random random = new();
             int randomIndex = random.Next(0, players.Count);

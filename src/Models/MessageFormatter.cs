@@ -16,13 +16,10 @@ namespace Plugin.Models
                 {
                     result = result.Replace(pattern, field.GetValue(null)!.ToString(), StringComparison.OrdinalIgnoreCase);
                 }
-
             }
-
             return result;
         }
     }
-
 }
 
 

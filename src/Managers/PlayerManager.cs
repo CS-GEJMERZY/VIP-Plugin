@@ -7,7 +7,9 @@ namespace Plugin.Managers
     {
         public static bool IsValid(CCSPlayerController player)
         {
-            return !(player == null || !player.IsValid || !player.PlayerPawn.IsValid);
+            return player != null &&
+                   player.IsValid &&
+                   player.PlayerPawn.IsValid;
         }
 
         public static List<CCSPlayerController> GetValidPlayers()

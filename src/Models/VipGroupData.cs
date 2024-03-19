@@ -30,6 +30,9 @@ namespace Plugin.Models
         [JsonPropertyName("SpawnHelmet")]
         public bool SpawnHelmet { get; set; } = true;
 
+        [JsonPropertyName("GiveSpawnHelmetPistolRound")]
+        public bool GiveSpawnHelmetPistolRound { get; set; } = false;
+
         [JsonPropertyName("SpawnDefuser")]
         public bool SpawnDefuser { get; set; } = true;
 
@@ -59,7 +62,6 @@ namespace Plugin.Models
         [NonNegative]
         [JsonPropertyName("BombDefuseMoney")]
         public int BombDefuseMoney { get; set; } = 500;
-
 
         [NonNegative]
         [JsonPropertyName("KillHP")]

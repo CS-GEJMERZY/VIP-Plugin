@@ -25,6 +25,4 @@ namespace Plugin.Models
         [JsonPropertyName("PermissionExclude")]
         public List<string> PermissionExclude { get; set; } = new List<string>();
     }
-
-
 }

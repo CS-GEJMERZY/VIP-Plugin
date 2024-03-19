@@ -16,7 +16,6 @@ namespace Plugin.Managers
         public static bool HasAnyPermission(CCSPlayerController player, List<string> permissions)
         {
             return permissions.Any(perm => AdminManager.PlayerHasPermissions(player, perm));
-
         }
     }
 }

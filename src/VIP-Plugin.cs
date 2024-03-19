@@ -1,7 +1,6 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
-using Microsoft.Extensions.Logging;
 using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace Plugin;
@@ -13,29 +12,23 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
     public override string ModuleVersion => "1.0.5";
 
     public required PluginConfig Config { get; set; }
-    internal Managers.GroupManager? groupManager { get; set; }
-    internal Managers.RandomVipManager? randomVipManager { get; set; }
-    internal Managers.NightVipManager? nightVipManager { get; set; }
-
+    internal Managers.GroupManager? GroupManager { get; set; }
+    internal Managers.RandomVipManager? RandomVipManager { get; set; }
+    internal Managers.NightVipManager? NightVipManager { get; set; }
     internal Dictionary<CCSPlayerController, Models.PlayerData> PlayerCache = new();
-
-    internal static ILogger? _logger;
 
     public void OnConfigParsed(PluginConfig _Config)
     {
         Config = _Config;
 
-        groupManager = new Managers.GroupManager(Config.Groups);
-        randomVipManager = new Managers.RandomVipManager(Config.RandomVIP);
-        nightVipManager = new Managers.NightVipManager(Config.NightVIP);
+        GroupManager = new Managers.GroupManager(Config.Groups);
+        RandomVipManager = new Managers.RandomVipManager(Config.RandomVIP);
+        NightVipManager = new Managers.NightVipManager(Config.NightVIP);
     }
 
     public override void Load(bool hotReload)
     {
-        _logger = Logger;
-
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
-        RegisterListener<OnClientDisconnect>(OnClientDisconnect);
 
         RegisterListener<OnTick>(() =>
         {
@@ -55,7 +48,7 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
                 if (Managers.PlayerManager.IsValid(player) && !player.IsHLTV)
                 {
                     PlayerCache.Add(player, new Models.PlayerData());
-                    PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);
+                    PlayerCache[player].GroupId = GroupManager!.GetPlayerGroup(player);
                 }
             }
         }

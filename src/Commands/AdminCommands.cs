@@ -38,6 +38,6 @@ public partial class VipPlugin
         player.PrintToChat($"Random VIP Enabled: {Config!.RandomVIP.Enabled}");
         player.PrintToChat($"Round for VIP: {Config!.RandomVIP.AfterRound}");
         player.PrintToChat($"Night VIP enabled: {Config.NightVIP.Enabled}");
-        player.PrintToChat($"Night VIP is hour: {nightVipManager!.IsNightVipTime()}");
+        player.PrintToChat($"Night VIP is hour: {NightVipManager!.IsNightVipTime()}");
     }
 }
