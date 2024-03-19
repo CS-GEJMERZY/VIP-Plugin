@@ -2,6 +2,7 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
+using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
 using Plugin.Managers;
 
@@ -22,7 +23,10 @@ public partial class VipPlugin
 
         AddTimer(1.0f, () =>
         {
-            PlayerCache.Add(player, new Models.PlayerData());
+            if (!PlayerCache.ContainsKey(player))
+            {
+                PlayerCache.Add(player, new Models.PlayerData());
+            }
             PlayerCache[player].GroupId = groupManager!.GetPlayerGroup(player);
 
             int GroupID = PlayerCache[player].GroupId;
@@ -286,52 +290,52 @@ public partial class VipPlugin
 
         if (!PlayerManager.IsValid(player) ||
       player.IsBot ||
-      !PlayerCache.ContainsKey(player)) return HookResult.Continue;
+      !PlayerCache.TryGetValue(player, out Models.PlayerData? value)) return HookResult.Continue;
 
-        int playerGroupID = PlayerCache[player].GroupId;
+        int playerGroupID = value.GroupId;
         if (playerGroupID != -1)
         {
             Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
             PlayerManager.AddMoney(player, playerGroup.BombDefuseMoney);
-
-
-
         }
 
         return HookResult.Continue;
     }
 
 
-    [GameEventHandler(HookMode.Post)]
-    public HookResult OnPlayerHurt(EventPlayerHurt @event, GameEventInfo info)
+    private HookResult OnTakeDamage(DynamicHook h)
     {
-        CCSPlayerController player = @event.Userid;
+        var entity = h.GetParam<CEntityInstance>(0);
+        var damageInfo = h.GetParam<CTakeDamageInfo>(1);
+
+        if (damageInfo.BitsDamageType != (int)DamageTypes_t.DMG_FALL) return HookResult.Continue;
+
+        if (entity.DesignerName != "player") return HookResult.Continue;
+
+        var player = new CCSPlayerController(pointer: new CCSPlayerPawn(pointer: entity.Handle)!.Controller!.Value!.Handle);
+
         if (!PlayerManager.IsValid(player) ||
-         player.IsBot ||
-        !PlayerCache.ContainsKey(player)) return HookResult.Continue;
-
-        int playerGroupID = PlayerCache[player].GroupId;
-        if (playerGroupID == -1) return HookResult.Continue;
-
-        Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
-        if (@event.Hitgroup == 0 &&
-            !new[] { "inferno", "hegrenade", "knife" }.Contains(@event.Weapon) &&
-            playerGroup.NoFallDamage)
+            player.IsBot ||
+            !PlayerCache.TryGetValue(player, out Models.PlayerData? value))
         {
-            PlayerManager.AddHealth(player, @event.DmgHealth);
+            return HookResult.Continue;
         }
 
+        int playerGroupID = value.GroupId;
+        if (playerGroupID == -1 || !Config!.Groups[playerGroupID].NoFallDamage) return HookResult.Continue;
 
-        return HookResult.Continue;
+        damageInfo.Damage = 0;
+
+        return HookResult.Stop;
     }
 
     private void OnTick(CCSPlayerController player)
     {
         if (!PlayerManager.IsValid(player) ||
         player.IsBot ||
-        !PlayerCache.ContainsKey(player)) return;
+        !PlayerCache.TryGetValue(player, out Models.PlayerData? value)) return;
 
-        Models.PlayerData playerData = PlayerCache[player];
+        Models.PlayerData playerData = value;
         if (playerData.GroupId == -1) { return; }
 
         Models.VipGroupData playerGroup = Config!.Groups[playerData.GroupId];
@@ -346,32 +350,32 @@ public partial class VipPlugin
         var flags = (PlayerFlags)pawn.Flags;
         var buttons = player.Buttons;
 
-        var lastFlags = PlayerCache[player].LastFlags;
-        var lastButtons = PlayerCache[player].LastButtons;
+        var lastFlags = value.LastFlags;
+        var lastButtons = value.LastButtons;
 
         if ((lastFlags & PlayerFlags.FL_ONGROUND) != 0 &&
              (flags & PlayerFlags.FL_ONGROUND) == 0 &&
              (lastButtons & PlayerButtons.Jump) == 0 &&
              (buttons & PlayerButtons.Jump) != 0)
         {
-            PlayerCache[player].JumpsUsed++;
+            value.JumpsUsed++;
         }
         else if ((flags & PlayerFlags.FL_ONGROUND) != 0)
         {
-            PlayerCache[player].JumpsUsed = 0;
+            value.JumpsUsed = 0;
         }
         else if ((lastButtons & PlayerButtons.Jump) == 0 &&
             (buttons & PlayerButtons.Jump) != 0 &&
-            PlayerCache[player].JumpsUsed <= playerGroup.ExtraJumps)
+            value.JumpsUsed <= playerGroup.ExtraJumps)
         {
-            PlayerCache[player].JumpsUsed++;
+            value.JumpsUsed++;
 
             const float Z_VELOCITY = (float)250.0;
             pawn.AbsVelocity.Z = Z_VELOCITY;
 
         }
 
-        PlayerCache[player].LastFlags = flags;
-        PlayerCache[player].LastButtons = buttons;
+        value.LastFlags = flags;
+        value.LastButtons = buttons;
     }
 }

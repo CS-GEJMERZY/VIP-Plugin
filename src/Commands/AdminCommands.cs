@@ -13,13 +13,13 @@ public partial class VipPlugin
     {
         if (player == null) { return; }
 
-        if (PlayerCache.ContainsKey(player))
+        if (!PlayerCache.ContainsKey(player))
         {
             player!.PrintToChat(Localizer["not_registered"]);
         }
         else
         {
-            player!.PrintToChat($"Your group id: {PlayerCache[player].GroupId}");
+            player!.PrintToChat($"Your group id: {PlayerCache[player].GroupId} | Index: {player.Index} ");
             foreach (var group in Config!.Groups)
             {
                 bool hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);
