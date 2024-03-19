@@ -139,20 +139,15 @@ public partial class VipPlugin
             player.GiveNamedItem(CsItem.SmokeGrenade);
         }
 
-
         for (int i = 0; i < playerGroup.HEGrenade; i++)
         {
             player.GiveNamedItem(CsItem.HEGrenade);
         }
 
-
-
         for (int i = 0; i < playerGroup.FlashGrenade; i++)
         {
             player.GiveNamedItem(CsItem.FlashbangGrenade);
         }
-
-
 
         for (int i = 0; i < playerGroup.Molotov; i++)
         {
@@ -188,7 +183,7 @@ public partial class VipPlugin
             }
         }
 
-        if (!hasZeus)
+        if (!hasZeus && playerGroup.Zeus)
         {
             player.GiveNamedItem(CsItem.Zeus);
         }
