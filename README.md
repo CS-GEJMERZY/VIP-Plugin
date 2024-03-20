@@ -27,6 +27,7 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
       "SpawnHP": 105,
       "SpawnArmor": 100,
       "SpawnHelmet": true,
+      "GiveSpawnHelmetPistolRound": false,
       "SpawnDefuser": true,
       "SpawnMoney": 2000,
       "GiveSpawnMoneyPistolRound": false,
