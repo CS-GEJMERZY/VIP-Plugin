@@ -199,7 +199,12 @@ public partial class VipPlugin
 
         AddTimer(0.5f, () =>
         {
-            if (!PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
+            if (!PlayerManager.IsValid(player) ||
+                !player.PawnIsAlive ||
+                player.PlayerPawn!.Value!.WeaponServices == null)
+            {
+                return;
+            }
             var Vdata = player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData;
             if (Vdata != null)
             {
