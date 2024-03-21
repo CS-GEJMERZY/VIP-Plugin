@@ -200,7 +200,11 @@ public partial class VipPlugin
         AddTimer(0.5f, () =>
         {
             if (!PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
-            PlayerManager.RefreshUI(player, player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData!.GearSlot);
+            var Vdata = player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData;
+            if (Vdata != null)
+            {
+                PlayerManager.RefreshUI(player, Vdata!.GearSlot);
+            }
         });
     }
 
