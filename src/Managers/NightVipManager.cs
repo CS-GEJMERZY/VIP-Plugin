@@ -31,22 +31,23 @@ namespace Plugin.Managers
 
         public bool PlayerQualifies(CCSPlayerController player)
         {
-            if (!NightVipData.Enabled || !IsNightVipTime()) return false;
-
-            if (!HasRequiredPhrase(player)) return false;
-            return !HasRequiredTag(player) ? false : !HasAnyExcludedPermission(player);
+            return NightVipData.Enabled &&
+                IsNightVipTime() &&
+                HasRequiredPhrase(player) &&
+                HasRequiredTag(player) &&
+                !HasAnyExcludedPermission(player);
         }
 
         private bool HasRequiredPhrase(CCSPlayerController player)
         {
-            return NightVipData.RequiredNickPhrase == string.Empty
-                ? true
-                : player.PlayerName.Contains(NightVipData.RequiredNickPhrase, StringComparison.OrdinalIgnoreCase);
+            return NightVipData.RequiredNickPhrase == string.Empty ||
+                player.PlayerName.Contains(NightVipData.RequiredNickPhrase, StringComparison.OrdinalIgnoreCase);
         }
 
         private bool HasRequiredTag(CCSPlayerController player)
         {
-            return NightVipData.RequiredScoreboardTag == string.Empty ? true : player.Clan == NightVipData.RequiredScoreboardTag;
+            return NightVipData.RequiredScoreboardTag == string.Empty ||
+                player.Clan == NightVipData.RequiredScoreboardTag;
         }
 
         private bool HasAnyExcludedPermission(CCSPlayerController player)
