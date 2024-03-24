@@ -34,22 +34,19 @@ namespace Plugin.Managers
             if (!NightVipData.Enabled || !IsNightVipTime()) return false;
 
             if (!HasRequiredPhrase(player)) return false;
-            if (!HasRequiredTag(player)) return false;
-            if (HasAnyExcludedPermission(player)) return false;
-
-            return true;
+            return !HasRequiredTag(player) ? false : !HasAnyExcludedPermission(player);
         }
 
         private bool HasRequiredPhrase(CCSPlayerController player)
         {
-            if (NightVipData.RequiredNickPhrase == string.Empty) return true;
-            return player.PlayerName.Contains(NightVipData.RequiredNickPhrase, StringComparison.OrdinalIgnoreCase);
+            return NightVipData.RequiredNickPhrase == string.Empty
+                ? true
+                : player.PlayerName.Contains(NightVipData.RequiredNickPhrase, StringComparison.OrdinalIgnoreCase);
         }
 
         private bool HasRequiredTag(CCSPlayerController player)
         {
-            if (NightVipData.RequiredScoreboardTag == string.Empty) return true;
-            return player.Clan == NightVipData.RequiredScoreboardTag;
+            return NightVipData.RequiredScoreboardTag == string.Empty ? true : player.Clan == NightVipData.RequiredScoreboardTag;
         }
 
         private bool HasAnyExcludedPermission(CCSPlayerController player)
