@@ -17,12 +17,6 @@ namespace Plugin.Managers
             return Utilities.GetPlayers().Where(IsValid).ToList();
         }
 
-        public static void RefreshUI(CCSPlayerController player, gear_slot_t slot)
-        {
-            player.ExecuteClientCommand("lastinv");
-            player.ExecuteClientCommand("slot" + slot);
-        }
-
         public static int GetHealth(CCSPlayerController player)
         {
             return player!.PlayerPawn!.Value!.Health;
