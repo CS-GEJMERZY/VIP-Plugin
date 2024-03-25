@@ -121,19 +121,25 @@ public partial class VipPlugin
     {
         if (!PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
 
+        var playerPawn = player.PlayerPawn.Value;
+
         Models.VipGroupData playerGroup = Config!.Groups[playerGroupID];
 
         PlayerManager.SetHealth(player, playerGroup.SpawnHP);
 
+
         if (!(IsPistolRound() && !playerGroup.GiveSpawnMoneyPistolRound))
+        {
             PlayerManager.AddMoney(player, playerGroup.SpawnMoney);
+        }
 
         PlayerManager.SetArmor(player, playerGroup.SpawnArmor);
 
         if (playerGroup.SpawnHelmet &&
             !(IsPistolRound() && !playerGroup.GiveSpawnHelmetPistolRound))
         {
-            player.GiveNamedItem(CsItem.KevlarHelmet);
+            CCSPlayer_ItemServices services = new(playerPawn!.ItemServices!.Handle);
+            services.HasHelmet = true;
         }
 
         if (playerGroup.SpawnDefuser &&
@@ -196,21 +202,10 @@ public partial class VipPlugin
 
             if (!hasZeus) player.GiveNamedItem(CsItem.Zeus);
         }
-
-        AddTimer(0.5f, () =>
-        {
-            if (!PlayerManager.IsValid(player) ||
-                !player.PawnIsAlive ||
-                player.PlayerPawn!.Value!.WeaponServices == null)
-            {
-                return;
-            }
-            var Vdata = player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon!.Value!.As<CCSWeaponBase>().VData;
-            if (Vdata != null)
-            {
-                PlayerManager.RefreshUI(player, Vdata!.GearSlot);
-            }
-        });
+        Utilities.SetStateChanged(playerPawn!, "CBaseEntity", "m_iHealth");
+        Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawnBase", "m_ArmorValue");
+        Utilities.SetStateChanged(playerPawn!, "CBasePlayerPawn", "m_pItemServices");
+        Utilities.SetStateChanged(playerPawn!, "CCSPlayerController_InGameMoneyServices", "m_iAccount");
     }
 
     [GameEventHandler]
