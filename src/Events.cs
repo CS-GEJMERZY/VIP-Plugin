@@ -101,7 +101,9 @@ public partial class VipPlugin
             return HookResult.Continue;
         }
 
-        if (NightVipManager!.IsNightVipTime() && NightVipManager.PlayerQualifies(player))
+        if (Config.NightVIP.Enabled &&
+            NightVipManager!.IsNightVipTime() &&
+            NightVipManager.PlayerQualifies(player))
         {
             NightVipManager.GiveNightVip(player);
         }
