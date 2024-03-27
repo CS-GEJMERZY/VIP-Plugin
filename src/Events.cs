@@ -80,7 +80,8 @@ public partial class VipPlugin
     {
         int currentRound = GetTeamScore(CsTeam.CounterTerrorist) + GetTeamScore(CsTeam.Terrorist);
 
-        if (RandomVipManager!.IsRound(currentRound))
+        if (Config.RandomVIP.Enabled &&
+            RandomVipManager!.IsRound(currentRound))
         {
             RandomVipManager!.ProcessRound(Localizer);
         }
@@ -100,7 +101,9 @@ public partial class VipPlugin
             return HookResult.Continue;
         }
 
-        if (NightVipManager!.IsNightVipTime() && NightVipManager.PlayerQualifies(player))
+        if (Config.NightVIP.Enabled &&
+            NightVipManager!.IsNightVipTime() &&
+            NightVipManager.PlayerQualifies(player))
         {
             NightVipManager.GiveNightVip(player);
         }
