@@ -3,9 +3,9 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 
-namespace Plugin;
+namespace Core;
 
-public partial class VipPlugin
+public partial class Plugin
 {
     [RequiresPermissions("@css/root")]
     [ConsoleCommand("css_vipdebug", "Vip plugin debug command")]
@@ -20,7 +20,7 @@ public partial class VipPlugin
         else
         {
             player!.PrintToChat($"Your group id: {PlayerCache[player].GroupId} | Index: {player.Index} ");
-            foreach (var group in Config!.Groups)
+            foreach (var group in Config!.VIPGroups)
             {
                 bool hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);
 
