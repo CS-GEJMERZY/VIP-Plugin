@@ -9,7 +9,7 @@ public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "1.0.10";
+    public override string ModuleVersion => "1.0.11";
 
     public required PluginConfig Config { get; set; }
     internal Managers.GroupManager? GroupManager { get; set; }
