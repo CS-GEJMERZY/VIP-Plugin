@@ -1,13 +1,12 @@
-﻿using Core.Config;
-using CounterStrikeSharp.API.Core;
+﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
 namespace Core.Managers;
 
 public class GroupManager
 {
-    private readonly List<VIPGroupConfig> _groups;
-    public GroupManager(List<VIPGroupConfig> groups)
+    private readonly List<Config.VipGroupConfig> _groups;
+    public GroupManager(List<Config.VipGroupConfig> groups)
     {
         _groups = groups;
     }

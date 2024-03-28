@@ -13,31 +13,34 @@ public partial class Plugin
     {
         if (player == null) { return; }
 
-        if (!PlayerCache.ContainsKey(player))
+        if (!_playerCache.TryGetValue(player, out Models.PlayerData? playerData))
         {
             player!.PrintToChat(Localizer["not_registered"]);
         }
         else
         {
-            player!.PrintToChat($"Your group id: {PlayerCache[player].GroupId} | Index: {player.Index} ");
+            player!.PrintToChat($"Your group id: {playerData.GroupId}");
             foreach (var group in Config!.VIPGroups)
             {
-                bool hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);
-
-                if (hasPerms)
-                {
-                    player!.PrintToChat($"{group.Name} {group.Permissions} | has permission");
-                }
-                else
-                {
-                    player!.PrintToChat($"{group.Name} {group.Permissions} | no permission");
-                }
+                var hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);
+                player.PrintToChat($"{group.Name} {group.Permissions} | {(hasPerms ? "has permission" : "no permission")}");
             }
         }
 
-        player.PrintToChat($"Random VIP Enabled: {Config!.RandomVIP.Enabled}");
-        player.PrintToChat($"Round for VIP: {Config!.RandomVIP.AfterRound}");
-        player.PrintToChat($"Night VIP enabled: {Config.NightVIP.Enabled}");
+        player.PrintToChat($"Random VIP Enabled: {Config.RandomVip.Enabled}");
+        player.PrintToChat($"After round VIP: {Config.RandomVip.AfterRound}");
+        player.PrintToChat($"Minimum players: {Config.RandomVip.MinimumPlayers}");
+        player.PrintToChat($"RepeatPicking: {Config.RandomVip.RepeatPicking}");
+        player.PrintToChat($"PermissionsGranted: {Config.RandomVip.PermissionsGranted}");
+        player.PrintToChat($"PermissionExclude: {Config.RandomVip.PermissionExclude}");
+
+        player.PrintToChat($"Night VIP enabled: {Config.NightVip.Enabled}");
         player.PrintToChat($"Night VIP is hour: {NightVipManager!.IsNightVipTime()}");
+        player.PrintToChat($"StartHour: {Config.NightVip.StartHour}");
+        player.PrintToChat($"EndHour: {Config.NightVip.EndHour}");
+        player.PrintToChat($"RequiredNickPhrase: {Config.NightVip.RequiredNickPhrase}");
+        player.PrintToChat($"RequiredScoreboardTag: {Config.NightVip.RequiredScoreboardTag}");
+        player.PrintToChat($"PermissionsGranted: {Config.NightVip.PermissionsGranted}");
+        player.PrintToChat($"PermissionExclude: {Config.NightVip.PermissionExclude}");
     }
 }

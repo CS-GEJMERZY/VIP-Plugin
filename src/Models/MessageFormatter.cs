@@ -3,7 +3,7 @@ using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Core.Models;
 
-public class PluginMessageFormatter
+public class MessageFormatter
 {
     public static string FormatColor(string message)
     {
