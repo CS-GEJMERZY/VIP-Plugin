@@ -24,7 +24,7 @@ namespace Core
         public void OnConfigParsed(PluginConfig _Config)
         {
             Config = _Config;
-            string Prefix = Config.Settings.Prefix = $" {MessageFormatter.FormatColor(Config.Settings.Prefix)}";
+            string Prefix = $" {MessageFormatter.FormatColor(Config.Settings.Prefix)}";
 
             GroupManager = new Managers.GroupManager(Config.VIPGroups);
             RandomVipManager = new Managers.RandomVipManager(Config.RandomVip, Prefix);
