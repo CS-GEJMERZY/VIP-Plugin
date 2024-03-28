@@ -10,9 +10,6 @@ namespace Core.Config
         [JsonPropertyName("Name")]
         public string Name { get; set; } = "VIP";
 
-        [JsonPropertyName("Spawn")]
-        public EventsSpawnConfig Spawn { get; set; } = new();
-
         [JsonPropertyName("Events")]
         public EventsConfig Events { get; set; } = new();
 

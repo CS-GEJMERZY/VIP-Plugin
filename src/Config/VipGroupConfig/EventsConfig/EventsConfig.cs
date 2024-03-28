@@ -5,6 +5,9 @@ namespace Core.Config
 {
     public class EventsConfig
     {
+        [JsonPropertyName("SpawnConfig")]
+        public EventsSpawnConfig SpawnConfig { get; set; } = new();
+
         [JsonPropertyName("KillConfig")]
         public EventsKillConfig KillConfig { get; set; } = new();
 

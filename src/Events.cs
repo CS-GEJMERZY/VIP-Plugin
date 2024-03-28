@@ -130,24 +130,24 @@ public partial class Plugin
 
         VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
 
-        PlayerManager.SetHealth(player, playerGroup.Spawn.HpValue, playerGroup.Limits.MaxHp);
+        PlayerManager.SetHealth(player, playerGroup.Events.SpawnConfig.HpValue, playerGroup.Limits.MaxHp);
 
 
-        if (!IsPistolRound() || playerGroup.Spawn.ExtraMoneyOnPistolRound)
+        if (!IsPistolRound() || playerGroup.Events.SpawnConfig.ExtraMoneyOnPistolRound)
         {
-            PlayerManager.AddMoney(player, playerGroup.Spawn.ExtraMoney, playerGroup.Limits.MaxMoney);
+            PlayerManager.AddMoney(player, playerGroup.Events.SpawnConfig.ExtraMoney, playerGroup.Limits.MaxMoney);
         }
 
-        PlayerManager.SetArmor(player, playerGroup.Spawn.ArmorValue);
+        PlayerManager.SetArmor(player, playerGroup.Events.SpawnConfig.ArmorValue);
 
-        if (playerGroup.Spawn.Helmet &&
-            !(IsPistolRound() && !playerGroup.Spawn.HelmetOnPistolRound))
+        if (playerGroup.Events.SpawnConfig.Helmet &&
+            !(IsPistolRound() && !playerGroup.Events.SpawnConfig.HelmetOnPistolRound))
         {
             CCSPlayer_ItemServices services = new(playerPawn!.ItemServices!.Handle);
             services.HasHelmet = true;
         }
 
-        if (playerGroup.Spawn.DefuseKit &&
+        if (playerGroup.Events.SpawnConfig.DefuseKit &&
             player.TeamNum is (int)CsTeam.CounterTerrorist &&
             !player.PawnHasDefuser)
         {
@@ -178,7 +178,7 @@ public partial class Plugin
                 }
         }
 
-        if (playerGroup.Spawn.Zeus && (playerGroup.Spawn.ZeusOnPistolRound || !IsPistolRound()))
+        if (playerGroup.Events.SpawnConfig.Zeus && (playerGroup.Events.SpawnConfig.ZeusOnPistolRound || !IsPistolRound()))
         {
             bool hasZeus = false;
 
