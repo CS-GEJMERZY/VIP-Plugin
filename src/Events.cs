@@ -27,7 +27,7 @@ public partial class Plugin
         {
             if (!_playerCache.TryGetValue(player, out PlayerData? playerData))
             {
-                playerData = new Models.PlayerData();
+                playerData = new PlayerData();
                 _playerCache.Add(player, playerData);
             }
 
@@ -128,7 +128,7 @@ public partial class Plugin
 
         var playerPawn = player.PlayerPawn.Value;
 
-        Config.VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
+        VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
 
         PlayerManager.SetHealth(player, playerGroup.Spawn.HpValue, playerGroup.Limits.MaxHp);
 
@@ -178,7 +178,7 @@ public partial class Plugin
                 }
         }
 
-        if (playerGroup.Spawn.Zeus)
+        if (playerGroup.Spawn.Zeus && (playerGroup.Spawn.ZeusOnPistolRound || !IsPistolRound()))
         {
             bool hasZeus = false;
 

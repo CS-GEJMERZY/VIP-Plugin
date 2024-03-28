@@ -21,6 +21,5 @@ namespace Core.Config
 
         [JsonPropertyName("Decoy")]
         public int Decoy { get; set; } = 0;
-
     }
 }

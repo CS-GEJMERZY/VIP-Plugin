@@ -8,9 +8,12 @@ namespace Core.Managers
     {
         internal Config.RandomVipConfig RandomVipData { get; set; }
 
-        public RandomVipManager(Config.RandomVipConfig randomVipData)
+        internal string Prefix { get; set; }
+
+        public RandomVipManager(Config.RandomVipConfig randomVipData, string prefix)
         {
             RandomVipData = randomVipData;
+            Prefix = prefix;
         }
 
         public bool IsRound(int RoundNumber)
@@ -34,16 +37,16 @@ namespace Core.Managers
             AnnounceWinner(randomPlayer, Localizer);
         }
 
-        public static void AnnounceWinner(CCSPlayerController player, IStringLocalizer Localizer)
+        public void AnnounceWinner(CCSPlayerController player, IStringLocalizer Localizer)
         {
-            Server.PrintToChatAll(Localizer["winner", player.PlayerName]);
+            Server.PrintToChatAll($"{Prefix}{Localizer["winner", player.PlayerName]}");
         }
 
         private void AnnouncePickingProcess(IStringLocalizer Localizer)
         {
             for (int i = 0; i < RandomVipData.RepeatPicking; i++)
             {
-                Server.PrintToChatAll(Localizer["picking"]);
+                Server.PrintToChatAll($"{Prefix}{Localizer["picking"]}");
             }
         }
 
@@ -54,7 +57,5 @@ namespace Core.Managers
             return players[randomIndex];
         }
     }
-
-
 }
 

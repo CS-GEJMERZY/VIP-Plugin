@@ -17,12 +17,10 @@ namespace Core.Config
         public int RepeatPicking { get; set; } = 3;
 
         [JsonPropertyName("PermissionsGranted ")]
-        public List<string> PermissionsGranted { get; set; } = new List<string>();
+        public List<string> PermissionsGranted { get; set; } = [];
 
         [JsonPropertyName("PermissionExclude")]
-        public List<string> PermissionExclude { get; set; } = new List<string>();
+        public List<string> PermissionExclude { get; set; } = [];
     }
-
-
 }
 

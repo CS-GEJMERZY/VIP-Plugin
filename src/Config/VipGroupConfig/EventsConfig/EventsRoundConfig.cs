@@ -7,7 +7,7 @@ namespace Core.Config
         public int WinMoney { get; set; } = 1000;
 
         [JsonPropertyName("LoseMoney")]
-        public int LoseMoney { get; set; } = 0; // TO:DO
+        public int LoseMoney { get; set; } = 0;
     }
 }
 

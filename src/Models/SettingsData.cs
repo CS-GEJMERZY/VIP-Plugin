@@ -5,7 +5,7 @@ namespace Core.Models
     public class SettingsData
     {
         [JsonPropertyName("Prefix")]
-        public string Prefix { get; set; } = "[VIP-Plugin] ";
+        public string Prefix { get; set; } = "►► ";
     }
 
 }

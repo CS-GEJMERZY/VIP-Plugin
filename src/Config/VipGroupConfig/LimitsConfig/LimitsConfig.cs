@@ -10,5 +10,4 @@ namespace Core.Config
         [JsonPropertyName("MaxMoney")]
         public int MaxMoney { get; set; } = 16000; // TO:DO
     }
-
 }

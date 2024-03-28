@@ -60,7 +60,5 @@ namespace Core.Managers
             PermissionManager.AddPermissions(player, NightVipData.PermissionsGranted);
         }
     }
-
-
 }
 

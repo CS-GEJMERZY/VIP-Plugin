@@ -19,14 +19,15 @@ namespace Core
         private Managers.RandomVipManager? RandomVipManager { get; set; }
         private Managers.NightVipManager? NightVipManager { get; set; }
 
-        private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = new();
+        private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
 
         public void OnConfigParsed(PluginConfig _Config)
         {
             Config = _Config;
+            string Prefix = Config.Settings.Prefix = $" {MessageFormatter.FormatColor(Config.Settings.Prefix)}";
 
             GroupManager = new Managers.GroupManager(Config.VIPGroups);
-            RandomVipManager = new Managers.RandomVipManager(Config.RandomVip);
+            RandomVipManager = new Managers.RandomVipManager(Config.RandomVip, Prefix);
             NightVipManager = new Managers.NightVipManager(Config.NightVip);
         }
 

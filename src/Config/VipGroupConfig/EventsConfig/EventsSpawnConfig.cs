@@ -22,7 +22,8 @@ namespace Core.Config
         [JsonPropertyName("Zeus")]
         public bool Zeus { get; set; } = true;
 
-        // TO:DO - zeus on pistol
+        [JsonPropertyName("Zeus")]
+        public bool ZeusOnPistolRound { get; set; } = true;
 
         [JsonPropertyName("ExtraMoney")]
         public int ExtraMoney { get; set; } = 2000;
