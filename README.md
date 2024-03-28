@@ -22,18 +22,18 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
     {
       "Permissions": "@vip-plugin/vip",
       "Name": "VIP",
-      "Spawn": {
-        "HP": 105,
-        "ArmorValue": 100,
-        "Helmet": true,
-        "HelmetOnPistolRound": false,
-        "DefuseKit": true,
-        "Zeus": true,
-        "ZeusOnPistolRound": true,
-        "ExtraMoney": 2000,
-        "ExtraMoneyOnPistolRound": false
-      },
       "Events": {
+        "SpawnConfig": {
+          "HP": 105,
+          "ArmorValue": 100,
+          "Helmet": true,
+          "HelmetOnPistolRound": false,
+          "DefuseKit": true,
+          "Zeus": true,
+          "ZeusOnPistolRound": true,
+          "ExtraMoney": 2000,
+          "ExtraMoneyOnPistolRound": false
+        },
         "KillConfig": {
           "HP": 2,
           "HeadshotHP": 3,
