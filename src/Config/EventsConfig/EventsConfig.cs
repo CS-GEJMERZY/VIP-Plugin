@@ -5,11 +5,11 @@ namespace Config.Events;
 public class EventsConfig
 {
     [JsonPropertyName("KillConfig")]
-    public EventsKillConfig KillConfig = new();
+    public EventsKillConfig KillConfig { get; set; } = new();
 
     [JsonPropertyName("BombConfig")]
-    public EventsBombConfig BombConfig = new();
+    public EventsBombConfig BombConfig { get; set; } = new();
 
     [JsonPropertyName("RoundConfig")]
-    public EventsRoundConfig RoundConfig = new();
+    public EventsRoundConfig RoundConfig { get; set; } = new();
 }

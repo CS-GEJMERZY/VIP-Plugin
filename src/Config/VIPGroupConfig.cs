@@ -15,22 +15,22 @@ public class VIPGroupConfig
     public string Name { get; set; } = "VIP";
 
     [JsonPropertyName("Spawn")]
-    public EventsSpawnConfig Spawn = new();
+    public EventsSpawnConfig Spawn { get; set; } = new();
 
     [JsonPropertyName("Events")]
-    public EventsConfig Events = new();
+    public EventsConfig Events { get; set; } = new();
 
     [JsonPropertyName("Limits")]
-    public LimitsConfig Limits = new();
+    public LimitsConfig Limits { get; set; } = new();
 
     [JsonPropertyName("Misc")]
-    public MiscConfig Misc = new();
+    public MiscConfig Misc { get; set; } = new();
 
     [JsonPropertyName("Messages")]
-    public MessagesConfig Messages = new();
+    public MessagesConfig Messages { get; set; } = new();
 
     [JsonPropertyName("Grenades")]
-    public GrenadesConfig Grenades = new();
+    public GrenadesConfig Grenades { get; set; } = new();
 }
 
 

@@ -7,5 +7,4 @@ public class EventsRoundConfig
 
     [JsonPropertyName("LoseMoney")]
     public int LoseMoney { get; set; } = 0; // TO:DO
-
 }
