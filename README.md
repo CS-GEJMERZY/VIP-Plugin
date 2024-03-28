@@ -4,7 +4,7 @@
 VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to establish VIP groups through the CSS Permission system for authentication.
 
 ## Dependencies
-- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases) NET 8.0
+- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases) v201
 - [Metamod:Source](https://www.sourcemm.net/downloads.php/?branch=master)
 
 ## Instalation
