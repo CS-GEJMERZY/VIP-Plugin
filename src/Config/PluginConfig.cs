@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Config.Config;
 using CounterStrikeSharp.API.Core;
 
 namespace Core.Config
@@ -6,7 +7,7 @@ namespace Core.Config
     public class PluginConfig : BasePluginConfig
     {
         [JsonPropertyName("Settings")]
-        public Models.SettingsData Settings { get; set; } = new Models.SettingsData();
+        public SettingsConfig Settings { get; set; } = new();
 
         [JsonPropertyName("VIPGroups")]
         public List<VipGroupConfig> VIPGroups { get; set; } = [];
