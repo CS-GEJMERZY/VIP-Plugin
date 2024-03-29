@@ -71,7 +71,7 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
         "Smoke": {
           "Enabled": false, // Whether it is enabled
           "Type": 0, // Type: 0 - fixed color from 'Color', 1 - random
-          "Color": "#FF0000"
+          "Color": "#FF0000" // Color in hex
         }
       },
       "Messages": {
