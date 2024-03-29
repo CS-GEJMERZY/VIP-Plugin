@@ -9,6 +9,9 @@ namespace Core.Config
 
         [JsonPropertyName("NoFallDamageGlobal")]
         public bool NoFallDamage { get; set; } = true;
+
+        [JsonPropertyName("Smoke")]
+        public SmokeConfig Smoke { get; set; } = new();
     }
 }
 
