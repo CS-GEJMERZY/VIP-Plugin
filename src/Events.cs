@@ -103,6 +103,7 @@ public partial class Plugin
             return HookResult.Continue;
         }
 
+
         if (Config.NightVip.Enabled &&
             NightVipManager!.IsNightVipTime() &&
             NightVipManager.PlayerQualifies(player))
