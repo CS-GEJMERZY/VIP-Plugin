@@ -45,7 +45,7 @@ namespace Core.Managers
 
         private void AnnouncePickingProcess(IStringLocalizer Localizer)
         {
-            for (int i = 0; i < RandomVipData.RepeatPicking; i++)
+            for (int i = 0; i < RandomVipData.RepeatPickingMessage; i++)
             {
                 Server.PrintToChatAll($"{Prefix}{Localizer["picking"]}");
             }

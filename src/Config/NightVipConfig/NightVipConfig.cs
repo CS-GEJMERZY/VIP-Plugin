@@ -14,10 +14,10 @@ namespace Core.Config
         public int EndHour { get; set; } = 8;
 
         [JsonPropertyName("RequiredNickPhrase")]
-        public string RequiredNickPhrase { get; set; } = "Phrase";
+        public string RequiredNickPhrase { get; set; } = "YourSite.com";
 
         [JsonPropertyName("RequiredScoreboardTag")]
-        public string RequiredScoreboardTag { get; set; } = "Phrase";
+        public string RequiredScoreboardTag { get; set; } = "YourSite.com";
 
         [JsonPropertyName("PermissionsGranted ")]
         public List<string> PermissionsGranted { get; set; } = [];
