@@ -33,7 +33,7 @@ namespace Core.Config
         public bool ExtraMoneyOnPistolRound { get; set; } = false;
 
         [JsonPropertyName("Grenades")]
-        public EventsSpawmGrenadesConfig Grenades { get; set; } = new();
+        public EventsSpawnGrenadesConfig Grenades { get; set; } = new();
     }
 }
 

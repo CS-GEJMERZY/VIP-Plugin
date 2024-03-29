@@ -2,7 +2,7 @@
 
 namespace Config.VipGroupConfig.EventsConfig
 {
-    public class EventsSpawmGrenadesConfig
+    public class EventsSpawnGrenadesConfig
     {
         [JsonPropertyName("StripOnSpawn")]
         public bool StripOnSpawn { get; set; } = true;
