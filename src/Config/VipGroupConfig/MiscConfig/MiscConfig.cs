@@ -7,7 +7,7 @@ namespace Core.Config
         [JsonPropertyName("ExtraJumps")]
         public ExtraJumpsConfig ExtraJumps { get; set; } = new();
 
-        [JsonPropertyName("NoFallDamage")]
+        [JsonPropertyName("NoFallDamageGlobal")]
         public bool NoFallDamage { get; set; } = true;
     }
 }

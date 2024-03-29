@@ -9,6 +9,8 @@ public class PlayerData
     public int JumpsUsed { get; set; } = 0;
     public PlayerButtons LastButtons { get; set; }
     public PlayerFlags LastFlags { get; set; }
+
+    public bool UsingExtraJump { get; set; }
     public PlayerData()
     {
         GroupId = -1;

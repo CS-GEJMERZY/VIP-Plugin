@@ -9,5 +9,8 @@ namespace Core.Config
 
         [JsonPropertyName("VelocityZ")]
         public double VelocityZ { get; set; } = 260.0;
+
+        [JsonPropertyName("NoFallDamage")]
+        public bool NoFallDamage { get; set; } = true;
     }
 }
