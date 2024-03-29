@@ -124,82 +124,91 @@ public partial class Plugin
 
     private void PlayerSpawnn_TimerGive(CCSPlayerController player, int playerGroupID)
     {
-        if (!PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
-
-        var playerPawn = player.PlayerPawn.Value;
-
-        VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
-
-        PlayerManager.SetHealth(player, playerGroup.Events.SpawnConfig.HpValue, playerGroup.Limits.MaxHp);
-
-
-        if (!IsPistolRound() || playerGroup.Events.SpawnConfig.ExtraMoneyOnPistolRound)
+        Server.NextFrame(() =>
         {
-            PlayerManager.AddMoney(player, playerGroup.Events.SpawnConfig.ExtraMoney, playerGroup.Limits.MaxMoney);
-        }
+            if (!PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
 
-        PlayerManager.SetArmor(player, playerGroup.Events.SpawnConfig.ArmorValue);
+            var playerPawn = player.PlayerPawn.Value;
 
-        if (playerGroup.Events.SpawnConfig.Helmet &&
-            !(IsPistolRound() && !playerGroup.Events.SpawnConfig.HelmetOnPistolRound))
-        {
-            CCSPlayer_ItemServices services = new(playerPawn!.ItemServices!.Handle);
-            services.HasHelmet = true;
-        }
+            VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
 
-        if (playerGroup.Events.SpawnConfig.DefuseKit &&
-            player.TeamNum is (int)CsTeam.CounterTerrorist &&
-            !player.PawnHasDefuser)
-        {
-            PlayerManager.GiveItem(player, "item_defuser");
-        }
+            PlayerManager.SetHealth(player, playerGroup.Events.Spawn.HpValue, playerGroup.Limits.MaxHp);
 
-        if (playerGroup.Grenades.StripOnSpawn)
-        {
-            PlayerManager.StripGrenades(player);
-        }
 
-        PlayerManager.GiveItem(player, CsItem.Smoke, playerGroup.Grenades.Smoke);
-        PlayerManager.GiveItem(player, CsItem.HE, playerGroup.Grenades.HE);
-        PlayerManager.GiveItem(player, CsItem.Flashbang, playerGroup.Grenades.Flashbang);
-        PlayerManager.GiveItem(player, CsItem.Decoy, playerGroup.Grenades.Decoy);
-
-        switch (player.TeamNum)
-        {
-            case (int)CsTeam.CounterTerrorist:
-                {
-                    PlayerManager.GiveItem(player, CsItem.Incendiary, playerGroup.Grenades.FireGrenade);
-                    break;
-                }
-            case (int)CsTeam.Terrorist:
-                {
-                    PlayerManager.GiveItem(player, CsItem.Molotov, playerGroup.Grenades.FireGrenade);
-                    break;
-                }
-        }
-
-        if (playerGroup.Events.SpawnConfig.Zeus && (playerGroup.Events.SpawnConfig.ZeusOnPistolRound || !IsPistolRound()))
-        {
-            bool hasZeus = false;
-
-            foreach (var weapon in player!.PlayerPawn!.Value!.WeaponServices!.MyWeapons)
+            if (!IsPistolRound() || playerGroup.Events.Spawn.ExtraMoneyOnPistolRound)
             {
-                if (weapon.IsValid && weapon!.Value!.IsValid)
-                {
-                    if (weapon.Value.DesignerName == "weapon_taser")
+                PlayerManager.AddMoney(player, playerGroup.Events.Spawn.ExtraMoney, playerGroup.Limits.MaxMoney);
+            }
+
+            PlayerManager.SetArmor(player, playerGroup.Events.Spawn.ArmorValue);
+
+            if (playerGroup.Events.Spawn.Helmet &&
+                !(IsPistolRound() && !playerGroup.Events.Spawn.HelmetOnPistolRound))
+            {
+                CCSPlayer_ItemServices services = new(playerPawn!.ItemServices!.Handle);
+                services.HasHelmet = true;
+            }
+
+            if (playerGroup.Events.Spawn.DefuseKit &&
+                player.TeamNum is (int)CsTeam.CounterTerrorist &&
+                !player.PawnHasDefuser)
+            {
+                PlayerManager.GiveItem(player, "item_defuser");
+            }
+
+
+            if (playerGroup.Events.Spawn.Grenades.StripOnSpawn)
+            {
+                PlayerManager.StripGrenades(player);
+            }
+
+            PlayerManager.GiveItem(player, CsItem.Smoke, playerGroup.Events.Spawn.Grenades.Smoke);
+            PlayerManager.GiveItem(player, CsItem.HE, playerGroup.Events.Spawn.Grenades.HE);
+            PlayerManager.GiveItem(player, CsItem.Flashbang, playerGroup.Events.Spawn.Grenades.Flashbang);
+            PlayerManager.GiveItem(player, CsItem.Decoy, playerGroup.Events.Spawn.Grenades.Decoy);
+
+            switch (player.TeamNum)
+            {
+                case (int)CsTeam.CounterTerrorist:
                     {
-                        hasZeus = true;
+                        PlayerManager.GiveItem(player, CsItem.Incendiary, playerGroup.Events.Spawn.Grenades.FireGrenade);
                         break;
                     }
+                case (int)CsTeam.Terrorist:
+                    {
+                        PlayerManager.GiveItem(player, CsItem.Molotov, playerGroup.Events.Spawn.Grenades.FireGrenade);
+                        break;
+                    }
+            }
+
+
+
+
+
+            if (playerGroup.Events.Spawn.Zeus && (playerGroup.Events.Spawn.ZeusOnPistolRound || !IsPistolRound()))
+            {
+                bool hasZeus = false;
+
+                foreach (var weapon in player!.PlayerPawn!.Value!.WeaponServices!.MyWeapons)
+                {
+                    if (weapon.IsValid && weapon!.Value!.IsValid)
+                    {
+                        if (weapon.Value.DesignerName == "weapon_taser")
+                        {
+                            hasZeus = true;
+                            break;
+                        }
+                    }
+                }
+                if (!hasZeus)
+                {
+                    PlayerManager.GiveItem(player, CsItem.Zeus, 1);
                 }
             }
-            if (!hasZeus)
-            {
-                PlayerManager.GiveItem(player, CsItem.Zeus, 1);
-            }
-        }
 
-        Utilities.SetStateChanged(playerPawn!, "CBasePlayerPawn", "m_pItemServices");
+            Utilities.SetStateChanged(playerPawn!, "CBasePlayerPawn", "m_pItemServices");
+        });
+
     }
 
     [GameEventHandler]
@@ -226,11 +235,11 @@ public partial class Plugin
             CsTeam winnerTeam = (CsTeam)(@event.Winner);
             if (player.Team == winnerTeam)
             {
-                PlayerManager.AddMoney(player, playerGroup.Events.RoundConfig.WinMoney, playerGroup.Limits.MaxMoney);
+                PlayerManager.AddMoney(player, playerGroup.Events.Round.WinMoney, playerGroup.Limits.MaxMoney);
             }
             else
             {
-                PlayerManager.AddMoney(player, playerGroup.Events.RoundConfig.LoseMoney, playerGroup.Limits.MaxMoney);
+                PlayerManager.AddMoney(player, playerGroup.Events.Round.LoseMoney, playerGroup.Limits.MaxMoney);
             }
         }
 
@@ -259,20 +268,20 @@ public partial class Plugin
 
         if (@event.Headshot)
         {
-            PlayerManager.AddMoney(attacker, playerGroup.Events.KillConfig.HeadshotMoney, playerGroup.Limits.MaxMoney);
+            PlayerManager.AddMoney(attacker, playerGroup.Events.Kill.HeadshotMoney, playerGroup.Limits.MaxMoney);
 
-            int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup!.Events!.KillConfig!.HeadshotHp, playerGroup.Limits.MaxHp);
+            int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup!.Events!.Kill!.HeadshotHp, playerGroup.Limits.MaxHp);
             PlayerManager.SetHealth(attacker, newHP);
         }
         else
         {
-            PlayerManager.AddMoney(attacker, playerGroup.Events.KillConfig.Money, playerGroup.Limits.MaxMoney);
+            PlayerManager.AddMoney(attacker, playerGroup.Events.Kill.Money, playerGroup.Limits.MaxMoney);
 
-            int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup!.Events!.KillConfig.Hp, playerGroup.Limits.MaxHp);
+            int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup!.Events!.Kill.Hp, playerGroup.Limits.MaxHp);
             PlayerManager.SetHealth(attacker, newHP);
         }
 
-        attacker.InGameMoneyServices!.Account += playerGroup.Events.KillConfig.Money;
+        attacker.InGameMoneyServices!.Account += playerGroup.Events.Kill.Money;
 
         return HookResult.Continue;
     }
@@ -293,7 +302,7 @@ public partial class Plugin
         if (playerGroupID == -1) return HookResult.Continue;
 
         VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
-        PlayerManager.AddMoney(player, playerGroup.Events.BombConfig.BombPlantMoney, playerGroup.Limits.MaxMoney);
+        PlayerManager.AddMoney(player, playerGroup.Events.Bomb.BombPlantMoney, playerGroup.Limits.MaxMoney);
 
         return HookResult.Continue;
     }
@@ -315,7 +324,7 @@ public partial class Plugin
         if (playerGroupID == -1) return HookResult.Continue;
 
         VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
-        PlayerManager.AddMoney(player, playerGroup.Events.BombConfig.BombDefuseMoney, playerGroup.Limits.MaxMoney);
+        PlayerManager.AddMoney(player, playerGroup.Events.Bomb.BombDefuseMoney, playerGroup.Limits.MaxMoney);
 
 
         return HookResult.Continue;

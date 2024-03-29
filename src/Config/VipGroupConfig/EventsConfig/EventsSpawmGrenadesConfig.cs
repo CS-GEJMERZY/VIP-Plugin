@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Core.Config
+namespace Config.VipGroupConfig.EventsConfig
 {
-    public class GrenadesConfig
+    public class EventsSpawmGrenadesConfig
     {
         [JsonPropertyName("StripOnSpawn")]
         public bool StripOnSpawn { get; set; } = true;

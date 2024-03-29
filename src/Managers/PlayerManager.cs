@@ -31,7 +31,7 @@ namespace Core.Managers
                     weapon!.Value!.IsValid &&
                     grenades.Contains(weapon.Value.DesignerName))
                 {
-                    Utilities.RemoveItemByDesignerName(player, weapon.Value.DesignerName);
+                    //player.RemoveItemByDesignerName(weapon.Value.DesignerName, false);
                 }
             }
         }

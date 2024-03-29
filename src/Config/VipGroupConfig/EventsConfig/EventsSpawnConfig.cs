@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Config.VipGroupConfig.EventsConfig;
 
 namespace Core.Config
 {
@@ -30,6 +31,9 @@ namespace Core.Config
 
         [JsonPropertyName("ExtraMoneyOnPistolRound")]
         public bool ExtraMoneyOnPistolRound { get; set; } = false;
+
+        [JsonPropertyName("Grenades")]
+        public EventsSpawmGrenadesConfig Grenades { get; set; } = new();
     }
 }
 

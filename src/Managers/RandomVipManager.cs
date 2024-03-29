@@ -25,7 +25,8 @@ namespace Core.Managers
         {
             var players = PlayerManager.GetValidPlayers().Where(
                 player => !PermissionManager.HasAnyPermission(player, RandomVipData.PermissionExclude) &&
-                           player.Connected == PlayerConnectedState.PlayerConnected).ToList();
+                           player.Connected == PlayerConnectedState.PlayerConnected&&
+                           !string.IsNullOrEmpty(player.IpAddress)).ToList();
 
             if (players.Count == 0 ||
                 players.Count < RandomVipData.MinimumPlayers) { return; }

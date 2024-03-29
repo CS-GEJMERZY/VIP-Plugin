@@ -21,9 +21,6 @@ namespace Core.Config
 
         [JsonPropertyName("Messages")]
         public MessagesConfig Messages { get; set; } = new();
-
-        [JsonPropertyName("Grenades")]
-        public GrenadesConfig Grenades { get; set; } = new();
     }
 }
 
