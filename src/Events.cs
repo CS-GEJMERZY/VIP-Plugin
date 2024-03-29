@@ -377,7 +377,7 @@ public partial class Plugin
         if (playerData.GroupId == -1) { return; }
 
         VipGroupConfig playerGroup = Config!.VIPGroups[playerData.GroupId];
-        if (playerGroup.Misc.ExtraJumps.Count == 0)
+        if (playerGroup.Misc.ExtraJumps.Amount == 0)
         {
             return;
         }
@@ -404,7 +404,7 @@ public partial class Plugin
         }
         else if ((lastButtons & PlayerButtons.Jump) == 0 &&
             (buttons & PlayerButtons.Jump) != 0 &&
-            playerData.JumpsUsed <= playerGroup.Misc.ExtraJumps.Count)
+            playerData.JumpsUsed <= playerGroup.Misc.ExtraJumps.Amount)
         {
             playerData.JumpsUsed++;
 
