@@ -23,7 +23,7 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
       "Permissions": "@vip-plugin/vip",
       "Name": "VIP",
       "Events": {
-        "SpawnConfig": {
+        "Spawn": {
           "HP": 105,
           "ArmorValue": 100,
           "Helmet": true,
@@ -32,19 +32,26 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "Zeus": true,
           "ZeusOnPistolRound": true,
           "ExtraMoney": 2000,
-          "ExtraMoneyOnPistolRound": false
+          "ExtraMoneyOnPistolRound": false,
+          "Grenades": {
+            "Smoke": 1,
+            "HE": 1,
+            "Flashbang": 1,
+            "FireGrenade": 1,
+            "Decoy": 0
+          }
         },
-        "KillConfig": {
+        "Kill": {
           "HP": 2,
           "HeadshotHP": 3,
           "Money": 200,
           "HeadshotMoney": 300
         },
-        "BombConfig": {
+        "Bomb": {
           "PlantMoney": 500,
           "DefuseMoney": 500
         },
-        "RoundConfig": {
+        "Round": {
           "WinMoney": 1000,
           "LoseMoney": 0
         }
@@ -55,22 +62,15 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
       },
       "Misc": {
         "ExtraJumps": {
-          "Count": 0,
-          "VelocityZ": 260
+          "Amount": 10,
+          "VelocityZ": 260,
+          "NoFallDamage": false
         },
-        "NoFallDamage": true
+        "NoFallDamageGlobal": false
       },
       "Messages": {
         "ConnectChat": "VIP {playername} joined the server",
         "DisconnectChat": "VIP {playername} left the server"
-      },
-      "Grenades": {
-        "StripOnSpawn": true,
-        "Smoke": 1,
-        "HE": 1,
-        "Flashbang": 1,
-        "FireGrenade": 1,
-        "Decoy": 0
       }
     }
   ],
