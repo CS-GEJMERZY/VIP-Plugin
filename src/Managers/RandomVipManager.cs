@@ -2,15 +2,18 @@
 using CounterStrikeSharp.API.Core;
 using Microsoft.Extensions.Localization;
 
-namespace Plugin.Managers
+namespace Core.Managers
 {
     public class RandomVipManager
     {
-        internal Models.RandomVIPData RandomVipData { get; set; }
+        internal Config.RandomVipConfig RandomVipData { get; set; }
 
-        public RandomVipManager(Models.RandomVIPData randomVipData)
+        internal string Prefix { get; set; }
+
+        public RandomVipManager(Config.RandomVipConfig randomVipData, string prefix)
         {
             RandomVipData = randomVipData;
+            Prefix = prefix;
         }
 
         public bool IsRound(int RoundNumber)
@@ -22,7 +25,8 @@ namespace Plugin.Managers
         {
             var players = PlayerManager.GetValidPlayers().Where(
                 player => !PermissionManager.HasAnyPermission(player, RandomVipData.PermissionExclude) &&
-                           player.Connected == PlayerConnectedState.PlayerConnected).ToList();
+                           player.Connected == PlayerConnectedState.PlayerConnected &&
+                           !string.IsNullOrEmpty(player.IpAddress)).ToList();
 
             if (players.Count == 0 ||
                 players.Count < RandomVipData.MinimumPlayers) { return; }
@@ -34,16 +38,16 @@ namespace Plugin.Managers
             AnnounceWinner(randomPlayer, Localizer);
         }
 
-        public static void AnnounceWinner(CCSPlayerController player, IStringLocalizer Localizer)
+        public void AnnounceWinner(CCSPlayerController player, IStringLocalizer Localizer)
         {
-            Server.PrintToChatAll(Localizer["winner", player.PlayerName]);
+            Server.PrintToChatAll($"{Prefix}{Localizer["winner", player.PlayerName]}");
         }
 
         private void AnnouncePickingProcess(IStringLocalizer Localizer)
         {
             for (int i = 0; i < RandomVipData.RepeatPicking; i++)
             {
-                Server.PrintToChatAll(Localizer["picking"]);
+                Server.PrintToChatAll($"{Prefix}{Localizer["picking"]}");
             }
         }
 
@@ -54,7 +58,5 @@ namespace Plugin.Managers
             return players[randomIndex];
         }
     }
-
-
 }
 

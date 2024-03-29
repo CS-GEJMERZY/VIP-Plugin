@@ -1,7 +1,7 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
-namespace Plugin.Managers
+namespace Core.Managers
 {
     public class PermissionManager
     {
@@ -12,11 +12,12 @@ namespace Plugin.Managers
                 AdminManager.AddPlayerPermissions(player, perm);
             }
         }
-
         public static bool HasAnyPermission(CCSPlayerController player, List<string> permissions)
         {
             return permissions.Any(perm => AdminManager.PlayerHasPermissions(player, perm));
         }
     }
 }
+
+
 

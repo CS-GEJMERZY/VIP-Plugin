@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Plugin.Models
+namespace Core.Config
 {
-    public class NightVIPData
+    public class NightVipConfig
     {
         [JsonPropertyName("Enabled")]
         public bool Enabled { get; set; } = false;
@@ -14,15 +14,18 @@ namespace Plugin.Models
         public int EndHour { get; set; } = 8;
 
         [JsonPropertyName("RequiredNickPhrase")]
-        public string RequiredNickPhrase { get; set; } = "Katujemy.eu";
+        public string RequiredNickPhrase { get; set; } = "Phrase";
 
         [JsonPropertyName("RequiredScoreboardTag")]
-        public string RequiredScoreboardTag { get; set; } = "Katujemy.eu";
+        public string RequiredScoreboardTag { get; set; } = "Phrase";
 
         [JsonPropertyName("PermissionsGranted ")]
-        public List<string> PermissionsGranted { get; set; } = new List<string>();
+        public List<string> PermissionsGranted { get; set; } = [];
 
         [JsonPropertyName("PermissionExclude")]
-        public List<string> PermissionExclude { get; set; } = new List<string>();
+        public List<string> PermissionExclude { get; set; } = [];
     }
+
+
 }
+

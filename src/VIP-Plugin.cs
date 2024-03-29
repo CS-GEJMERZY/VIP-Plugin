@@ -1,61 +1,65 @@
-﻿using CounterStrikeSharp.API;
+﻿using Core.Config;
+using Core.Models;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using static CounterStrikeSharp.API.Core.Listeners;
 
-namespace Plugin;
-
-public partial class VipPlugin : BasePlugin, IPluginConfig<PluginConfig>
+namespace Core
 {
-    public override string ModuleName => "VIP Plugin";
-    public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "1.0.11";
-
-    public required PluginConfig Config { get; set; }
-    internal Managers.GroupManager? GroupManager { get; set; }
-    internal Managers.RandomVipManager? RandomVipManager { get; set; }
-    internal Managers.NightVipManager? NightVipManager { get; set; }
-    internal Dictionary<CCSPlayerController, Models.PlayerData> PlayerCache = new();
-
-    public void OnConfigParsed(PluginConfig _Config)
+    public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     {
-        Config = _Config;
+        public override string ModuleName => "VIP Plugin";
+        public override string ModuleAuthor => "Hacker";
+        public override string ModuleVersion => "1.0.14";
 
-        GroupManager = new Managers.GroupManager(Config.Groups);
-        RandomVipManager = new Managers.RandomVipManager(Config.RandomVIP);
-        NightVipManager = new Managers.NightVipManager(Config.NightVIP);
-    }
+        public required PluginConfig Config { get; set; }
 
-    public override void Load(bool hotReload)
-    {
-        VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
+        private Managers.GroupManager? GroupManager { get; set; }
+        private Managers.RandomVipManager? RandomVipManager { get; set; }
+        private Managers.NightVipManager? NightVipManager { get; set; }
 
-        RegisterListener<OnTick>(() =>
+        private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
+
+        public void OnConfigParsed(PluginConfig _Config)
         {
-            foreach (var player in Utilities.GetPlayers()
-                         .Where(player => player is { IsValid: true, IsBot: false, PawnIsAlive: true }))
-            {
-                if (!PlayerCache.ContainsKey(player)) continue;
+            Config = _Config;
+            string Prefix = $" {MessageFormatter.FormatColor(Config.Settings.Prefix)}";
 
-                OnTick(player);
-            }
-        });
+            GroupManager = new Managers.GroupManager(Config.VIPGroups);
+            RandomVipManager = new Managers.RandomVipManager(Config.RandomVip, Prefix);
+            NightVipManager = new Managers.NightVipManager(Config.NightVip);
+        }
 
-        if (hotReload)
+        public override void Load(bool hotReload)
         {
-            foreach (CCSPlayerController player in Utilities.GetPlayers())
+            VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
+
+            RegisterListener<OnTick>(() =>
             {
-                if (Managers.PlayerManager.IsValid(player) && !player.IsHLTV)
+                foreach (var player in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && p.PawnIsAlive))
                 {
-                    PlayerCache.Add(player, new Models.PlayerData());
-                    PlayerCache[player].GroupId = GroupManager!.GetPlayerGroup(player);
+                    if (!_playerCache.ContainsKey(player)) continue;
+
+                    OnTick(player);
+                }
+            });
+
+            if (hotReload)
+            {
+                foreach (var player in Utilities.GetPlayers()
+                    .Where(p => Managers.PlayerManager.IsValid(p) && !p.IsHLTV))
+                {
+
+                    _playerCache.Add(player, new PlayerData { GroupId = GroupManager!.GetPlayerGroup(player) });
                 }
             }
         }
-    }
 
-    public override void Unload(bool hotReload)
-    {
-        VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
+        public override void Unload(bool hotReload)
+        {
+            VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
+        }
     }
 }
+

@@ -1,5 +1,5 @@
 ﻿{
-  "picking": "{default}[VIP] {green}Trwa losowanie VIPa...",
-  "winner": "{default}[VIP] {yellow}Gracz {red}{0} {yellow}został VIPem! Gratulacje!",
+  "picking": "{yellow}Trwa losowanie VIPa...",
+  "winner": "{yellow}Gracz {red}{0} {yellow}został VIPem! Gratulacje!",
   "not_registered" :  "Nie zostałeś zarejestrowany przez plugin."
 }

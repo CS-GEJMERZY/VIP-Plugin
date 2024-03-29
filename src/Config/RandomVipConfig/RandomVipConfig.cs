@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Plugin.Models
+namespace Core.Config
 {
-    public class RandomVIPData
+    public class RandomVipConfig
     {
         [JsonPropertyName("Enabled ")]
         public bool Enabled { get; set; } = false;
@@ -17,10 +17,10 @@ namespace Plugin.Models
         public int RepeatPicking { get; set; } = 3;
 
         [JsonPropertyName("PermissionsGranted ")]
-        public List<string> PermissionsGranted { get; set; } = new List<string>();
+        public List<string> PermissionsGranted { get; set; } = [];
 
         [JsonPropertyName("PermissionExclude")]
-        public List<string> PermissionExclude { get; set; } = new List<string>();
+        public List<string> PermissionExclude { get; set; } = [];
     }
 }
 

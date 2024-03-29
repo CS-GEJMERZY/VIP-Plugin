@@ -1,13 +1,13 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
-namespace Plugin.Managers
+namespace Core.Managers
 {
     public class NightVipManager
     {
-        private Models.NightVIPData NightVipData { get; set; }
+        private Config.NightVipConfig NightVipData { get; set; }
 
-        public NightVipManager(Models.NightVIPData nightVipData)
+        public NightVipManager(Config.NightVipConfig nightVipData)
         {
             this.NightVipData = nightVipData;
         }

@@ -4,7 +4,7 @@
 VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to establish VIP groups through the CSS Permission system for authentication.
 
 ## Dependencies
-- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases) NET 8.0
+- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases) v201
 - [Metamod:Source](https://www.sourcemm.net/downloads.php/?branch=master)
 
 ## Instalation
@@ -16,43 +16,68 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
 ```
 {
   "Settings": {
-    "Prefix": "[VIP-Plugin] "
+    "Prefix": "{lightred}VIP "
   },
-  "Groups": [
+  "VIPGroups": [
     {
       "Permissions": "@vip-plugin/vip",
       "Name": "VIP",
-      "ExtraJumps": 1,
-      "NoFallDamage": true,
-      "SpawnHP": 105,
-      "SpawnArmor": 100,
-      "SpawnHelmet": true,
-      "GiveSpawnHelmetPistolRound": false,
-      "SpawnDefuser": true,
-      "SpawnMoney": 2000,
-      "GiveSpawnMoneyPistolRound": false,
-      "RoundWonMoney": 1000,
-      "KillMoney": 200,
-      "HeadshotKillMoney": 300,
-      "BombPlantMoney": 500,
-      "BombDefuseMoney": 500,
-      "KillHP": 2,
-      "HeadshotKillHP": 5,
-      "MaxHP": 120,
-      "ConnectMessage": "VIP {playername} joined the server",
-      "DisconnectMessage": "VIP {playername} left the server",
-      "SmokeGrenade": 1,
-      "HEGrenade": 1,
-      "FlashGrenade": 1,
-      "Molotov": 1,
-      "DecoyGrenade": 0,
-      "Zeus": true
+      "Events": {
+        "Spawn": {
+          "HP": 105,
+          "ArmorValue": 100,
+          "Helmet": true,
+          "HelmetOnPistolRound": false,
+          "DefuseKit": true,
+          "Zeus": true,
+          "ZeusOnPistolRound": true,
+          "ExtraMoney": 2000,
+          "ExtraMoneyOnPistolRound": false,
+          "Grenades": {
+            "Smoke": 1,
+            "HE": 1,
+            "Flashbang": 1,
+            "FireGrenade": 1,
+            "Decoy": 0
+          }
+        },
+        "Kill": {
+          "HP": 2,
+          "HeadshotHP": 3,
+          "Money": 200,
+          "HeadshotMoney": 300
+        },
+        "Bomb": {
+          "PlantMoney": 500,
+          "DefuseMoney": 500
+        },
+        "Round": {
+          "WinMoney": 1000,
+          "LoseMoney": 0
+        }
+      },
+      "Limits": {
+        "MaxHP": 120,
+        "MaxMoney": 16000
+      },
+      "Misc": {
+        "ExtraJumps": {
+          "Amount": 10,
+          "VelocityZ": 260,
+          "NoFallDamage": false
+        },
+        "NoFallDamageGlobal": false
+      },
+      "Messages": {
+        "ConnectChat": "VIP {playername} joined the server",
+        "DisconnectChat": "VIP {playername} left the server"
+      }
     }
   ],
   "RandomVIP": {
     "Enabled ": false,
     "AfterRound ": 3,
-    "MinimumPlayers": 2,
+    "MinimumPlayers ": 2,
     "RepeatPicking ": 3,
     "PermissionsGranted ": [],
     "PermissionExclude": []
@@ -61,8 +86,8 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
     "Enabled": false,
     "StartHour": 22,
     "EndHour": 8,
-    "RequiredNickPhrase": "Katujemy.eu",
-    "RequiredScoreboardTag": "Katujemy.eu",
+    "RequiredNickPhrase": "Phrase",
+    "RequiredScoreboardTag": "Phrase",
     "PermissionsGranted ": [],
     "PermissionExclude": []
   },

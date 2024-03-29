@@ -1,12 +1,12 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
-namespace Plugin.Managers
+namespace Core.Managers
 {
     public class GroupManager
     {
-        private readonly List<Models.VipGroupData> _groups;
-        public GroupManager(List<Models.VipGroupData> groups)
+        private readonly List<Config.VipGroupConfig> _groups;
+        public GroupManager(List<Config.VipGroupConfig> groups)
         {
             _groups = groups;
         }
@@ -25,5 +25,6 @@ namespace Plugin.Managers
         }
     }
 }
+
 
 
