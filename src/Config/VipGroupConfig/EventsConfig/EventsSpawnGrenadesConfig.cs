@@ -4,8 +4,8 @@ namespace Config.VipGroupConfig.EventsConfig
 {
     public class EventsSpawnGrenadesConfig
     {
-        [JsonPropertyName("StripOnSpawn")]
-        public bool StripOnSpawn { get; set; } = true;
+        //[JsonPropertyName("StripOnSpawn")]
+        //public bool StripOnSpawn { get; set; } = true;
 
         [JsonPropertyName("Smoke")]
         public int Smoke { get; set; } = 1;

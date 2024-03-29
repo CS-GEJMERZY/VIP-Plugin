@@ -18,23 +18,23 @@ namespace Core.Managers
             return Utilities.GetPlayers().Where(IsValid).ToList();
         }
 
-        public static void StripGrenades(CCSPlayerController player)
-        {
-            if (player!.PlayerPawn!.Value!.WeaponServices == null) return;
+        //public static void StripGrenades(CCSPlayerController player)
+        //{
+        //    if (player!.PlayerPawn!.Value!.WeaponServices == null) return;
 
-            var grenades = new[] { "weapon_smokegrenade", "weapon_hegrenade", "weapon_flashbang", "weapon_molotov", "weapon_incgrenade" };
+        //    var grenades = new[] { "weapon_smokegrenade", "weapon_hegrenade", "weapon_flashbang", "weapon_molotov", "weapon_incgrenade" };
 
-            foreach (var weapon in player.PlayerPawn.Value.WeaponServices.MyWeapons)
-            {
-                if (weapon != null &&
-                    weapon!.IsValid &&
-                    weapon!.Value!.IsValid &&
-                    grenades.Contains(weapon.Value.DesignerName))
-                {
-                    //player.RemoveItemByDesignerName(weapon.Value.DesignerName, false);
-                }
-            }
-        }
+        //    foreach (var weapon in player.PlayerPawn.Value.WeaponServices.MyWeapons)
+        //    {
+        //        if (weapon != null &&
+        //            weapon!.IsValid &&
+        //            weapon!.Value!.IsValid &&
+        //            grenades.Contains(weapon.Value.DesignerName))
+        //        {
+        //            //player.RemoveItemByDesignerName(weapon.Value.DesignerName, false);
+        //        }
+        //    }
+        //}
 
         public static void GiveItem(CCSPlayerController player, CsItem item, int count = 1)
         {

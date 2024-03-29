@@ -157,10 +157,10 @@ public partial class Plugin
             }
 
 
-            if (playerGroup.Events.Spawn.Grenades.StripOnSpawn)
-            {
-                PlayerManager.StripGrenades(player);
-            }
+            //if (playerGroup.Events.Spawn.Grenades.StripOnSpawn)
+            //{
+            //    PlayerManager.StripGrenades(player);
+            //}
 
             PlayerManager.GiveItem(player, CsItem.Smoke, playerGroup.Events.Spawn.Grenades.Smoke);
             PlayerManager.GiveItem(player, CsItem.HE, playerGroup.Events.Spawn.Grenades.HE);
