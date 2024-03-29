@@ -417,4 +417,49 @@ public partial class Plugin
         playerData.LastFlags = flags;
         playerData.LastButtons = buttons;
     }
+
+    private void OnEntitySpawned(CEntityInstance entity)
+    {
+        if (entity.DesignerName != "smokegrenade_projectile") return;
+
+        var smokeGrenadeEntity = new CSmokeGrenadeProjectile(entity.Handle);
+        if (smokeGrenadeEntity.Handle == IntPtr.Zero) return;
+
+        Server.NextFrame(() =>
+        {
+            var throwerPawnValue = smokeGrenadeEntity.Thrower.Value;
+            if (throwerPawnValue == null) return;
+
+            var throwerValueController = throwerPawnValue!.Controller!.Value!;
+            var player = new CCSPlayerController(throwerValueController.Handle);
+
+            if (!PlayerManager.IsValid(player) ||
+                !_playerCache.TryGetValue(player, out PlayerData? playerData)) return;
+
+            if (playerData.GroupId == -1) return;
+            var playerGroup = Config.VIPGroups[playerData.GroupId];
+
+            if (!playerGroup.Misc.Smoke.Enabled) return;
+
+            switch (playerGroup.Misc.Smoke.Type)
+            {
+                case SmokeConfigType.Fixed:
+                    {
+                        var Color = HexToRgb(playerGroup.Misc.Smoke.Color);
+                        smokeGrenadeEntity.SmokeColor.X = Color.R;
+                        smokeGrenadeEntity.SmokeColor.Y = Color.G;
+                        smokeGrenadeEntity.SmokeColor.Z = Color.B;
+                        break;
+                    }
+                case SmokeConfigType.Random:
+                    {
+                        smokeGrenadeEntity.SmokeColor.X = Random.Shared.NextSingle() * 255.0f;
+                        smokeGrenadeEntity.SmokeColor.Y = Random.Shared.NextSingle() * 255.0f;
+                        smokeGrenadeEntity.SmokeColor.Z = Random.Shared.NextSingle() * 255.0f;
+
+                        break;
+                    }
+            }
+        });
+    }
 }

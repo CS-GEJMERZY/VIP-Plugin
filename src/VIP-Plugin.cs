@@ -11,7 +11,7 @@ namespace Core
     {
         public override string ModuleName => "VIP Plugin";
         public override string ModuleAuthor => "Hacker";
-        public override string ModuleVersion => "1.0.14";
+        public override string ModuleVersion => "1.0.16";
 
         public required PluginConfig Config { get; set; }
 
@@ -44,6 +44,8 @@ namespace Core
                     OnTick(player);
                 }
             });
+
+            RegisterListener<OnEntitySpawned>(OnEntitySpawned);
 
             if (hotReload)
             {

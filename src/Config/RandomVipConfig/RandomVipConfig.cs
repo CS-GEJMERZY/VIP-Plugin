@@ -13,8 +13,8 @@ namespace Core.Config
         [JsonPropertyName("MinimumPlayers ")]
         public int MinimumPlayers { get; set; } = 2;
 
-        [JsonPropertyName("RepeatPicking ")]
-        public int RepeatPicking { get; set; } = 3;
+        [JsonPropertyName("RepeatPickingMessage")]
+        public int RepeatPickingMessage { get; set; } = 3;
 
         [JsonPropertyName("PermissionsGranted ")]
         public List<string> PermissionsGranted { get; set; } = [];

@@ -1,4 +1,5 @@
-﻿using CounterStrikeSharp.API;
+﻿using System.Drawing;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
@@ -32,5 +33,20 @@ public partial class Plugin
 
         return gameRules.TotalRoundsPlayed == 0 || (halftime && maxrounds / 2 == gameRules.TotalRoundsPlayed) ||
                gameRules.GameRestart;
+    }
+
+    public static Color HexToRgb(string hex)
+    {
+        if (hex[0] == '#')
+            hex = hex[1..];
+
+        if (hex.Length != 6)
+            throw new ArgumentException("Hexadecimal color string must be exactly 6 characters long.");
+
+        int red = Convert.ToInt32(hex.Substring(0, 2), 16);
+        int green = Convert.ToInt32(hex.Substring(2, 2), 16);
+        int blue = Convert.ToInt32(hex.Substring(4, 2), 16);
+
+        return Color.FromArgb(red, green, blue);
     }
 }

@@ -30,7 +30,7 @@ public partial class Plugin
         player.PrintToChat($"Random VIP Enabled: {Config.RandomVip.Enabled}");
         player.PrintToChat($"After round VIP: {Config.RandomVip.AfterRound}");
         player.PrintToChat($"Minimum players: {Config.RandomVip.MinimumPlayers}");
-        player.PrintToChat($"RepeatPicking: {Config.RandomVip.RepeatPicking}");
+        player.PrintToChat($"RepeatPicking: {Config.RandomVip.RepeatPickingMessage}");
         player.PrintToChat($"PermissionsGranted: {Config.RandomVip.PermissionsGranted}");
         player.PrintToChat($"PermissionExclude: {Config.RandomVip.PermissionExclude}");
 
