@@ -2,12 +2,9 @@
 
 namespace Core.Config
 {
-    public class MessagesConfig
-    {
-        [JsonPropertyName("ConnectChat")]
-        public string ConnectChat { get; set; } = "VIP {playername} joined the server";
-
-        [JsonPropertyName("DisconnectChat")]
-        public string DisconnectChat { get; set; } = "VIP {playername} left the server";
-    }
+	public class MessagesConfig
+	{
+		[JsonPropertyName("Chat")]
+		public ChatMessagesConfig Chat = new();
+	}
 }
