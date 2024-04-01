@@ -37,12 +37,17 @@ public partial class Plugin
 
             var playerGroup = Config.VIPGroups[playerData.GroupId];
 
-            if (!string.IsNullOrEmpty(playerGroup.Messages.ConnectChat))
+            if (playerGroup.Messages.Chat.Connect.Enabled)
             {
-                var message = playerGroup.Messages.ConnectChat.Replace("{playername}", player.PlayerName);
+                var message = playerGroup.Messages.Chat.Connect.Message.Replace("{playername}", player.PlayerName);
                 message = message.Replace("{playername}", player.PlayerName);
 
-                Server.PrintToChatAll(MessageFormatter.FormatColor(message));
+                Server.PrintToChatAll($" {MessageFormatter.FormatColor(message)}");
+
+                if (playerGroup.Messages.Chat.Connect.DontBroadcast)
+                {
+                    info.DontBroadcast = true;
+                }
             }
         });
 
@@ -64,15 +69,19 @@ public partial class Plugin
 
         var playerGroup = Config!.VIPGroups[GroupId];
 
-        if (playerGroup.Messages.DisconnectChat != string.Empty)
+        if (playerGroup.Messages.Chat.Disconnect.Enabled)
         {
-            string message = playerGroup.Messages.DisconnectChat;
-            message = message.Replace("{playername}", player.PlayerName);
+            var message = playerGroup.Messages.Chat.Disconnect.Message.Replace("{playername}", player.PlayerName);
+            Server.PrintToChatAll($" {MessageFormatter.FormatColor(message)}");
 
-            Server.PrintToChatAll(Models.MessageFormatter.FormatColor(message));
+            if (playerGroup.Messages.Chat.Disconnect.DontBroadcast)
+            {
+                info.DontBroadcast = true;
+            }
         }
 
         _playerCache.Remove(player);
+
 
         return HookResult.Continue;
     }
