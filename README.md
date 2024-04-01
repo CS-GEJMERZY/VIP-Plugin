@@ -32,6 +32,8 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "DefuseKit": true,
           "Zeus": true,
           "ZeusOnPistolRound": true,
+          "HealthshotAmount": 1,
+          "HealthshotOnPistolRound": true,
           "ExtraMoney": 2000,
           "ExtraMoneyOnPistolRound": false,
           "Grenades": { // Enter the amount for each grenade. 0 = don't give

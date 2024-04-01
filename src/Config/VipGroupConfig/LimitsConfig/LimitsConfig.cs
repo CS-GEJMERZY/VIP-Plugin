@@ -8,6 +8,6 @@ namespace Core.Config
         public int MaxHp { get; set; } = 120;
 
         [JsonPropertyName("MaxMoney")]
-        public int MaxMoney { get; set; } = 16000; // TO:DO
+        public int MaxMoney { get; set; } = 16000;
     }
 }
