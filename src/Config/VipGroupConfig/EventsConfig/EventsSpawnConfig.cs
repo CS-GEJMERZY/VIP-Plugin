@@ -26,6 +26,12 @@ namespace Core.Config
         [JsonPropertyName("ZeusOnPistolRound")]
         public bool ZeusOnPistolRound { get; set; } = true;
 
+        [JsonPropertyName("HealthshotAmount")]
+        public int HealthshotAmount { get; set; } = 1;
+
+        [JsonPropertyName("HealthshotOnPistolRound")]
+        public bool HealthshotOnPistolRound { get; set; } = true;
+
         [JsonPropertyName("ExtraMoney")]
         public int ExtraMoney { get; set; } = 2000;
 

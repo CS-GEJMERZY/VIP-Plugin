@@ -172,6 +172,11 @@ public partial class Plugin
             //    PlayerManager.StripGrenades(player);
             //}
 
+            if (playerGroup.Events.Spawn.HealthshotOnPistolRound || !IsPistolRound())
+            {
+                PlayerManager.GiveItem(player, CsItem.Healthshot, playerGroup.Events.Spawn.HealthshotAmount);
+            }
+
             PlayerManager.GiveItem(player, CsItem.Smoke, playerGroup.Events.Spawn.Grenades.Smoke);
             PlayerManager.GiveItem(player, CsItem.HE, playerGroup.Events.Spawn.Grenades.HE);
             PlayerManager.GiveItem(player, CsItem.Flashbang, playerGroup.Events.Spawn.Grenades.Flashbang);
