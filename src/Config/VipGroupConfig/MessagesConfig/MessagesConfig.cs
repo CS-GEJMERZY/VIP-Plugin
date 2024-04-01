@@ -2,9 +2,10 @@
 
 namespace Core.Config
 {
-	public class MessagesConfig
-	{
-		[JsonPropertyName("Chat")]
-		public ChatMessagesConfig Chat = new();
-	}
+    public class MessagesConfig
+    {
+        [JsonPropertyName("Chat")]
+        public ChatMessagesConfig Chat { get; set; } = new();
+
+    }
 }

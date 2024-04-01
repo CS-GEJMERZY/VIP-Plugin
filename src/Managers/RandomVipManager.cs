@@ -40,14 +40,14 @@ namespace Core.Managers
 
         public void AnnounceWinner(CCSPlayerController player, IStringLocalizer Localizer)
         {
-            Server.PrintToChatAll($"{Prefix}{Localizer["winner", player.PlayerName]}");
+            Server.PrintToChatAll($" {Prefix}{Localizer["winner", player.PlayerName]}");
         }
 
         private void AnnouncePickingProcess(IStringLocalizer Localizer)
         {
             for (int i = 0; i < RandomVipData.RepeatPickingMessage; i++)
             {
-                Server.PrintToChatAll($"{Prefix}{Localizer["picking"]}");
+                Server.PrintToChatAll($" {Prefix}{Localizer["picking"]}");
             }
         }
 
