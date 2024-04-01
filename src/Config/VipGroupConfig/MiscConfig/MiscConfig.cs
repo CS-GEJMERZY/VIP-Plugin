@@ -7,11 +7,11 @@ namespace Core.Config
         [JsonPropertyName("ExtraJumps")]
         public ExtraJumpsConfig ExtraJumps { get; set; } = new();
 
-        [JsonPropertyName("NoFallDamageGlobal")]
-        public bool NoFallDamage { get; set; } = false;
-
         [JsonPropertyName("Smoke")]
         public SmokeConfig Smoke { get; set; } = new();
+
+        [JsonPropertyName("NoFallDamageGlobal")]
+        public bool NoFallDamage { get; set; } = false;
     }
 }
 
