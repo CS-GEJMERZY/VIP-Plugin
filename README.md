@@ -81,12 +81,12 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "Connect": {
             "Enabled": true,
             "Message": "VIP {playername} joined the server",
-            "DontBroadcast": true
+            "DontBroadcast": true // Whether native message will be show
           },
           "Disconnect": {
             "Enabled": true,
             "Message": "VIP {playername} left the server",
-            "DontBroadcast": true
+            "DontBroadcast": true // Whether native message will be show
           }
         }
       }
