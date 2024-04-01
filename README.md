@@ -65,7 +65,7 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
         "ExtraJumps": {
           "Amount": 0, // Amount = 1 means double jump
           "VelocityZ": 260, // Basically the height of a jump
-          "NoFallDamage": true / Whether NoFallDamage after extra jump is enabled
+          "NoFallDamage": true // Whether NoFallDamage after extra jump is enabled
         },
         "NoFallDamageGlobal": false, // Global 
         "Smoke": {
@@ -75,8 +75,18 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
         }
       },
       "Messages": {
-        "ConnectChat": "VIP {playername} joined the server",
-        "DisconnectChat": "VIP {playername} left the server"
+        "Chat": {
+          "Connect": {
+            "Enabled": true,
+            "Message": "VIP {playername} joined the server",
+            "DontBroadcast": true
+          },
+          "Disconnect": {
+            "Enabled": true,
+            "Message": "VIP {playername} left the server",
+            "DontBroadcast": true
+          }
+        }
       }
     }
   ],
