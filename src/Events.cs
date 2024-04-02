@@ -142,6 +142,8 @@ public partial class Plugin
 
             VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
 
+            playerPawn!.GravityScale = playerGroup.Misc.Gravity;
+
             PlayerManager.SetHealth(player, playerGroup.Events.Spawn.HpValue, playerGroup.Limits.MaxHp);
             PlayerManager.SetArmor(player, playerGroup.Events.Spawn.ArmorValue);
 
