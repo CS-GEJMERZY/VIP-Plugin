@@ -15,6 +15,9 @@ namespace Core.Config
 
         [JsonPropertyName("Gravity")]
         public float Gravity { get; set; } = 1.0f;
+
+        [JsonPropertyName("Speed")]
+        public float Speed { get; set; } = 1.0f;
     }
 }
 
