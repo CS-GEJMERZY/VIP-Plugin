@@ -11,7 +11,7 @@ namespace Core
     {
         public override string ModuleName => "VIP Plugin";
         public override string ModuleAuthor => "Hacker";
-        public override string ModuleVersion => "1.0.20";
+        public override string ModuleVersion => "1.0.21";
 
         public required PluginConfig Config { get; set; }
 
