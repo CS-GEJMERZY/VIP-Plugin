@@ -12,6 +12,12 @@ namespace Core.Config
 
         [JsonPropertyName("NoFallDamageGlobal")]
         public bool NoFallDamage { get; set; } = false;
+
+        [JsonPropertyName("Gravity")]
+        public float Gravity { get; set; } = 1.0f;
+
+        [JsonPropertyName("Speed")]
+        public float Speed { get; set; } = 1.0f;
     }
 }
 

@@ -69,12 +69,14 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "VelocityZ": 260, // Basically the height of a jump
           "NoFallDamage": true // Whether NoFallDamage after extra jump is enabled
         },
-        "NoFallDamageGlobal": false, // Global 
         "Smoke": {
           "Enabled": false, // Whether it is enabled
           "Type": 0, // Type: 0 - fixed color from 'Color', 1 - random
           "Color": "#FF0000" // Color in hex
-        }
+        },
+        "NoFallDamageGlobal": false, // Global 
+        "Gravity": 1,
+        "Speed": 1
       },
       "Messages": {
         "Chat": {
