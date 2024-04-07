@@ -85,6 +85,10 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "Interval": 5, // add Armor every 'Interval"
           "Delay": 5, // delay after round start
           "Amount": 5 // amount of Armor, limited by 100
+        },        
+        "FastPlant": {
+          "Enabled": false,
+          "Modifier": 0.5 // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
         },
         "FastDefuse": {
           "Enabled": false,

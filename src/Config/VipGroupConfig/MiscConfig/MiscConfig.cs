@@ -16,6 +16,9 @@ namespace Core.Config
         [JsonPropertyName("ArmorRegen")]
         public ArmorRegenConfig ArmorRegen { get; set; } = new();
 
+        [JsonPropertyName("FastPlant")]
+        public FastPlantConfig FastPlant { get; set; } = new();
+
         [JsonPropertyName("FastDefuse")]
         public FastDefuseConfig FastDefuse { get; set; } = new();
 

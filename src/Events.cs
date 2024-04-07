@@ -390,7 +390,6 @@ public partial class Plugin
     [GameEventHandler]
     public HookResult OnBombBeginDefuse(EventBombBegindefuse @event, GameEventInfo info)
     {
-        var bomb = Utilities.FindAllEntitiesByDesignerName<CPlantedC4>("planted_c4").First();
         var player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
             !_playerCache.TryGetValue(player, out var playerData)) return HookResult.Continue;
@@ -398,6 +397,9 @@ public partial class Plugin
         if (playerData.GroupId == -1) return HookResult.Continue;
 
         var playerGroup = Config.VIPGroups[playerData.GroupId];
+
+        var bomb = Utilities.FindAllEntitiesByDesignerName<CPlantedC4>("planted_c4").First();
+
         if (playerGroup.Misc.FastDefuse.Enabled)
         {
             Server.NextFrame(() =>
@@ -419,6 +421,37 @@ public partial class Plugin
         return HookResult.Continue;
     }
 
+    [GameEventHandler]
+    public HookResult OnBombBeginPlant(EventBombBeginplant @event, GameEventInfo info)
+    {
+        var player = @event.Userid;
+        if (!PlayerManager.IsValid(player) ||
+            !_playerCache.TryGetValue(player, out var playerData)) return HookResult.Continue;
+
+        if (playerData.GroupId == -1) return HookResult.Continue;
+
+        var playerGroup = Config.VIPGroups[playerData.GroupId];
+
+        if (playerGroup.Misc.FastPlant.Enabled)
+        {
+            var playerPawn = player!.PlayerPawn!.Value;
+            var weapon = playerPawn!.WeaponServices!.ActiveWeapon;
+
+            if(weapon == null) return HookResult.Continue;
+
+            var c4 = new CC4(weapon!.Value!.Handle);
+            float remainingTime = c4.ArmedTime - Server.CurrentTime;
+
+            Server.PrintToChatAll($"time: {remainingTime}");
+
+            float modifiedTime = remainingTime * playerGroup.Misc.FastPlant.Modifier;
+            c4.ArmedTime = modifiedTime + Server.CurrentTime;
+
+            Server.PrintToChatAll($"modifiedTime: {modifiedTime}");
+        }
+
+        return HookResult.Continue;
+    }
 
     private HookResult OnTakeDamage(DynamicHook h)
     {
