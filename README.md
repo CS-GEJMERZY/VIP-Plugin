@@ -45,8 +45,8 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           }
         },
         "Kill": {
-          "HP": 2,
-          "HeadshotHP": 3,
+          "HP": 2, // amount of HP, limited by Limits.MaxHp
+          "HeadshotHP": 3, // amount of HP, limited by Limits.MaxHp
           "Money": 200,
           "HeadshotMoney": 300
         },
@@ -74,6 +74,12 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "Type": 0, // Type: 0 - fixed color from 'Color', 1 - random
           "Color": "#FF0000" // Color in hex
         },
+        "HpRegen": {
+          "Enabled": false,
+          "Interval": 5, // add HP every 'Interval"
+          "Delay": 5, // delay after round start
+          "Amount": 5 // amount of HP, limited by Limits.MaxHp
+        },,
         "NoFallDamageGlobal": false, // Global 
         "Gravity": 1,
         "Speed": 1
