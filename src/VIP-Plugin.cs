@@ -1,8 +1,10 @@
 ﻿using Core.Config;
+using Core.Managers;
 using Core.Models;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
+using Microsoft.Extensions.Logging;
 using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace Core
@@ -21,6 +23,8 @@ namespace Core
 
         private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
 
+        private List<Timer?> ArmorRegenTimers { get; set; } = [];
+
         public void OnConfigParsed(PluginConfig _Config)
         {
             Config = _Config;
@@ -29,6 +33,11 @@ namespace Core
             GroupManager = new Managers.GroupManager(Config.VIPGroups);
             RandomVipManager = new Managers.RandomVipManager(Config.RandomVip, Prefix);
             NightVipManager = new Managers.NightVipManager(Config.NightVip);
+
+            foreach (var _ in Config.VIPGroups)
+            {
+                ArmorRegenTimers.Add(null);
+            }
         }
 
         public override void Load(bool hotReload)
@@ -61,6 +70,33 @@ namespace Core
         public override void Unload(bool hotReload)
         {
             VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
+        }
+
+        public void ArmorRegenCallback(object state)
+        {
+            var group = (VipGroupConfig)state;
+
+            if (group == null)
+            {
+                Logger.LogError("group is null in ArmorRegenCallback");
+                return;
+            }
+
+            Server.NextFrame(() =>
+            {
+                foreach (var player in Utilities.GetPlayers())
+                {
+                    if (!player.IsValid ||
+                        !player.PawnIsAlive ||
+                        !_playerCache.ContainsKey(player))
+                        continue;
+                    var playerData = _playerCache[player];
+                    if (playerData.GroupId == -1 || Config.VIPGroups[playerData.GroupId] != group)
+                        continue;
+
+                    PlayerManager.AddArmor(player, group.Misc.ArmorRegen.Amount);
+                }
+            });
         }
     }
 }

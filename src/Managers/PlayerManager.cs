@@ -65,9 +65,9 @@ namespace Core.Managers
 
         public static void SetHealth(CCSPlayerController player, int amount, int maxHealth = (int)1e6)
         {
-            player!.PlayerPawn!.Value!.Health = Math.Min(amount, maxHealth);
-
             var playerPawn = player!.PlayerPawn.Value;
+
+            playerPawn!.Health = Math.Min(amount, maxHealth);
             Utilities.SetStateChanged(playerPawn!, "CBaseEntity", "m_iHealth");
         }
 
@@ -90,11 +90,26 @@ namespace Core.Managers
             Utilities.SetStateChanged(playerPawn!, "CCSPlayerController_InGameMoneyServices", "m_iAccount");
         }
 
+        public static int GetArmor(CCSPlayerController player)
+        {
+            return player!.PlayerPawn!.Value!.ArmorValue;
+        }
+
         public static void SetArmor(CCSPlayerController player, int amount)
         {
-            player!.PlayerPawn!.Value!.ArmorValue = amount;
-
             var playerPawn = player!.PlayerPawn.Value;
+
+            playerPawn!.ArmorValue = amount;
+            Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawnBase", "m_ArmorValue");
+        }
+
+        public static void AddArmor(CCSPlayerController player, int amount)
+        {
+            var playerPawn = player!.PlayerPawn.Value;
+
+            int newValue = Math.Max(100, GetArmor(player) + amount);
+            playerPawn!.ArmorValue = newValue;
+
             Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawnBase", "m_ArmorValue");
         }
     }

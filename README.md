@@ -74,6 +74,12 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "Type": 0, // Type: 0 - fixed color from 'Color', 1 - random
           "Color": "#FF0000" // Color in hex
         },
+        "ArmorRegen": {
+          "Enabled": false,
+          "Interval": 5, // add Armor every 'Interval"
+          "Delay": 5, // delay after round start
+          "Amount": 5 // amount of Armor, limited by 100
+        },
         "NoFallDamageGlobal": false, // Global 
         "Gravity": 1,
         "Speed": 1
