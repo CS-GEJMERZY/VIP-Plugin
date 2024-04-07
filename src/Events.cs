@@ -7,6 +7,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace Core;
 
@@ -95,6 +96,27 @@ public partial class Plugin
             RandomVipManager!.IsRound(currentRound))
         {
             RandomVipManager!.ProcessRound(Localizer);
+        }
+
+        for (int i = 0; i < Config.VIPGroups.Count; i++)
+        {
+            if (i > HealthRegenTimers.Count)
+            {
+                Logger.LogError($"Registered {Config.VIPGroups.Count} groups, but there's only HealthRegenTimers.Count place for timer. i = {i}");
+                continue;
+            }
+
+            if (HealthRegenTimers[i] != null)
+            {
+                HealthRegenTimers[i]!.Dispose();
+                HealthRegenTimers[i] = null;
+            }
+
+            var group = Config.VIPGroups[i];
+
+            if (!group.Misc.HealthRegen.Enabled) continue;
+
+            HealthRegenTimers[i] = new Timer(HealthRegenCallback!, group, group.Misc.HealthRegen.Delay * 1000, group.Misc.HealthRegen.Interval * 1000);
         }
 
         return HookResult.Continue;
