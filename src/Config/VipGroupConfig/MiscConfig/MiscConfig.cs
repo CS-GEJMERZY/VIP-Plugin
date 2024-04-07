@@ -13,6 +13,9 @@ namespace Core.Config
         [JsonPropertyName("HealthRegen")]
         public HealthRegenConfig HealthRegen { get; set; } = new();
 
+        [JsonPropertyName("ArmorRegen")]
+        public ArmorRegenConfig ArmorRegen { get; set; } = new();
+
         [JsonPropertyName("NoFallDamageGlobal")]
         public bool NoFallDamage { get; set; } = false;
 

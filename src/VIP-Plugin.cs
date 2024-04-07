@@ -13,11 +13,7 @@ namespace Core
     {
         public override string ModuleName => "VIP Plugin";
         public override string ModuleAuthor => "Hacker";
-<<<<<<< HEAD
-        public override string ModuleVersion => "1.0.21";
-=======
-        public override string ModuleVersion => "1.0.22";
->>>>>>> feature/HP-regen
+        public override string ModuleVersion => "1.0.23";
 
         public required PluginConfig Config { get; set; }
 
@@ -27,6 +23,8 @@ namespace Core
 
         private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
         private List<Timer?> HealthRegenTimers { get; set; } = [];
+
+        private List<Timer?> ArmorRegenTimers { get; set; } = [];
 
         public void OnConfigParsed(PluginConfig _Config)
         {
@@ -40,6 +38,7 @@ namespace Core
             foreach (var _ in Config.VIPGroups)
             {
                 HealthRegenTimers.Add(null);
+                ArmorRegenTimers.Add(null);
             }
         }
 
@@ -70,10 +69,6 @@ namespace Core
             }
         }
 
-        public override void Unload(bool hotReload)
-        {
-            VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
-        }
         public void HealthRegenCallback(object state)
         {
             var group = (VipGroupConfig)state;
@@ -98,6 +93,34 @@ namespace Core
                         continue;
 
                     PlayerManager.AddHealth(player, group.Misc.HealthRegen.Amount, group.Limits.MaxHp);
+                }
+            });
+        }
+
+        public void ArmorRegenCallback(object state)
+        {
+            var group = (VipGroupConfig)state;
+
+            if (group == null)
+            {
+                Logger.LogError("group is null in ArmorRegenCallback");
+                return;
+            }
+
+            Server.NextFrame(() =>
+            {
+                foreach (var player in Utilities.GetPlayers())
+                {
+                    if (!player.IsValid ||
+                        !player.PawnIsAlive ||
+                        !_playerCache.ContainsKey(player))
+                        continue;
+
+                    var playerData = _playerCache[player];
+                    if (playerData.GroupId == -1 || Config.VIPGroups[playerData.GroupId] != group)
+                        continue;
+
+                    PlayerManager.AddArmor(player, group.Misc.ArmorRegen.Amount);
                 }
             });
         }

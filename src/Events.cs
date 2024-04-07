@@ -100,23 +100,44 @@ public partial class Plugin
 
         for (int i = 0; i < Config.VIPGroups.Count; i++)
         {
-            if (i > HealthRegenTimers.Count)
-            {
-                Logger.LogError($"Registered {Config.VIPGroups.Count} groups, but there's only HealthRegenTimers.Count place for timer. i = {i}");
-                continue;
-            }
-
-            if (HealthRegenTimers[i] != null)
-            {
-                HealthRegenTimers[i]!.Dispose();
-                HealthRegenTimers[i] = null;
-            }
-
             var group = Config.VIPGroups[i];
 
-            if (!group.Misc.HealthRegen.Enabled) continue;
+            if (i < HealthRegenTimers.Count)
+            {
+                if (HealthRegenTimers[i] != null)
+                {
+                    HealthRegenTimers[i]!.Dispose();
+                    HealthRegenTimers[i] = null;
+                }
 
-            HealthRegenTimers[i] = new Timer(HealthRegenCallback!, group, group.Misc.HealthRegen.Delay * 1000, group.Misc.HealthRegen.Interval * 1000);
+                if (group.Misc.HealthRegen.Enabled)
+                {
+                    HealthRegenTimers[i] = new Timer(HealthRegenCallback!, group, group.Misc.HealthRegen.Delay * 1000, group.Misc.HealthRegen.Interval * 1000);
+                }
+            }
+            else
+            {
+                Logger.LogError($"Registered {Config.VIPGroups.Count} groups, but there's only HealthRegenTimers.Count place for timer. i = {i}");
+            }
+
+
+            if (i < ArmorRegenTimers.Count)
+            {
+                if (ArmorRegenTimers[i] != null)
+                {
+                    ArmorRegenTimers[i]!.Dispose();
+                    ArmorRegenTimers[i] = null;
+                }
+
+                if (group.Misc.ArmorRegen.Enabled)
+                {
+                    ArmorRegenTimers[i] = new Timer(ArmorRegenCallback!, group, group.Misc.ArmorRegen.Delay * 1000, group.Misc.ArmorRegen.Interval * 1000);
+                }
+            }
+            else
+            {
+                Logger.LogError($"Registered {Config.VIPGroups.Count} groups, but there's only ArmorRegenTimers.Count place for timer. i = {i}");
+            }
         }
 
         return HookResult.Continue;
