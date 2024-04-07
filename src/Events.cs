@@ -100,23 +100,23 @@ public partial class Plugin
 
         for (int i = 0; i < Config.VIPGroups.Count; i++)
         {
-            if (i > HpRegenTimers.Count)
+            if (i > HealthRegenTimers.Count)
             {
-                Logger.LogError($"Registered {Config.VIPGroups.Count} groups, but there's only HpRegenTimers.Count place for timer. i = {i}");
+                Logger.LogError($"Registered {Config.VIPGroups.Count} groups, but there's only HealthRegenTimers.Count place for timer. i = {i}");
                 continue;
             }
 
-            if (HpRegenTimers[i] != null)
+            if (HealthRegenTimers[i] != null)
             {
-                HpRegenTimers[i]!.Dispose();
-                HpRegenTimers[i] = null;
+                HealthRegenTimers[i]!.Dispose();
+                HealthRegenTimers[i] = null;
             }
 
             var group = Config.VIPGroups[i];
 
-            if (!group.Misc.HpRegen.Enabled) continue;
+            if (!group.Misc.HealthRegen.Enabled) continue;
 
-            HpRegenTimers[i] = new Timer(HpRegenCallback!, group, group.Misc.HpRegen.Delay * 1000, group.Misc.HpRegen.Interval * 1000);
+            HealthRegenTimers[i] = new Timer(HealthRegenCallback!, group, group.Misc.HealthRegen.Delay * 1000, group.Misc.HealthRegen.Interval * 1000);
         }
 
         return HookResult.Continue;

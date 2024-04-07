@@ -2,7 +2,7 @@
 
 namespace Core.Config
 {
-    public class HpRegenConfig
+    public class HealthRegenConfig
     {
         [JsonPropertyName("Enabled")]
         public bool Enabled { get; set; } = false;

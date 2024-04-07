@@ -22,7 +22,7 @@ namespace Core
         private Managers.NightVipManager? NightVipManager { get; set; }
 
         private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
-        private List<Timer?> HpRegenTimers { get; set; } = [];
+        private List<Timer?> HealthRegenTimers { get; set; } = [];
 
         public void OnConfigParsed(PluginConfig _Config)
         {
@@ -35,7 +35,7 @@ namespace Core
 
             foreach (var _ in Config.VIPGroups)
             {
-                HpRegenTimers.Add(null);
+                HealthRegenTimers.Add(null);
             }
         }
 
@@ -70,13 +70,13 @@ namespace Core
         {
             VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
         }
-        public void HpRegenCallback(object state)
+        public void HealthRegenCallback(object state)
         {
             var group = (VipGroupConfig)state;
 
             if (group == null)
             {
-                Logger.LogError("group is null in HpRegenCallback");
+                Logger.LogError("group is null in HealthRegenCallback");
                 return;
             }
 
@@ -93,7 +93,7 @@ namespace Core
                     if (playerData.GroupId == -1 || Config.VIPGroups[playerData.GroupId] != group)
                         continue;
 
-                    PlayerManager.AddHealth(player, group.Misc.HpRegen.Amount, group.Limits.MaxHp);
+                    PlayerManager.AddHealth(player, group.Misc.HealthRegen.Amount, group.Limits.MaxHp);
                 }
             });
         }
