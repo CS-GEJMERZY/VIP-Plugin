@@ -79,7 +79,7 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "Interval": 5, // add HP every 'Interval"
           "Delay": 5, // delay after round start
           "Amount": 5 // amount of HP, limited by Limits.MaxHp
-        }
+        },
         "ArmorRegen": {
           "Enabled": false,
           "Interval": 5, // add Armor every 'Interval"
