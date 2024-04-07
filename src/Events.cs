@@ -437,17 +437,17 @@ public partial class Plugin
             var playerPawn = player!.PlayerPawn!.Value;
             var weapon = playerPawn!.WeaponServices!.ActiveWeapon;
 
-            if(weapon == null) return HookResult.Continue;
+            if (weapon == null) return HookResult.Continue;
 
             var c4 = new CC4(weapon!.Value!.Handle);
             float remainingTime = c4.ArmedTime - Server.CurrentTime;
 
-            Server.PrintToChatAll($"time: {remainingTime}");
+            //Server.PrintToChatAll($"time: {remainingTime}");
 
             float modifiedTime = remainingTime * playerGroup.Misc.FastPlant.Modifier;
             c4.ArmedTime = modifiedTime + Server.CurrentTime;
 
-            Server.PrintToChatAll($"modifiedTime: {modifiedTime}");
+            //Server.PrintToChatAll($"modifiedTime: {modifiedTime}");
         }
 
         return HookResult.Continue;
