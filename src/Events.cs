@@ -23,7 +23,6 @@ public partial class Plugin
             return HookResult.Continue;
         }
 
-
         AddTimer(1.0f, () =>
         {
             if (!_playerCache.TryGetValue(player, out PlayerData? playerData))
@@ -34,7 +33,10 @@ public partial class Plugin
 
             playerData.GroupId = GroupManager!.GetPlayerGroup(player);
 
-            if (playerData.GroupId == -1) return;
+            if (playerData.GroupId == -1)
+            {
+                return;
+            }
 
             var playerGroup = Config.VIPGroups[playerData.GroupId];
 
@@ -66,7 +68,10 @@ public partial class Plugin
         }
 
         int GroupId = playerData.GroupId;
-        if (GroupId == -1) return HookResult.Continue;
+        if (GroupId == -1)
+        {
+            return HookResult.Continue;
+        }
 
         var playerGroup = Config!.VIPGroups[GroupId];
 
@@ -82,7 +87,6 @@ public partial class Plugin
         }
 
         _playerCache.Remove(player);
-
 
         return HookResult.Continue;
     }
@@ -117,9 +121,8 @@ public partial class Plugin
             }
             else
             {
-                Logger.LogError($"Registered {Config.VIPGroups.Count} groups, but there's only HealthRegenTimers.Count place for timer. i = {i}");
+                Logger.LogError("Registered {GroupCount} groups, but there's only HealthRegenTimers.Count place for timer. i = {i}", Config.VIPGroups.Count, i);
             }
-
 
             if (i < ArmorRegenTimers.Count)
             {
@@ -136,7 +139,7 @@ public partial class Plugin
             }
             else
             {
-                Logger.LogError($"Registered {Config.VIPGroups.Count} groups, but there's only ArmorRegenTimers.Count place for timer. i = {i}");
+                Logger.LogError("Registered {GroupCount} groups, but there's only HealthRegenTimers.Count place for timer. i = {i}", Config.VIPGroups.Count, i);
             }
         }
 
@@ -154,7 +157,6 @@ public partial class Plugin
         {
             return HookResult.Continue;
         }
-
 
         if (Config.NightVip.Enabled &&
             NightVipManager!.IsNightVipTime() &&
@@ -179,7 +181,10 @@ public partial class Plugin
     {
         Server.NextFrame(() =>
         {
-            if (!PlayerManager.IsValid(player) || !player.PawnIsAlive) return;
+            if (!PlayerManager.IsValid(player) || !player.PawnIsAlive)
+            {
+                return;
+            }
 
             var playerPawn = player.PlayerPawn.Value;
 
@@ -211,7 +216,6 @@ public partial class Plugin
             {
                 PlayerManager.GiveItem(player, "item_defuser");
             }
-
 
             //if (playerGroup.Events.Spawn.Grenades.StripOnSpawn)
             //{
@@ -257,6 +261,7 @@ public partial class Plugin
                         }
                     }
                 }
+
                 if (!hasZeus)
                 {
                     PlayerManager.GiveItem(player, CsItem.Zeus, 1);
@@ -286,10 +291,15 @@ public partial class Plugin
             }
 
             int playerGroupID = value.GroupId;
-            if (playerGroupID == -1) continue;
+            if (playerGroupID == -1)
+            {
+                continue;
+            }
+
             VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
 
-            CsTeam winnerTeam = (CsTeam)(@event.Winner);
+            CsTeam winnerTeam = (CsTeam)@event.Winner;
+
             if (player.Team == winnerTeam)
             {
                 PlayerManager.AddMoney(player, playerGroup.Events.Round.WinMoney, playerGroup.Limits.MaxMoney);
@@ -356,7 +366,10 @@ public partial class Plugin
         }
 
         int playerGroupID = playerData.GroupId;
-        if (playerGroupID == -1) return HookResult.Continue;
+        if (playerGroupID == -1)
+        {
+            return HookResult.Continue;
+        }
 
         VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
         PlayerManager.AddMoney(player, playerGroup.Events.Bomb.BombPlantMoney, playerGroup.Limits.MaxMoney);
@@ -369,7 +382,6 @@ public partial class Plugin
     {
         CCSPlayerController player = @event.Userid;
 
-
         if (!PlayerManager.IsValid(player) ||
             player.IsBot ||
             !_playerCache.TryGetValue(player, out Models.PlayerData? playerData))
@@ -378,11 +390,13 @@ public partial class Plugin
         }
 
         int playerGroupID = playerData.GroupId;
-        if (playerGroupID == -1) return HookResult.Continue;
+        if (playerGroupID == -1)
+        {
+            return HookResult.Continue;
+        }
 
         VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
         PlayerManager.AddMoney(player, playerGroup.Events.Bomb.BombDefuseMoney, playerGroup.Limits.MaxMoney);
-
 
         return HookResult.Continue;
     }
@@ -392,9 +406,15 @@ public partial class Plugin
     {
         var player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !_playerCache.TryGetValue(player, out var playerData)) return HookResult.Continue;
+            !_playerCache.TryGetValue(player, out var playerData))
+        {
+            return HookResult.Continue;
+        }
 
-        if (playerData.GroupId == -1) return HookResult.Continue;
+        if (playerData.GroupId == -1)
+        {
+            return HookResult.Continue;
+        }
 
         var playerGroup = Config.VIPGroups[playerData.GroupId];
 
@@ -426,9 +446,15 @@ public partial class Plugin
     {
         var player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !_playerCache.TryGetValue(player, out var playerData)) return HookResult.Continue;
+            !_playerCache.TryGetValue(player, out var playerData))
+        {
+            return HookResult.Continue;
+        }
 
-        if (playerData.GroupId == -1) return HookResult.Continue;
+        if (playerData.GroupId == -1)
+        {
+            return HookResult.Continue;
+        }
 
         var playerGroup = Config.VIPGroups[playerData.GroupId];
 
@@ -437,7 +463,10 @@ public partial class Plugin
             var playerPawn = player!.PlayerPawn!.Value;
             var weapon = playerPawn!.WeaponServices!.ActiveWeapon;
 
-            if (weapon == null) return HookResult.Continue;
+            if (weapon == null)
+            {
+                return HookResult.Continue;
+            }
 
             var c4 = new CC4(weapon!.Value!.Handle);
             float remainingTime = c4.ArmedTime - Server.CurrentTime;
@@ -479,7 +508,11 @@ public partial class Plugin
 
         int playerGroupID = playerData.GroupId;
 
-        if (playerGroupID == -1) return HookResult.Continue;
+        if (playerGroupID == -1)
+        {
+            return HookResult.Continue;
+        }
+
         VipGroupConfig playerGroup = Config!.VIPGroups[playerGroupID];
 
         if (playerGroup.Misc.NoFallDamage || (playerData.UsingExtraJump && playerGroup.Misc.ExtraJumps.NoFallDamage))
@@ -491,14 +524,19 @@ public partial class Plugin
         return HookResult.Continue;
     }
 
-
     private void OnTick(CCSPlayerController player)
     {
         if (!PlayerManager.IsValid(player) ||
             player.IsBot ||
-             !_playerCache.TryGetValue(player, out Models.PlayerData? playerData)) return;
+             !_playerCache.TryGetValue(player, out Models.PlayerData? playerData))
+        {
+            return;
+        }
 
-        if (playerData.GroupId == -1) { return; }
+        if (playerData.GroupId == -1)
+        {
+            return;
+        }
 
         VipGroupConfig playerGroup = Config!.VIPGroups[playerData.GroupId];
         if (playerGroup.Misc.ExtraJumps.Amount == 0)
@@ -507,7 +545,6 @@ public partial class Plugin
         }
 
         CCSPlayerPawn pawn = player.PlayerPawn!.Value!;
-
 
         var flags = (PlayerFlags)pawn.Flags;
         var buttons = player.Buttons;
@@ -546,26 +583,45 @@ public partial class Plugin
 
     private void OnEntitySpawned(CEntityInstance entity)
     {
-        if (entity.DesignerName != "smokegrenade_projectile") return;
+        if (entity.DesignerName != "smokegrenade_projectile")
+        {
+            return;
+        }
 
         var smokeGrenadeEntity = new CSmokeGrenadeProjectile(entity.Handle);
-        if (smokeGrenadeEntity.Handle == IntPtr.Zero) return;
+        if (smokeGrenadeEntity.Handle == IntPtr.Zero)
+        {
+            return;
+        }
 
         Server.NextFrame(() =>
         {
             var throwerPawnValue = smokeGrenadeEntity.Thrower.Value;
-            if (throwerPawnValue == null) return;
+            if (throwerPawnValue == null)
+            {
+                return;
+            }
 
             var throwerValueController = throwerPawnValue!.Controller!.Value!;
             var player = new CCSPlayerController(throwerValueController.Handle);
 
             if (!PlayerManager.IsValid(player) ||
-                !_playerCache.TryGetValue(player, out PlayerData? playerData)) return;
+                !_playerCache.TryGetValue(player, out PlayerData? playerData))
+            {
+                return;
+            }
 
-            if (playerData.GroupId == -1) return;
+            if (playerData.GroupId == -1)
+            {
+                return;
+            }
+
             var playerGroup = Config.VIPGroups[playerData.GroupId];
 
-            if (!playerGroup.Misc.Smoke.Enabled) return;
+            if (!playerGroup.Misc.Smoke.Enabled)
+            {
+                return;
+            }
 
             switch (playerGroup.Misc.Smoke.Type)
             {

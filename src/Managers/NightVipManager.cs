@@ -14,7 +14,10 @@ namespace Core.Managers
 
         public bool IsNightVipTime()
         {
-            if (!NightVipData.Enabled) return false;
+            if (!NightVipData.Enabled)
+            {
+                return false;
+            }
 
             int currentHour = DateTime.Now.Hour;
             if (NightVipData.StartHour <= NightVipData.EndHour)

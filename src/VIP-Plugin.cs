@@ -49,7 +49,10 @@ namespace Core
             {
                 foreach (var player in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && p.PawnIsAlive))
                 {
-                    if (!_playerCache.ContainsKey(player)) continue;
+                    if (!_playerCache.ContainsKey(player))
+                    {
+                        continue;
+                    }
 
                     OnTick(player);
                 }
@@ -85,11 +88,15 @@ namespace Core
                     if (!player.IsValid ||
                         !player.PawnIsAlive ||
                         !_playerCache.ContainsKey(player))
+                    {
                         continue;
+                    }
 
                     var playerData = _playerCache[player];
                     if (playerData.GroupId == -1 || Config.VIPGroups[playerData.GroupId] != group)
+                    {
                         continue;
+                    }
 
                     PlayerManager.AddHealth(player, group.Misc.HealthRegen.Amount, group.Limits.MaxHp);
                 }
@@ -113,11 +120,15 @@ namespace Core
                     if (!player.IsValid ||
                         !player.PawnIsAlive ||
                         !_playerCache.ContainsKey(player))
+                    {
                         continue;
+                    }
 
                     var playerData = _playerCache[player];
                     if (playerData.GroupId == -1 || Config.VIPGroups[playerData.GroupId] != group)
+                    {
                         continue;
+                    }
 
                     PlayerManager.AddArmor(player, group.Misc.ArmorRegen.Amount);
                 }

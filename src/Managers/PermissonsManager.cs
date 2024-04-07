@@ -19,5 +19,3 @@ namespace Core.Managers
     }
 }
 
-
-
