@@ -86,6 +86,10 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "Delay": 5, // delay after round start
           "Amount": 5 // amount of Armor, limited by 100
         },
+        "FastDefuse": {
+          "Enabled": false,
+          "Modifier": 1 // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+        },
         "NoFallDamageGlobal": false, // Global 
         "Gravity": 1,
         "Speed": 1

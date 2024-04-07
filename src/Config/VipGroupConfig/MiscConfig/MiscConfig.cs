@@ -16,6 +16,9 @@ namespace Core.Config
         [JsonPropertyName("ArmorRegen")]
         public ArmorRegenConfig ArmorRegen { get; set; } = new();
 
+        [JsonPropertyName("FastDefuse")]
+        public FastDefuseConfig FastDefuse { get; set; } = new();
+
         [JsonPropertyName("NoFallDamageGlobal")]
         public bool NoFallDamage { get; set; } = false;
 

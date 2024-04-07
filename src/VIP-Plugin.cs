@@ -13,17 +13,16 @@ namespace Core
     {
         public override string ModuleName => "VIP Plugin";
         public override string ModuleAuthor => "Hacker";
-        public override string ModuleVersion => "1.0.23";
-
+        public override string ModuleVersion => "1.0.24";
         public required PluginConfig Config { get; set; }
 
-        private Managers.GroupManager? GroupManager { get; set; }
-        private Managers.RandomVipManager? RandomVipManager { get; set; }
-        private Managers.NightVipManager? NightVipManager { get; set; }
+        private GroupManager? GroupManager { get; set; }
+        private RandomVipManager? RandomVipManager { get; set; }
+        private NightVipManager? NightVipManager { get; set; }
 
         private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
-        private List<Timer?> HealthRegenTimers { get; set; } = [];
 
+        private List<Timer?> HealthRegenTimers { get; set; } = [];
         private List<Timer?> ArmorRegenTimers { get; set; } = [];
 
         public void OnConfigParsed(PluginConfig _Config)
@@ -31,9 +30,9 @@ namespace Core
             Config = _Config;
             string Prefix = $" {MessageFormatter.FormatColor(Config.Settings.Prefix)}";
 
-            GroupManager = new Managers.GroupManager(Config.VIPGroups);
-            RandomVipManager = new Managers.RandomVipManager(Config.RandomVip, Prefix);
-            NightVipManager = new Managers.NightVipManager(Config.NightVip);
+            GroupManager = new GroupManager(Config.VIPGroups);
+            RandomVipManager = new RandomVipManager(Config.RandomVip, Prefix);
+            NightVipManager = new NightVipManager(Config.NightVip);
 
             foreach (var _ in Config.VIPGroups)
             {
@@ -61,7 +60,7 @@ namespace Core
             if (hotReload)
             {
                 foreach (var player in Utilities.GetPlayers()
-                    .Where(p => Managers.PlayerManager.IsValid(p) && !p.IsHLTV))
+                    .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV))
                 {
 
                     _playerCache.Add(player, new PlayerData { GroupId = GroupManager!.GetPlayerGroup(player) });

@@ -387,6 +387,38 @@ public partial class Plugin
         return HookResult.Continue;
     }
 
+    [GameEventHandler]
+    public HookResult OnBombBeginDefuse(EventBombBegindefuse @event, GameEventInfo info)
+    {
+        var bomb = Utilities.FindAllEntitiesByDesignerName<CPlantedC4>("planted_c4").First();
+        var player = @event.Userid;
+        if (!PlayerManager.IsValid(player) ||
+            !_playerCache.TryGetValue(player, out var playerData)) return HookResult.Continue;
+
+        if (playerData.GroupId == -1) return HookResult.Continue;
+
+        var playerGroup = Config.VIPGroups[playerData.GroupId];
+        if (playerGroup.Misc.FastDefuse.Enabled)
+        {
+            Server.NextFrame(() =>
+            {
+                float CountDown = bomb.DefuseCountDown;
+                float remainingTime = CountDown - Server.CurrentTime;
+
+                float modifiedTime = remainingTime * playerGroup.Misc.FastDefuse.Modifier;
+
+                bomb.DefuseCountDown = modifiedTime + Server.CurrentTime;
+                player!.PlayerPawn!.Value!.ProgressBarDuration = (int)float.Ceiling(modifiedTime);
+
+                //Server.PrintToChatAll($"CountDown: {CountDown}");
+                //Server.PrintToChatAll($"remainingTime: {remainingTime}");
+                //Server.PrintToChatAll($"ProgressBarDuration: {player.PlayerPawn.Value.ProgressBarDuration}");
+            });
+        }
+
+        return HookResult.Continue;
+    }
+
 
     private HookResult OnTakeDamage(DynamicHook h)
     {
@@ -425,6 +457,7 @@ public partial class Plugin
 
         return HookResult.Continue;
     }
+
 
     private void OnTick(CCSPlayerController player)
     {
