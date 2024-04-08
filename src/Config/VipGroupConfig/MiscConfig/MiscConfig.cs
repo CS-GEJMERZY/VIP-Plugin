@@ -7,6 +7,9 @@ namespace Core.Config
         [JsonPropertyName("ExtraJumps")]
         public ExtraJumpsConfig ExtraJumps { get; set; } = new();
 
+        [JsonPropertyName("Bhop")]
+        public BhopConfig Bhop { get; set; } = new();
+
         [JsonPropertyName("Smoke")]
         public SmokeConfig Smoke { get; set; } = new();
 
