@@ -134,6 +134,10 @@ namespace Core
                 }
             });
         }
+        private static CCSGameRules GetGamerules()
+        {
+            return Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
+        }
     }
 }
 

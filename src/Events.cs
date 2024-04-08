@@ -420,7 +420,16 @@ public partial class Plugin
 
         var bomb = Utilities.FindAllEntitiesByDesignerName<CPlantedC4>("planted_c4").First();
 
-        if (playerGroup.Misc.FastDefuse.Enabled)
+        var gameRules = GetGamerules();
+        if (gameRules == null)
+        {
+            return HookResult.Continue;
+        }
+
+        var time = Server.CurrentTime - gameRules.RoundStartTime;
+
+        if (playerGroup.Misc.FastDefuse.Enabled &&
+            time >= playerGroup.Misc.FastDefuse.TimeAfterRoundStart)
         {
             Server.NextFrame(() =>
             {
@@ -458,7 +467,16 @@ public partial class Plugin
 
         var playerGroup = Config.VIPGroups[playerData.GroupId];
 
-        if (playerGroup.Misc.FastPlant.Enabled)
+        var gameRules = GetGamerules();
+        if (gameRules == null)
+        {
+            return HookResult.Continue;
+        }
+
+        var time = Server.CurrentTime - gameRules.RoundStartTime;
+
+        if (playerGroup.Misc.FastPlant.Enabled &&
+            time >= playerGroup.Misc.FastPlant.TimeAfterRoundStart)
         {
             var playerPawn = player!.PlayerPawn!.Value;
             var weapon = playerPawn!.WeaponServices!.ActiveWeapon;

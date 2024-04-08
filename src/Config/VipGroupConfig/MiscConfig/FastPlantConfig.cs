@@ -9,5 +9,8 @@ namespace Core.Config
 
         [JsonPropertyName("Modifier")]
         public float Modifier { get; set; } = 1.0f;
+
+        [JsonPropertyName("TimeAfterRoundStart")]
+        public float TimeAfterRoundStart { get; set; } = 0;
     }
 }
