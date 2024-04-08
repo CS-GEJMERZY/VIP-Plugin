@@ -70,7 +70,10 @@ namespace Core
                 }
             }
         }
-
+        public override void Unload(bool hotReload)
+        {
+            VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
+        }
         public void HealthRegenCallback(object state)
         {
             var group = (VipGroupConfig)state;
