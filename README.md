@@ -88,11 +88,13 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
         },        
         "FastPlant": {
           "Enabled": false,
-          "Modifier": 0.5 // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+          "Modifier": 0.5, // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+          "TimeAfterRoundStart" : 0 // time after round start for the feature to start working
         },
         "FastDefuse": {
           "Enabled": false,
-          "Modifier": 1 // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+          "Modifier": 1, // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+          "TimeAfterRoundStart" : 0 // time after round start for the feature to start working
         },
         "NoFallDamageGlobal": false, // Global 
         "Gravity": 1,
