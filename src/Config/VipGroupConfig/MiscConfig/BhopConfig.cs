@@ -8,6 +8,6 @@ namespace Core.Config
         public bool Enabled { get; set; } = false;
 
         [JsonPropertyName("VelocityZ")]
-        public double VelocityZ { get; set; } = 260.0;
+        public float VelocityZ { get; set; } = 260.0f;
     }
 }

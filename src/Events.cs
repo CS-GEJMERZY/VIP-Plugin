@@ -557,10 +557,6 @@ public partial class Plugin
         }
 
         VipGroupConfig playerGroup = Config!.VIPGroups[playerData.GroupId];
-        if (playerGroup.Misc.ExtraJumps.Amount == 0)
-        {
-            return;
-        }
 
         CCSPlayerPawn pawn = player.PlayerPawn!.Value!;
 
@@ -570,29 +566,41 @@ public partial class Plugin
         var lastFlags = playerData.LastFlags;
         var lastButtons = playerData.LastButtons;
 
-        if ((lastFlags & PlayerFlags.FL_ONGROUND) != 0 &&
+        if (playerGroup.Misc.Bhop.Enabled)
+        {
+            if ((buttons & PlayerButtons.Jump) != 0 &&
+                (flags & PlayerFlags.FL_ONGROUND) != 0 &&
+                (pawn.MoveType & MoveType_t.MOVETYPE_LADDER) == 0)
+            {
+                pawn.AbsVelocity.Z = playerGroup.Misc.Bhop.VelocityZ;
+            }
+        }
+
+        if (playerGroup.Misc.ExtraJumps.Amount > 0)
+        {
+            if ((lastFlags & PlayerFlags.FL_ONGROUND) != 0 &&
              (flags & PlayerFlags.FL_ONGROUND) == 0 &&
              (lastButtons & PlayerButtons.Jump) == 0 &&
              (buttons & PlayerButtons.Jump) != 0)
-        {
-            playerData.JumpsUsed++;
-            playerData.UsingExtraJump = false;
-        }
-        else if ((flags & PlayerFlags.FL_ONGROUND) != 0)
-        {
-            playerData.JumpsUsed = 0;
-            playerData.UsingExtraJump = false;
-        }
-        else if ((lastButtons & PlayerButtons.Jump) == 0 &&
-            (buttons & PlayerButtons.Jump) != 0 &&
-            playerData.JumpsUsed <= playerGroup.Misc.ExtraJumps.Amount)
-        {
-            playerData.JumpsUsed++;
+            {
+                playerData.JumpsUsed++;
+                playerData.UsingExtraJump = false;
+            }
+            else if ((flags & PlayerFlags.FL_ONGROUND) != 0)
+            {
+                playerData.JumpsUsed = 0;
+                playerData.UsingExtraJump = false;
+            }
+            else if ((lastButtons & PlayerButtons.Jump) == 0 &&
+                (buttons & PlayerButtons.Jump) != 0 &&
+                playerData.JumpsUsed <= playerGroup.Misc.ExtraJumps.Amount)
+            {
+                playerData.JumpsUsed++;
 
-            float Z_VELOCITY = (float)playerGroup.Misc.ExtraJumps.VelocityZ;
-            pawn.AbsVelocity.Z = Z_VELOCITY;
-            playerData.UsingExtraJump = true;
+                pawn.AbsVelocity.Z = playerGroup.Misc.ExtraJumps.VelocityZ;
+                playerData.UsingExtraJump = true;
 
+            }
         }
 
         playerData.LastFlags = flags;
