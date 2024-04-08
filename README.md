@@ -69,6 +69,10 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "VelocityZ": 260, // Basically the height of a jump
           "NoFallDamage": true // Whether NoFallDamage after extra jump is enabled
         },
+        "Bhop": {
+          "Enabled": false, 
+          "VelocityZ": 260, // the height of a jump
+        },
         "Smoke": {
           "Enabled": false, // Whether it is enabled
           "Type": 0, // Type: 0 - fixed color from 'Color', 1 - random
