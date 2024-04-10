@@ -42,8 +42,6 @@ namespace Core
 
         public override void Load(bool hotReload)
         {
-            VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
-
             RegisterListener<OnTick>(() =>
             {
                 foreach (var player in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && p.PawnIsAlive))
@@ -68,6 +66,9 @@ namespace Core
                     _playerCache.Add(player, new PlayerData { GroupId = GroupManager!.GetPlayerGroup(player) });
                 }
             }
+
+            // TO:DO - actually fix it(look #30)
+            VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
         }
         public override void Unload(bool hotReload)
         {
