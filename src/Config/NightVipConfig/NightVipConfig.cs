@@ -26,6 +26,5 @@ namespace Core.Config
         public List<string> PermissionExclude { get; set; } = [];
     }
 
-
 }
 

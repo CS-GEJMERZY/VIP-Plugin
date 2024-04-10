@@ -17,9 +17,8 @@ public class MessageFormatter
                 result = result.Replace(pattern, field.GetValue(null)!.ToString(), StringComparison.OrdinalIgnoreCase);
             }
         }
+
         return result;
     }
 }
-
-
 

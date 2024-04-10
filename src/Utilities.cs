@@ -25,11 +25,13 @@ public partial class Plugin
     public static bool IsPistolRound()
     {
         var gameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules;
-        if (gameRules == null) return false;
+        if (gameRules == null)
+        {
+            return false;
+        }
 
         var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
         var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
-
 
         return gameRules.TotalRoundsPlayed == 0 || (halftime && maxrounds / 2 == gameRules.TotalRoundsPlayed) ||
                gameRules.GameRestart;
@@ -38,10 +40,14 @@ public partial class Plugin
     public static Color HexToRgb(string hex)
     {
         if (hex[0] == '#')
+        {
             hex = hex[1..];
+        }
 
         if (hex.Length != 6)
+        {
             throw new ArgumentException("Hexadecimal color string must be exactly 6 characters long.");
+        }
 
         int red = Convert.ToInt32(hex.Substring(0, 2), 16);
         int green = Convert.ToInt32(hex.Substring(2, 2), 16);

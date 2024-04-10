@@ -8,7 +8,7 @@ namespace Core.Config
         public int Amount { get; set; } = 0;
 
         [JsonPropertyName("VelocityZ")]
-        public double VelocityZ { get; set; } = 260.0;
+        public float VelocityZ { get; set; } = 260.0f;
 
         [JsonPropertyName("NoFallDamage")]
         public bool NoFallDamage { get; set; } = true;

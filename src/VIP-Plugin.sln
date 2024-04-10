@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.9.34701.34
+VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VIP-Plugin", "VIP-Plugin.csproj", "{7347465E-B70E-4A1D-96FB-BD32058F4CD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VIP-Plugin", "VIP-Plugin.csproj", "{D738955E-190F-45CE-B859-85B17D2BB750}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7347465E-B70E-4A1D-96FB-BD32058F4CD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7347465E-B70E-4A1D-96FB-BD32058F4CD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7347465E-B70E-4A1D-96FB-BD32058F4CD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7347465E-B70E-4A1D-96FB-BD32058F4CD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D738955E-190F-45CE-B859-85B17D2BB750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D738955E-190F-45CE-B859-85B17D2BB750}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D738955E-190F-45CE-B859-85B17D2BB750}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D738955E-190F-45CE-B859-85B17D2BB750}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {FEAAD9E4-116D-45D1-86C8-018BCCFBFC6A}
+		SolutionGuid = {83199E92-96DB-4A2D-B7FB-A12713BF6F01}
 	EndGlobalSection
 EndGlobal

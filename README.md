@@ -45,8 +45,8 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           }
         },
         "Kill": {
-          "HP": 2,
-          "HeadshotHP": 3,
+          "HP": 2, // amount of HP, limited by Limits.MaxHp
+          "HeadshotHP": 3, // amount of HP, limited by Limits.MaxHp
           "Money": 200,
           "HeadshotMoney": 300
         },
@@ -69,10 +69,36 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "VelocityZ": 260, // Basically the height of a jump
           "NoFallDamage": true // Whether NoFallDamage after extra jump is enabled
         },
+        "Bhop": {
+          "Enabled": false, 
+          "VelocityZ": 260, // the height of a jump
+        },
         "Smoke": {
           "Enabled": false, // Whether it is enabled
           "Type": 0, // Type: 0 - fixed color from 'Color', 1 - random
           "Color": "#FF0000" // Color in hex
+        },
+        "HealthRegen": {
+          "Enabled": false,
+          "Interval": 5, // add HP every 'Interval"
+          "Delay": 5, // delay after round start
+          "Amount": 5 // amount of HP, limited by Limits.MaxHp
+        },
+        "ArmorRegen": {
+          "Enabled": false,
+          "Interval": 5, // add Armor every 'Interval"
+          "Delay": 5, // delay after round start
+          "Amount": 5 // amount of Armor, limited by 100
+        },        
+        "FastPlant": {
+          "Enabled": false,
+          "Modifier": 0.5, // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+          "TimeAfterRoundStart" : 0 // time after round start for the feature to start working
+        },
+        "FastDefuse": {
+          "Enabled": false,
+          "Modifier": 1, // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+          "TimeAfterRoundStart" : 0 // time after round start for the feature to start working
         },
         "NoFallDamageGlobal": false, // Global 
         "Gravity": 1,

@@ -7,8 +7,23 @@ namespace Core.Config
         [JsonPropertyName("ExtraJumps")]
         public ExtraJumpsConfig ExtraJumps { get; set; } = new();
 
+        [JsonPropertyName("Bhop")]
+        public BhopConfig Bhop { get; set; } = new();
+
         [JsonPropertyName("Smoke")]
         public SmokeConfig Smoke { get; set; } = new();
+
+        [JsonPropertyName("HealthRegen")]
+        public HealthRegenConfig HealthRegen { get; set; } = new();
+
+        [JsonPropertyName("ArmorRegen")]
+        public ArmorRegenConfig ArmorRegen { get; set; } = new();
+
+        [JsonPropertyName("FastPlant")]
+        public FastPlantConfig FastPlant { get; set; } = new();
+
+        [JsonPropertyName("FastDefuse")]
+        public FastDefuseConfig FastDefuse { get; set; } = new();
 
         [JsonPropertyName("NoFallDamageGlobal")]
         public bool NoFallDamage { get; set; } = false;
@@ -20,5 +35,4 @@ namespace Core.Config
         public float Speed { get; set; } = 1.0f;
     }
 }
-
 
