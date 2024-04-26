@@ -12,7 +12,7 @@ namespace Core
     {
         public override string ModuleName => "VIP Plugin";
         public override string ModuleAuthor => "Hacker";
-        public override string ModuleVersion => "1.0.26(beta)";
+        public override string ModuleVersion => "1.0.27";
         public required PluginConfig Config { get; set; }
 
         private GroupManager? GroupManager { get; set; }
