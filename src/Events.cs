@@ -418,7 +418,6 @@ public partial class Plugin
 
         var playerGroup = Config.VIPGroups[playerData.GroupId];
 
-
         var gameRules = GetGamerules();
         if (gameRules == null)
         {
@@ -501,12 +500,8 @@ public partial class Plugin
 
             float remainingTime = c4.ArmedTime - Server.CurrentTime;
 
-            //Server.PrintToChatAll($"time: {remainingTime}");
-
             float modifiedTime = remainingTime * playerGroup.Misc.FastPlant.Modifier;
             c4.ArmedTime = modifiedTime + Server.CurrentTime;
-
-            //Server.PrintToChatAll($"modifiedTime: {modifiedTime}");
         }
 
         return HookResult.Continue;
