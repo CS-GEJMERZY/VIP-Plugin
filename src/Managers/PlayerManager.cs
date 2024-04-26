@@ -100,7 +100,7 @@ namespace Core.Managers
             var playerPawn = player!.PlayerPawn.Value;
 
             playerPawn!.ArmorValue = amount;
-            Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawnBase", "m_ArmorValue");
+            Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawn", "m_ArmorValue");
         }
 
         public static void AddArmor(CCSPlayerController player, int amount)
@@ -110,7 +110,7 @@ namespace Core.Managers
             int newValue = Math.Max(100, GetArmor(player) + amount);
             playerPawn!.ArmorValue = newValue;
 
-            Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawnBase", "m_ArmorValue");
+            Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawn", "m_ArmorValue");
         }
     }
 }
