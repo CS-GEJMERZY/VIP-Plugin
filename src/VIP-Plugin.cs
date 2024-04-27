@@ -67,7 +67,6 @@ namespace Core
                 }
             }
 
-            // TO:DO - actually fix it(look #30)
             VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
         }
         public override void Unload(bool hotReload)
