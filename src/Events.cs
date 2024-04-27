@@ -217,11 +217,6 @@ public partial class Plugin
                 PlayerManager.GiveItem(player, "item_defuser");
             }
 
-            //if (playerGroup.Events.Spawn.Grenades.StripOnSpawn)
-            //{
-            //    PlayerManager.StripGrenades(player);
-            //}
-
             if (playerGroup.Events.Spawn.HealthshotOnPistolRound || !IsPistolRound())
             {
                 PlayerManager.GiveItem(player, CsItem.Healthshot, playerGroup.Events.Spawn.HealthshotAmount);

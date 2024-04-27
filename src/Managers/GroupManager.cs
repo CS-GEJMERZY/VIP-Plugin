@@ -1,28 +1,27 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
-namespace Core.Managers
+namespace Core.Managers;
+
+public class GroupManager
 {
-    public class GroupManager
+    private readonly List<Config.VipGroupConfig> _groups;
+    public GroupManager(List<Config.VipGroupConfig> groups)
     {
-        private readonly List<Config.VipGroupConfig> _groups;
-        public GroupManager(List<Config.VipGroupConfig> groups)
-        {
-            _groups = groups;
-        }
+        _groups = groups;
+    }
 
-        public int GetPlayerGroup(CCSPlayerController player)
+    public int GetPlayerGroup(CCSPlayerController player)
+    {
+        for (int i = 0; i < _groups.Count; i++)
         {
-            for (int i = 0; i < _groups.Count; i++)
+            if (AdminManager.PlayerHasPermissions(player, _groups[i].Permissions))
             {
-                if (AdminManager.PlayerHasPermissions(player, _groups[i].Permissions))
-                {
-                    return i;
-                }
+                return i;
             }
-
-            return -1;
         }
+
+        return -1;
     }
 }
 
