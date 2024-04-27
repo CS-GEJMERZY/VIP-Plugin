@@ -11,7 +11,10 @@ public partial class Plugin
     [ConsoleCommand("css_vipdebug", "Vip plugin debug command")]
     public void OnDebugCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
-        if (player == null) { return; }
+        if (player == null)
+        {
+            return;
+        }
 
         if (!_playerCache.TryGetValue(player, out Models.PlayerData? playerData))
         {

@@ -3,13 +3,9 @@ using CounterStrikeSharp.API.Modules.Admin;
 
 namespace Core.Managers;
 
-public class GroupManager
+public class GroupManager(List<Config.VipGroupConfig> groups)
 {
-    private readonly List<Config.VipGroupConfig> _groups;
-    public GroupManager(List<Config.VipGroupConfig> groups)
-    {
-        _groups = groups;
-    }
+    private readonly List<Config.VipGroupConfig> _groups = groups;
 
     public int GetPlayerGroup(CCSPlayerController player)
     {

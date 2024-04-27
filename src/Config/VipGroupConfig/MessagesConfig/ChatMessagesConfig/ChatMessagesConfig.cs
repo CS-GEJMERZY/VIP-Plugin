@@ -1,13 +1,22 @@
 using System.Text.Json.Serialization;
 
-namespace Core.Config
-{
-    public class ChatMessagesConfig
-    {
-        [JsonPropertyName("Connect")]
-        public SingleChatMessageConfig Connect { get; set; } = new(true, "VIP {playername} joined the server", true);
+namespace Core.Config;
 
-        [JsonPropertyName("Disconnect")]
-        public SingleChatMessageConfig Disconnect { get; set; } = new(true, "VIP {playername} left the server", true);
-    }
+public class ChatMessagesConfig
+{
+    [JsonPropertyName("Connect")]
+    public SingleChatMessageConfig Connect { get; set; } = new()
+    {
+        Enabled = true,
+        Message = "VIP {playername} joined the server",
+        DontBroadcast = true
+    };
+
+    [JsonPropertyName("Disconnect")]
+    public SingleChatMessageConfig Disconnect { get; set; } = new()
+    {
+        Enabled = true,
+        Message = "VIP {playername} left the server",
+        DontBroadcast = true
+    };
 }

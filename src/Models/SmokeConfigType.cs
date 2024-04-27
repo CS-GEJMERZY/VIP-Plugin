@@ -1,8 +1,7 @@
-﻿namespace Core.Models
+﻿namespace Core.Models;
+
+public enum SmokeConfigType
 {
-    public enum SmokeConfigType
-    {
-        Fixed = 0,
-        Random = 1,
-    }
+    Fixed = 0,
+    Random = 1,
 }

@@ -1,30 +1,28 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Core.Config
+namespace Core.Config;
+
+public class NightVipConfig
 {
-    public class NightVipConfig
-    {
-        [JsonPropertyName("Enabled")]
-        public bool Enabled { get; set; } = false;
+    [JsonPropertyName("Enabled")]
+    public bool Enabled { get; set; } = false;
 
-        [JsonPropertyName("StartHour")]
-        public int StartHour { get; set; } = 22;
+    [JsonPropertyName("StartHour")]
+    public int StartHour { get; set; } = 22;
 
-        [JsonPropertyName("EndHour")]
-        public int EndHour { get; set; } = 8;
+    [JsonPropertyName("EndHour")]
+    public int EndHour { get; set; } = 8;
 
-        [JsonPropertyName("RequiredNickPhrase")]
-        public string RequiredNickPhrase { get; set; } = "YourSite.com";
+    [JsonPropertyName("RequiredNickPhrase")]
+    public string RequiredNickPhrase { get; set; } = "YourSite.com";
 
-        [JsonPropertyName("RequiredScoreboardTag")]
-        public string RequiredScoreboardTag { get; set; } = "YourSite.com";
+    [JsonPropertyName("RequiredScoreboardTag")]
+    public string RequiredScoreboardTag { get; set; } = "YourSite.com";
 
-        [JsonPropertyName("PermissionsGranted ")]
-        public List<string> PermissionsGranted { get; set; } = [];
+    [JsonPropertyName("PermissionsGranted ")]
+    public List<string> PermissionsGranted { get; set; } = [];
 
-        [JsonPropertyName("PermissionExclude")]
-        public List<string> PermissionExclude { get; set; } = [];
-    }
-
+    [JsonPropertyName("PermissionExclude")]
+    public List<string> PermissionExclude { get; set; } = [];
 }
 
