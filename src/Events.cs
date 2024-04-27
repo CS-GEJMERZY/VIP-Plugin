@@ -418,8 +418,6 @@ public partial class Plugin
 
         var playerGroup = Config.VIPGroups[playerData.GroupId];
 
-        var bomb = Utilities.FindAllEntitiesByDesignerName<CPlantedC4>("planted_c4").First();
-
         var gameRules = GetGamerules();
         if (gameRules == null)
         {
@@ -433,6 +431,13 @@ public partial class Plugin
         {
             Server.NextFrame(() =>
             {
+                var bomb = Utilities.FindAllEntitiesByDesignerName<CPlantedC4>("planted_c4").First();
+                if (bomb == null || !bomb.IsValid)
+                {
+                    Logger.LogWarning("Bomb entity is null or is not valid");
+                    return;
+                }
+
                 float CountDown = bomb.DefuseCountDown;
                 float remainingTime = CountDown - Server.CurrentTime;
 
@@ -440,10 +445,6 @@ public partial class Plugin
 
                 bomb.DefuseCountDown = modifiedTime + Server.CurrentTime;
                 player!.PlayerPawn!.Value!.ProgressBarDuration = (int)float.Ceiling(modifiedTime);
-
-                //Server.PrintToChatAll($"CountDown: {CountDown}");
-                //Server.PrintToChatAll($"remainingTime: {remainingTime}");
-                //Server.PrintToChatAll($"ProgressBarDuration: {player.PlayerPawn.Value.ProgressBarDuration}");
             });
         }
 
@@ -479,22 +480,28 @@ public partial class Plugin
             time >= playerGroup.Misc.FastPlant.TimeAfterRoundStart)
         {
             var playerPawn = player!.PlayerPawn!.Value;
+
             var weapon = playerPawn!.WeaponServices!.ActiveWeapon;
 
-            if (weapon == null)
+            if (weapon == null ||
+                weapon.Value == null ||
+                weapon!.Value!.DesignerName != "weapon_c4")
             {
                 return HookResult.Continue;
             }
 
             var c4 = new CC4(weapon!.Value!.Handle);
-            float remainingTime = c4.ArmedTime - Server.CurrentTime;
+            if (c4 == null ||
+                !c4.IsValid)
+            {
+                Logger.LogError("c4 entity is null or is not valid");
+                return HookResult.Continue;
+            }
 
-            //Server.PrintToChatAll($"time: {remainingTime}");
+            float remainingTime = c4.ArmedTime - Server.CurrentTime;
 
             float modifiedTime = remainingTime * playerGroup.Misc.FastPlant.Modifier;
             c4.ArmedTime = modifiedTime + Server.CurrentTime;
-
-            //Server.PrintToChatAll($"modifiedTime: {modifiedTime}");
         }
 
         return HookResult.Continue;
