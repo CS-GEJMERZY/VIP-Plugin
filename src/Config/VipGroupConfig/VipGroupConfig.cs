@@ -10,6 +10,9 @@ public class VipGroupConfig
     [JsonPropertyName("Priority")]
     public int Priority { get; set; } = 1;
 
+    [JsonPropertyName("UniqueId")]
+    public string UniqueId { get; set; } = "vip1";
+
     [JsonPropertyName("Name")]
     public string Name { get; set; } = "VIP";
 

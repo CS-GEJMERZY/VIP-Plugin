@@ -22,7 +22,7 @@ public partial class Plugin
         }
         else
         {
-            player!.PrintToChat($"Your group id: {playerData.GroupId}");
+            player!.PrintToChat($"Your group id: ");
             foreach (var group in Config!.VIPGroups)
             {
                 var hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);

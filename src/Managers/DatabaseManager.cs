@@ -63,7 +63,7 @@ public class DatabaseManager
         await command.ExecuteNonQueryAsync();
     }
 
-    public async Task<PlayerDatabaseData> GetPlayerData(ulong steamid64, string name)
+    public async Task<int> GetPlayerData(ulong steamid64, string name)
     {
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
@@ -80,11 +80,11 @@ public class DatabaseManager
         command.Parameters.AddWithValue("name", name);
         command.Parameters.AddWithValue("@lastconnect", DateTime.UtcNow);
 
-        int returnId = Convert.ToInt32(await command.ExecuteScalarAsync());
-        return new PlayerDatabaseData() { Id = returnId };
+        int id = Convert.ToInt32(await command.ExecuteScalarAsync());
+        return id;
     }
 
-    public async Task<List<PlayerServiceData>> GetPlayerServices(int playerId, string name, ServiceAvailability availability = ServiceAvailability.Enabled)
+    public async Task<List<PlayerServiceData>> GetPlayerServices(int playerId, ServiceAvailability availability = ServiceAvailability.Enabled)
     {
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();

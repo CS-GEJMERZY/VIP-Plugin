@@ -29,7 +29,7 @@ public partial class Plugin
                 }
 
                 var playerData = _playerCache[player];
-                if (playerData.GroupId == -1 || Config.VIPGroups[playerData.GroupId] != group)
+                if (playerData.Group != group)
                 {
                     continue;
                 }
@@ -61,7 +61,7 @@ public partial class Plugin
                 }
 
                 var playerData = _playerCache[player];
-                if (playerData.GroupId == -1 || Config.VIPGroups[playerData.GroupId] != group)
+                if (playerData.Group != group)
                 {
                     continue;
                 }

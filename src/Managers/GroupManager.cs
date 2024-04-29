@@ -1,23 +1,35 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using Core.Config;
+using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
 namespace Core.Managers;
 
-public class GroupManager(List<Config.VipGroupConfig> groups)
+public class GroupManager
 {
-    private readonly List<Config.VipGroupConfig> _groups = groups;
+    private readonly List<VipGroupConfig> _groups = [];
 
-    public int GetPlayerGroup(CCSPlayerController player)
+    public GroupManager(List<VipGroupConfig> groups)
     {
-        for (int i = 0; i < _groups.Count; i++)
+        _groups = groups;
+        _groups.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+    }
+
+    public VipGroupConfig? GetPlayerBaseGroup(CCSPlayerController player)
+    {
+        foreach (var group in _groups)
         {
-            if (AdminManager.PlayerHasPermissions(player, _groups[i].Permissions))
+            if (AdminManager.PlayerHasPermissions(player, group.Permissions))
             {
-                return i;
+                return group;
             }
         }
 
-        return -1;
+        return null;
+    }
+
+    public VipGroupConfig? GetGroup(string id)
+    {
+        return _groups.Find(x => x.UniqueId == id);
     }
 }
 

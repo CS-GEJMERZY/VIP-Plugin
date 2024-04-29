@@ -63,7 +63,7 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
                 .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV))
             {
 
-                _playerCache.Add(player, new PlayerData { GroupId = GroupManager!.GetPlayerGroup(player) });
+                _playerCache.Add(player, new PlayerData { Group = GroupManager!.GetPlayerBaseGroup(player) });
             }
         }
 
