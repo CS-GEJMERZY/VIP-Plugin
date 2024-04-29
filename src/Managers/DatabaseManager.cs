@@ -175,4 +175,21 @@ public class DatabaseManager
 
         return rowsAffected;
     }
+
+    public async Task<int> SetServiceEndTime(int serviceId, DateTime end)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            UPDATE Services SET end = @end WHERE id = @serviceId;";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@serviceId", serviceId);
+        command.Parameters.AddWithValue("@end", end);
+
+        int rowsAffected = await command.ExecuteNonQueryAsync();
+
+        return rowsAffected;
+    }
 }
