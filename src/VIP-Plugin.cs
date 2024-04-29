@@ -98,7 +98,10 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
             }
         }
 
-        VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
+        if (Config.Settings.DatabaseVips.Enabled)
+        {
+            RegisterCommands();
+        }
     }
     public override void Unload(bool hotReload)
     {
@@ -118,7 +121,6 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterCommandIfEnabled("css_vp_service_delete", "Delete service", OnServiceDeleteCommand, cmdConfig.ServiceDelete);
         RegisterCommandIfEnabled("css_vp_service_info", "Service information", OnServiceInfoCommand, cmdConfig.ServiceInfo);
         RegisterCommandIfEnabled("css_vp_player_info", "Player information", OnPlayerInfoCommand, cmdConfig.PlayerInfo);
-        RegisterCommandIfEnabled("css_vp_player_removeall", "Remove all players", OnPlayerRemoveAllCommand, cmdConfig.PlayerRemoveAll);
         RegisterCommandIfEnabled("css_vp_player_addflags", "Add flags to player", OnPlayerAddFlagsCommand, cmdConfig.PlayerAddFlags);
         RegisterCommandIfEnabled("css_vp_player_addgroup", "Add group to player", OnPlayerAddGroupCommand, cmdConfig.PlayerAddGroup);
         RegisterCommandIfEnabled("css_services", "List available services", OnServicesCommand, cmdConfig.Services);

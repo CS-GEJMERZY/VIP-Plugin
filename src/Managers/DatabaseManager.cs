@@ -41,7 +41,7 @@ public class DatabaseManager
             id INT PRIMARY KEY AUTO_INCREMENT,
             steamid64 VARCHAR(63) NOT NULL UNIQUE,
             name VARCHAR(255),
-            lastconnect DATETIME
+            lastconnect TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );");
 
             await ExecuteCommandAsync(connection, $@"
@@ -49,8 +49,8 @@ public class DatabaseManager
             id INT PRIMARY KEY AUTO_INCREMENT,
             availability TINYINT(1) DEFAULT {(int)ServiceAvailability.Enabled},
             player_id INT NOT NULL,
-            start_date DATE,
-            end_date DATE,
+            start_date TIMESTAMP,
+            end_date TIMESTAMP,
             flags VARCHAR(255),
             group_id VARCHAR(64),
             notes TEXT,
@@ -76,7 +76,7 @@ public class DatabaseManager
         }
     }
 
-    public async Task<int> GetPlayerData(ulong steamid64, string name)
+    public async Task<int> GetPlayerId(ulong steamid64, string name)
     {
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
@@ -93,8 +93,25 @@ public class DatabaseManager
         command.Parameters.AddWithValue("name", name);
         command.Parameters.AddWithValue("@lastconnect", DateTime.UtcNow);
 
-        int id = Convert.ToInt32(await command.ExecuteScalarAsync());
-        return id;
+        using var reader = await command.ExecuteReaderAsync();
+        return await reader.ReadAsync() ? reader.GetInt32(0) : throw new Exception("Couldn't retrieve player's id");
+    }
+
+    public async Task<int> GetPlayerIdRaw(ulong steamid64)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            SELECT id FROM Players WHERE steamid64 = @steamid64;
+        ";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@steamid64", steamid64);
+
+        using var reader = await command.ExecuteReaderAsync();
+
+        return await reader.ReadAsync() ? reader.GetInt32(0) : throw new Exception("Couldn't retrieve player's id");
     }
 
     public async Task<List<PlayerServiceData>> GetPlayerServices(int playerId, ServiceAvailability availability = ServiceAvailability.Enabled)
@@ -119,6 +136,7 @@ public class DatabaseManager
             var service = new PlayerServiceData
             {
                 Id = reader.GetInt32("id"),
+                PlayerId = playerId,
                 Availability = (ServiceAvailability)reader.GetInt32("availability"),
                 Start = reader.GetDateTime("start_date"),
                 End = reader.GetDateTime("end_date"),
@@ -133,6 +151,40 @@ public class DatabaseManager
         return services;
     }
 
+    public async Task<PlayerServiceData?> GetService(int serviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            SELECT availability, player_id, start_date, end_date, flags, group_id, notes 
+            FROM Services WHERE id = @serviceId";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@serviceId", serviceId);
+
+        using var reader = await command.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            var service = new PlayerServiceData
+            {
+                Id = serviceId,
+                PlayerId = reader.GetInt32("player_id"),
+                Availability = (ServiceAvailability)reader.GetInt32("availability"),
+                Start = reader.GetDateTime("start_date"),
+                End = reader.GetDateTime("end_date"),
+                Flags = PlayerServiceData.FlagsToList(reader.GetString("flags")),
+                GroupId = reader.IsDBNull(reader.GetOrdinal("group_id")) ? string.Empty : reader.GetString("group_id"),
+                Notes = reader.IsDBNull(reader.GetOrdinal("notes")) ? string.Empty : reader.GetString("notes")
+            };
+
+            return service;
+        }
+
+        return null;
+    }
+
     public async Task<int> AddNewService(int playerId, DateTime start, DateTime end, string flags, string groupId, string notes = "")
     {
         using var connection = new MySqlConnection(_connectionString);
@@ -140,11 +192,11 @@ public class DatabaseManager
 
         const string query = @"
             INSERT INTO Services(availability, player_id, start_date, end_date, flags, group_id, notes)
-            VALUES(@availability, @playerId, @start, @end, @flags, @groupId, @notes)
+            VALUES(@availability, @playerId, @start, @end, @flags, @groupId, @notes);
             SELECT LAST_INSERT_ID();";
 
         using var command = new MySqlCommand(query, connection);
-        command.Parameters.AddWithValue("@availability", ServiceAvailability.Enabled);
+        command.Parameters.AddWithValue("@availability", (int)ServiceAvailability.Enabled);
         command.Parameters.AddWithValue("@playerId", playerId);
         command.Parameters.AddWithValue("@start", start);
         command.Parameters.AddWithValue("@end", end);

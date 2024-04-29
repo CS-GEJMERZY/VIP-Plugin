@@ -21,9 +21,6 @@ public class DatabaseCommandsConfig
     [JsonPropertyName("css_vp_player_info")]
     public CommandConfig PlayerInfo { get; set; } = new() { Permissions = ["@css/root"] };
 
-    [JsonPropertyName("css_vp_player_removeall")]
-    public CommandConfig PlayerRemoveAll { get; set; } = new() { Permissions = ["@css/root"] };
-
     [JsonPropertyName("css_vp_player_addflags")]
     public CommandConfig PlayerAddFlags { get; set; } = new() { Permissions = ["@css/root"] };
 

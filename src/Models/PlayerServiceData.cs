@@ -3,6 +3,7 @@
 public class PlayerServiceData
 {
     public int Id { get; set; }
+    public int PlayerId { get; set; }
     public ServiceAvailability Availability { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }

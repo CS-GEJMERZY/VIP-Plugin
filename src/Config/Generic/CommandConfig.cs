@@ -8,8 +8,8 @@ public class CommandConfig
     public bool Enabled { get; set; } = true;
 
     [JsonPropertyName("Permissions")]
-    public List<string> Permissions = [];
+    public List<string> Permissions { get; set; } = [];
 
     [JsonPropertyName("Alias")]
-    public List<string> Alias = [];
+    public List<string> Alias { get; set; } = [];
 }

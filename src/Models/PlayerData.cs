@@ -56,7 +56,7 @@ public class PlayerData
 
         if (databaseManager != null)
         {
-            DatabaseData.Id = await databaseManager.GetPlayerData(steamId64, name);
+            DatabaseData.Id = await databaseManager.GetPlayerId(steamId64, name);
             DatabaseData.Services = await databaseManager.GetPlayerServices(DatabaseData.Id);
 
             DatabaseData.AllFlags.Clear();
