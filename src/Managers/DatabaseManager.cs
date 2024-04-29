@@ -31,36 +31,49 @@ public class DatabaseManager
 
     private async Task CreateTablesAsync()
     {
-        using var connection = new MySqlConnection(_connectionString);
-        await connection.OpenAsync();
+        try
+        {
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
 
-        await ExecuteCommandAsync(connection, @"
-            CREATE TABLE Players (
+            await ExecuteCommandAsync(connection, @"
+            CREATE TABLE IF NOT EXISTS Players (
             id INT PRIMARY KEY AUTO_INCREMENT,
             steamid64 VARCHAR(63) NOT NULL UNIQUE,
             name VARCHAR(255),
             lastconnect DATETIME
             );");
 
-        await ExecuteCommandAsync(connection, $@"
-            CREATE TABLE Services (
+            await ExecuteCommandAsync(connection, $@"
+            CREATE TABLE IF NOT EXISTS Services (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            availability TINYINT(1) DEFAULT {ServiceAvailability.Enabled},
+            availability TINYINT(1) DEFAULT {(int)ServiceAvailability.Enabled},
             player_id INT NOT NULL,
             start_date DATE,
             end_date DATE,
             flags VARCHAR(255),
             group_id VARCHAR(64),
             notes TEXT,
-            FOREIGN KEY (player_id) REFERENCES Player(id),
-            FOREIGN KEY (server_id) REFERENCES Server(server_id)
+            FOREIGN KEY (player_id) REFERENCES Players(id)
             );");
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Encountered exception while creating tables", e);
+        }
     }
 
     private static async Task ExecuteCommandAsync(MySqlConnection connection, string commandText)
     {
-        using var command = new MySqlCommand(commandText, connection);
-        await command.ExecuteNonQueryAsync();
+        try
+        {
+            using var command = new MySqlCommand(commandText, connection);
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Error executing SQL command: {commandText}", e);
+        }
     }
 
     public async Task<int> GetPlayerData(ulong steamid64, string name)

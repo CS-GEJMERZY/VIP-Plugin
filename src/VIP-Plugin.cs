@@ -4,6 +4,7 @@ using Core.Models;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
+using Microsoft.Extensions.Logging;
 using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace Core;
@@ -37,6 +38,17 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         if (Config.Settings.EnableDatabaseVips)
         {
             DatabaseManager = new DatabaseManager(Config.Settings.Database);
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await DatabaseManager.Initialize();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("Error while initializing database: {message}", ex.ToString());
+                }
+            });
         }
 
         foreach (var _ in Config.VIPGroups)
@@ -48,6 +60,8 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 
     public override void Load(bool hotReload)
     {
+        VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
+
         RegisterListener<OnTick>(() =>
         {
             foreach (var player in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && p.PawnIsAlive))

@@ -33,7 +33,15 @@ public partial class Plugin
 
             Task.Run(async () =>
             {
-                await playerData.LoadData(player, GroupManager!, DatabaseManager!);
+                try
+                {
+                    await playerData.LoadData(player, GroupManager!, DatabaseManager!);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("Error while loading player data on join: {message}", ex.ToString());
+                }
+
                 await Server.NextFrameAsync(() =>
                 {
                     PermissionManager.AddPermissions(player, playerData.DatabaseData.AllFlags);
