@@ -33,7 +33,11 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         GroupManager = new GroupManager(Config.VIPGroups);
         RandomVipManager = new RandomVipManager(Config.RandomVip, Prefix);
         NightVipManager = new NightVipManager(Config.NightVip);
-        DatabaseManager = new DatabaseManager(Config.Settings.Database);
+
+        if (Config.Settings.EnableDatabaseVips)
+        {
+            DatabaseManager = new DatabaseManager(Config.Settings.Database);
+        }
 
         foreach (var _ in Config.VIPGroups)
         {

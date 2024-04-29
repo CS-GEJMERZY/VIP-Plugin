@@ -54,19 +54,22 @@ public class PlayerData
             name = player.PlayerName;
         });
 
-        DatabaseData.Id = await databaseManager.GetPlayerData(steamId64, name);
-        DatabaseData.Services = await databaseManager.GetPlayerServices(DatabaseData.Id);
-
-        DatabaseData.AllFlags.Clear();
-        foreach (var service in DatabaseData.Services)
+        if (databaseManager != null)
         {
-            var group = groupManager.GetGroup(service.GroupId);
-            if (group != null)
-            {
-                allGroups.Add(group);
-            }
+            DatabaseData.Id = await databaseManager.GetPlayerData(steamId64, name);
+            DatabaseData.Services = await databaseManager.GetPlayerServices(DatabaseData.Id);
 
-            DatabaseData.AllFlags.UnionWith(service.Flags);
+            DatabaseData.AllFlags.Clear();
+            foreach (var service in DatabaseData.Services)
+            {
+                var group = groupManager.GetGroup(service.GroupId);
+                if (group != null)
+                {
+                    allGroups.Add(group);
+                }
+
+                DatabaseData.AllFlags.UnionWith(service.Flags);
+            }
         }
 
         if (allGroups.Count > 0)
