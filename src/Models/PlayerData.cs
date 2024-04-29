@@ -1,4 +1,5 @@
-﻿using CounterStrikeSharp.API;
+﻿using Core.Managers;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Core.Models;
@@ -14,5 +15,10 @@ public class PlayerData
     public PlayerData()
     {
         GroupId = -1;
+    }
+
+    public void LoadGroup(GroupManager groupManager, DatabaseManager databaseManager)
+    {
+
     }
 }

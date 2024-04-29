@@ -7,6 +7,9 @@ public class VipGroupConfig
     [JsonPropertyName("Permissions")]
     public string Permissions { get; set; } = "@vip-plugin/vip";
 
+    [JsonPropertyName("Priority")]
+    public int Priority { get; set; } = 1;
+
     [JsonPropertyName("Name")]
     public string Name { get; set; } = "VIP";
 
