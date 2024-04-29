@@ -1,5 +1,20 @@
 ﻿{
   "picking": "{yellow}Picking a random VIP...",
   "winner": "{yellow}Player {red}{0} {yellow}won Random VIP! Congratulations!",
-  "not_registered": "You have not been registered yet by the plugin."
+  "not_registered": "You have not been registered yet by the plugin.",
+  "unauthorized": "{red}You are not authorized to execute this command.",
+  "service.invalid_id": "{red}Invalid service ID provided.",
+  "service.not_found": "{red}Service not found.",
+  "database.invalid_query": "{red}Error executing database query.",
+  "service.enabled_success": "{green}Service has been enabled successfully.",
+  "service.disabled_success": "{green}Service has been disabled successfully.",
+  "service.deleted_success": "{green}Service has been deleted successfully.",
+  "service.info.id": "Service ID: {0}",
+  "service.info.player_id": "Player ID: {0}",
+  "service.info.availability": "Availability: {0}",
+  "service.info.start": "Start: {0}",
+  "service.info.end": "End: {0}",
+  "service.info.flags": "Flags: {0}",
+  "service.info.group_id": "Group ID: {0}",
+  "service.info.notes": "Notes: {0}"
 }

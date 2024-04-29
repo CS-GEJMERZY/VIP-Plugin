@@ -53,6 +53,7 @@ public partial class Plugin
         });
     }
 
+    [CommandHelper(minArgs: 1, usage: "<service id>")]
     public void OnServiceDisableCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
         var perms = Config.Settings.DatabaseVips.Commands.ServiceDisable.Permissions;
@@ -92,9 +93,10 @@ public partial class Plugin
         });
     }
 
+    [CommandHelper(minArgs: 1, usage: "<service id>")]
     public void OnServiceDeleteCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
-        var perms = Config.Settings.DatabaseVips.Commands.ServiceDisable.Permissions;
+        var perms = Config.Settings.DatabaseVips.Commands.ServiceDelete.Permissions;
         HandleDatabaseCommand(player, commandInfo, perms, () =>
         {
             string serviceIdString = commandInfo.GetArg(1);
@@ -130,9 +132,11 @@ public partial class Plugin
             });
         });
     }
+
+    [CommandHelper(minArgs: 1, usage: "<service id>")]
     public void OnServiceInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
-        var perms = Config.Settings.DatabaseVips.Commands.ServiceDisable.Permissions;
+        var perms = Config.Settings.DatabaseVips.Commands.ServiceInfo.Permissions;
         HandleDatabaseCommand(player, commandInfo, perms, () =>
         {
             string serviceIdString = commandInfo.GetArg(1);
@@ -178,22 +182,27 @@ public partial class Plugin
             });
         });
     }
+
+    [CommandHelper(minArgs: 1, usage: "<steamid64>")]
     public void OnPlayerInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
         return;
     }
-    public void OnPlayerRemoveAllCommand(CCSPlayerController? player, CommandInfo commandInfo)
-    {
-        return;
-    }
+
+    [CommandHelper(minArgs: 3, usage: "<steamid64> <duration> <flag1> ...")]
     public void OnPlayerAddFlagsCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
-        var perms = Config.Settings.DatabaseVips.Commands.PlayerAddGroup.Permissions;
+        var perms = Config.Settings.DatabaseVips.Commands.PlayerAddFlags.Permissions;
         HandleDatabaseCommand(player, commandInfo, perms, () =>
         {
             string steamid64String = commandInfo.GetArg(1);
             string durationString = commandInfo.GetArg(2);
-            string flags = commandInfo.GetArg(3);
+
+            List<string> flags = [];
+            for (int i = 3; i < commandInfo.ArgCount; i++)
+            {
+                flags.Add(commandInfo.GetArg(i));
+            }
 
             if (!ulong.TryParse(steamid64String, out ulong steamid64) ||
                 !ulong.TryParse(durationString, out ulong duration))
@@ -221,7 +230,8 @@ public partial class Plugin
                         return;
                     }
 
-                    int serviceId = await DatabaseManager!.AddNewService((int)targetId, DateTime.UtcNow, endTime, flags, "", $"cmd: {issuerSteamid64}");
+                    string flagString = string.Join(", ", flags);
+                    int serviceId = await DatabaseManager!.AddNewService((int)targetId, DateTime.UtcNow, endTime, flagString, "", $"cmd: {issuerSteamid64}");
                 }
                 catch (Exception ex)
                 {
@@ -238,7 +248,6 @@ public partial class Plugin
     }
 
     [CommandHelper(minArgs: 3, usage: "<steamid64> <duration in minutes> <group id>")]
-
     public void OnPlayerAddGroupCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
         var perms = Config.Settings.DatabaseVips.Commands.PlayerAddGroup.Permissions;
@@ -299,6 +308,7 @@ public partial class Plugin
     }
     public void OnServicesCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
+
         return;
     }
 

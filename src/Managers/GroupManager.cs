@@ -31,5 +31,19 @@ public class GroupManager
     {
         return _groups.Find(x => x.UniqueId == id);
     }
+
+    public List<VipGroupConfig> GetMatchingGroup(HashSet<string> Permsissions)
+    {
+        List<VipGroupConfig> result = [];
+        foreach (var group in _groups)
+        {
+            if (Permsissions.Contains(group.Permissions))
+            {
+                result.Add(group);
+            }
+        }
+
+        return result;
+    }
 }
 

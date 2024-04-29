@@ -1,5 +1,20 @@
 ﻿{
   "picking": "{yellow}Trwa losowanie VIPa...",
   "winner": "{yellow}Gracz {red}{0} {yellow}został VIPem! Gratulacje!",
-  "not_registered" :  "Nie zostałeś zarejestrowany przez plugin."
+  "not_registered": "Nie zostałeś zarejestrowany przez plugin.",
+  "unauthorized": "{red}Nie masz uprawnień do wykonania tej komendy.",
+  "service.invalid_id": "{red}Podano nieprawidłowy identyfikator usługi.",
+  "service.not_found": "{red}Usługa nie została znaleziona.",
+  "database.invalid_query": "{red}Błąd podczas wykonywania zapytania do bazy danych.",
+  "service.enabled_success": "{green}Usługa została pomyślnie włączona.",
+  "service.disabled_success": "{green}Usługa została pomyślnie wyłączona.",
+  "service.deleted_success": "{green}Usługa została pomyślnie usunięta.",
+  "service.info.id": "ID usługi: {0}",
+  "service.info.player_id": "ID gracza: {0}",
+  "service.info.availability": "Dostępność: {0}",
+  "service.info.start": "Rozpoczęcie: {0}",
+  "service.info.end": "Zakończenie: {0}",
+  "service.info.flags": "Flagi: {0}",
+  "service.info.group_id": "ID grupy: {0}",
+  "service.info.notes": "Notatki: {0}"
 }
