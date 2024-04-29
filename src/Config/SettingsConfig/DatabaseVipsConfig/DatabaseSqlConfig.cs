@@ -2,7 +2,7 @@
 
 namespace Core.Config;
 
-public class DatabaseConfig
+public class DatabaseSqlConfig
 {
     [JsonPropertyName("host")]
     public string Host { get; set; } = "www.site.com";
