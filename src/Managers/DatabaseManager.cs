@@ -8,7 +8,7 @@ public class DatabaseManager
     private readonly string _connectionString;
     public bool Initialized = false;
 
-    public DatabaseManager(Config.SettingsConfig.DatabaseVips.SqlConfig databaseConfig)
+    public DatabaseManager(Config.DatabaseSqlConfig databaseConfig)
     {
         MySqlConnectionStringBuilder builder = new()
         {
