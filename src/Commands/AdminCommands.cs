@@ -8,6 +8,45 @@ namespace Core;
 
 public partial class Plugin
 {
+    public void OnServiceEnableCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+
+    public void OnServiceDisableCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+
+    public void OnServiceDeleteCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+    public void OnServiceInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+    public void OnPlayerInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+    public void OnPlayerRemoveAllCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+    public void OnPlayerAddFlagsCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+    public void OnPlayerAddGroupCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+    public void OnServicesCommand(CCSPlayerController? player, CommandInfo commandInfo)
+    {
+        return;
+    }
+
     [RequiresPermissions("@css/root")]
     [ConsoleCommand("css_vipdebug", "Vip plugin debug command")]
     public void OnDebugCommand(CCSPlayerController? player, CommandInfo commandInfo)

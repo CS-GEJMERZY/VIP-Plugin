@@ -3,6 +3,7 @@ using Core.Managers;
 using Core.Models;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Memory;
 using Microsoft.Extensions.Logging;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -107,6 +108,37 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     private static CCSGameRules GetGamerules()
     {
         return Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
+    }
+
+    public void RegisterCommands()
+    {
+        var cmdConfig = Config.Settings.DatabaseVips.Commands;
+        RegisterCommandIfEnabled("css_vp_service_enable", "Enable service", OnServiceEnableCommand, cmdConfig.ServiceEnable);
+        RegisterCommandIfEnabled("css_vp_service_disable", "Disable service", OnServiceDisableCommand, cmdConfig.ServiceDisable);
+        RegisterCommandIfEnabled("css_vp_service_delete", "Delete service", OnServiceDeleteCommand, cmdConfig.ServiceDelete);
+        RegisterCommandIfEnabled("css_vp_service_info", "Service information", OnServiceInfoCommand, cmdConfig.ServiceInfo);
+        RegisterCommandIfEnabled("css_vp_player_info", "Player information", OnPlayerInfoCommand, cmdConfig.PlayerInfo);
+        RegisterCommandIfEnabled("css_vp_player_removeall", "Remove all players", OnPlayerRemoveAllCommand, cmdConfig.PlayerRemoveAll);
+        RegisterCommandIfEnabled("css_vp_player_addflags", "Add flags to player", OnPlayerAddFlagsCommand, cmdConfig.PlayerAddFlags);
+        RegisterCommandIfEnabled("css_vp_player_addgroup", "Add group to player", OnPlayerAddGroupCommand, cmdConfig.PlayerAddGroup);
+        RegisterCommandIfEnabled("css_services", "List available services", OnServicesCommand, cmdConfig.Services);
+    }
+
+    private void RegisterCommandIfEnabled(string commandName, string description, CommandInfo.CommandCallback callback, CommandConfig config)
+    {
+        if (config.Enabled)
+        {
+            RegisterCommandWithAlias(commandName, description, callback, config.Alias);
+        }
+    }
+
+    public void RegisterCommandWithAlias(string commandName, string description, CommandInfo.CommandCallback callback, List<String> alias)
+    {
+        AddCommand(commandName, description, callback);
+        foreach (var aliasName in alias)
+        {
+            AddCommand(aliasName, description, callback);
+        }
     }
 }
 
