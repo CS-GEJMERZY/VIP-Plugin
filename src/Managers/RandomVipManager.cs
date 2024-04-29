@@ -4,17 +4,11 @@ using Microsoft.Extensions.Localization;
 
 namespace Core.Managers;
 
-public class RandomVipManager
+public class RandomVipManager(Config.RandomVipConfig randomVipData, string prefix)
 {
-    internal Config.RandomVipConfig RandomVipData { get; set; }
+    internal Config.RandomVipConfig RandomVipData { get; set; } = randomVipData;
 
-    internal string Prefix { get; set; }
-
-    public RandomVipManager(Config.RandomVipConfig randomVipData, string prefix)
-    {
-        RandomVipData = randomVipData;
-        Prefix = prefix;
-    }
+    internal string Prefix { get; set; } = prefix;
 
     public bool IsRound(int RoundNumber)
     {
@@ -24,12 +18,15 @@ public class RandomVipManager
     public void ProcessRound(IStringLocalizer Localizer)
     {
         var players = PlayerManager.GetValidPlayers().Where(
-            player => !PermissionManager.HasAnyPermission(player, RandomVipData.PermissionExclude) &&
+            player => !PermissionManager.HasAnyPermission(player, RandomVipData.PermissionsExclude) &&
                        player.Connected == PlayerConnectedState.PlayerConnected &&
                        !string.IsNullOrEmpty(player.IpAddress)).ToList();
 
         if (players.Count == 0 ||
-            players.Count < RandomVipData.MinimumPlayers) { return; }
+            players.Count < RandomVipData.MinimumPlayers)
+        {
+            return;
+        }
 
         var randomPlayer = ChooseRandomPlayer(players);
 

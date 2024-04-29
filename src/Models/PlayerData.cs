@@ -16,7 +16,6 @@ public class PlayerData
 
     public bool UsingExtraJump { get; set; }
 
-
     public void LoadBaseGroup(CCSPlayerController player, GroupManager groupManager)
     {
         var baseGroup = groupManager.GetPlayerBaseGroup(player);

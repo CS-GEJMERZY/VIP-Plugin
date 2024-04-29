@@ -20,6 +20,6 @@ public class RandomVipConfig
     public List<string> PermissionsGranted { get; set; } = [];
 
     [JsonPropertyName("PermissionExclude")]
-    public List<string> PermissionExclude { get; set; } = [];
+    public List<string> PermissionsExclude { get; set; } = [];
 }
 

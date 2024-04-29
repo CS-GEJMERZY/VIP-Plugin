@@ -22,7 +22,6 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     private DatabaseManager? DatabaseManager { get; set; }
 
     private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
-
     private List<Timer?> HealthRegenTimers { get; set; } = [];
     private List<Timer?> ArmorRegenTimers { get; set; } = [];
 
@@ -67,9 +66,10 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
             {
                 var playerData = new PlayerData();
                 _playerCache.Add(player, playerData);
+                
                 Task.Run(async () =>
                 {
-                    await playerData.LoadData(player, GroupManager, DatabaseManager);
+                    await playerData.LoadData(player, GroupManager!, DatabaseManager!);
                 });
             }
         }

@@ -33,7 +33,7 @@ public partial class Plugin
 
             Task.Run(async () =>
             {
-                await playerData.LoadData(player, GroupManager, DatabaseManager);
+                await playerData.LoadData(player, GroupManager!, DatabaseManager!);
                 if (playerData.Group == null ||
                     !playerData.Group.Messages.Chat.Connect.Enabled)
                 {
@@ -63,7 +63,7 @@ public partial class Plugin
     {
         CCSPlayerController? player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !_playerCache.TryGetValue(player, out Models.PlayerData? playerData) ||
+            !_playerCache.TryGetValue(player, out PlayerData? playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -159,7 +159,7 @@ public partial class Plugin
             NightVipManager.GiveNightVip(player);
         }
 
-        playerData.LoadBaseGroup(player, GroupManager);
+        playerData.LoadBaseGroup(player, GroupManager!);
         if (playerData.Group != null)
         {
             AddTimer(1.0f, () =>
@@ -175,33 +175,38 @@ public partial class Plugin
     {
         Server.NextFrame(() =>
         {
-            if (!PlayerManager.IsValid(player) || !player.PawnIsAlive)
+            if (!PlayerManager.IsValid(player) ||
+                !player.PawnIsAlive)
             {
                 return;
             }
 
-            var playerPawn = player.PlayerPawn.Value;
+            var playerPawn = player.PlayerPawn.Value!;
 
-            playerPawn!.GravityScale = playerGroup.Misc.Gravity;
-            playerPawn!.VelocityModifier = playerGroup.Misc.Speed;
+            playerPawn.GravityScale = playerGroup.Misc.Gravity;
+            playerPawn.VelocityModifier = playerGroup.Misc.Speed;
 
+            // Armor and health
             PlayerManager.SetHealth(player, playerGroup.Events.Spawn.HpValue, playerGroup.Limits.MaxHp);
             PlayerManager.SetArmor(player, playerGroup.Events.Spawn.ArmorValue);
 
+            // money
             if (!IsPistolRound() || playerGroup.Events.Spawn.ExtraMoneyOnPistolRound)
             {
                 PlayerManager.AddMoney(player, playerGroup.Events.Spawn.ExtraMoney, playerGroup.Limits.MaxMoney);
             }
 
+            // helmet
             if (playerGroup.Events.Spawn.Helmet &&
                 (!IsPistolRound() || playerGroup.Events.Spawn.HelmetOnPistolRound))
             {
-                CCSPlayer_ItemServices services = new(playerPawn!.ItemServices!.Handle)
+                CCSPlayer_ItemServices services = new(playerPawn.ItemServices!.Handle)
                 {
                     HasHelmet = true
                 };
             }
 
+            // defuse kit
             if (playerGroup.Events.Spawn.DefuseKit &&
                 player.TeamNum is (int)CsTeam.CounterTerrorist &&
                 !player.PawnHasDefuser)
@@ -209,16 +214,19 @@ public partial class Plugin
                 PlayerManager.GiveItem(player, "item_defuser");
             }
 
+            // healthshot
             if (playerGroup.Events.Spawn.HealthshotOnPistolRound || !IsPistolRound())
             {
                 PlayerManager.GiveItem(player, CsItem.Healthshot, playerGroup.Events.Spawn.HealthshotAmount);
             }
 
+            // nades
             PlayerManager.GiveItem(player, CsItem.Smoke, playerGroup.Events.Spawn.Grenades.Smoke);
             PlayerManager.GiveItem(player, CsItem.HE, playerGroup.Events.Spawn.Grenades.HE);
             PlayerManager.GiveItem(player, CsItem.Flashbang, playerGroup.Events.Spawn.Grenades.Flashbang);
             PlayerManager.GiveItem(player, CsItem.Decoy, playerGroup.Events.Spawn.Grenades.Decoy);
 
+            // fire grenade
             switch (player.TeamNum)
             {
                 case (int)CsTeam.CounterTerrorist:
@@ -233,6 +241,7 @@ public partial class Plugin
                     }
             }
 
+            // zeus
             if (playerGroup.Events.Spawn.Zeus && (playerGroup.Events.Spawn.ZeusOnPistolRound || !IsPistolRound()))
             {
                 bool hasZeus = false;
@@ -272,7 +281,7 @@ public partial class Plugin
                 continue;
             }
 
-            if (!_playerCache.TryGetValue(player, out Models.PlayerData? playerData) ||
+            if (!_playerCache.TryGetValue(player, out PlayerData? playerData) ||
                 playerData.Group == null)
             {
                 return HookResult.Continue;
@@ -302,7 +311,7 @@ public partial class Plugin
 
         if (!PlayerManager.IsValid(attacker) ||
             attacker.IsBot ||
-            !_playerCache.TryGetValue(attacker, out Models.PlayerData? playerData) ||
+            !_playerCache.TryGetValue(attacker, out PlayerData? playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -314,15 +323,13 @@ public partial class Plugin
         {
             PlayerManager.AddMoney(attacker, playerGroup.Events.Kill.HeadshotMoney, playerGroup.Limits.MaxMoney);
 
-            int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup!.Events!.Kill!.HeadshotHp, playerGroup.Limits.MaxHp);
-            PlayerManager.SetHealth(attacker, newHP);
+            PlayerManager.AddHealth(attacker, playerData.Group.Events.Kill.HeadshotHp, playerGroup.Limits.MaxHp);
         }
         else
         {
             PlayerManager.AddMoney(attacker, playerGroup.Events.Kill.Money, playerGroup.Limits.MaxMoney);
 
-            int newHP = Math.Min(attacker.PlayerPawn!.Value!.Health + playerGroup!.Events!.Kill.Hp, playerGroup.Limits.MaxHp);
-            PlayerManager.SetHealth(attacker, newHP);
+            PlayerManager.AddHealth(attacker, playerData.Group.Events.Kill.Hp, playerGroup.Limits.MaxHp);
         }
 
         attacker.InGameMoneyServices!.Account += playerGroup.Events.Kill.Money;
@@ -517,6 +524,7 @@ public partial class Plugin
         var lastFlags = playerData.LastFlags;
         var lastButtons = playerData.LastButtons;
 
+        // bhop
         if (playerData.Group.Misc.Bhop.Enabled)
         {
             if ((buttons & PlayerButtons.Jump) != 0 &&
@@ -527,6 +535,7 @@ public partial class Plugin
             }
         }
 
+        // extrra jumps
         if (playerData.Group.Misc.ExtraJumps.Amount > 0)
         {
             if ((lastFlags & PlayerFlags.FL_ONGROUND) != 0 &&

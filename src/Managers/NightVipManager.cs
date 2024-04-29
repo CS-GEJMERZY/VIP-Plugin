@@ -50,7 +50,7 @@ public class NightVipManager(Config.NightVipConfig nightVipData)
 
     private bool HasAnyExcludedPermission(CCSPlayerController player)
     {
-        return NightVipData.PermissionExclude.Any(perm => AdminManager.PlayerHasPermissions(player, perm));
+        return NightVipData.PermissionsExclude.Any(perm => AdminManager.PlayerHasPermissions(player, perm));
     }
 
     public void GiveNightVip(CCSPlayerController player)
