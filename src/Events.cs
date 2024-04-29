@@ -34,14 +34,15 @@ public partial class Plugin
             Task.Run(async () =>
             {
                 await playerData.LoadData(player, GroupManager!, DatabaseManager!);
-                if (playerData.Group == null ||
-                    !playerData.Group.Messages.Chat.Connect.Enabled)
-                {
-                    return;
-                }
-
                 await Server.NextFrameAsync(() =>
                 {
+                    PermissionManager.AddPermissions(player, playerData.DatabaseData.AllFlags);
+                    if (playerData.Group == null ||
+                        !playerData.Group.Messages.Chat.Connect.Enabled)
+                    {
+                        return;
+                    }
+
                     var message = playerData.Group.Messages.Chat.Connect.Message.Replace("{playername}", player.PlayerName);
                     message = message.Replace("{playername}", player.PlayerName);
 

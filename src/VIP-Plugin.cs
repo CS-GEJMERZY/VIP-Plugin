@@ -66,10 +66,15 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
             {
                 var playerData = new PlayerData();
                 _playerCache.Add(player, playerData);
-                
+
                 Task.Run(async () =>
                 {
                     await playerData.LoadData(player, GroupManager!, DatabaseManager!);
+
+                    await Server.NextFrameAsync(() =>
+                    {
+                        PermissionManager.AddPermissions(player, playerData.DatabaseData.AllFlags);
+                    });
                 });
             }
         }
