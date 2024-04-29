@@ -68,10 +68,36 @@ Upon the first launch, the **_VIP-Plugin.json_**  file will be automatically cre
           "VelocityZ": 260, // Jump height
           "NoFallDamage": true // // Disable fall damage after extra jumps
         },
+        "Bhop": {
+          "Enabled": false, 
+          "VelocityZ": 260, // the height of a jump
+        },
         "Smoke": {
           "Enabled": false, // Enable colored smoke
           "Type": 0, // 0 = Fixed color, 1 = Random color
           "Color": "#FF0000" // Smoke color in hex code
+        },
+        "HealthRegen": {
+          "Enabled": false,
+          "Interval": 5, // add HP every 'Interval"
+          "Delay": 5, // delay after round start
+          "Amount": 5 // amount of HP, limited by Limits.MaxHp
+        },
+        "ArmorRegen": {
+          "Enabled": false,
+          "Interval": 5, // add Armor every 'Interval"
+          "Delay": 5, // delay after round start
+          "Amount": 5 // amount of Armor, limited by 100
+        },        
+        "FastPlant": {
+          "Enabled": false,
+          "Modifier": 0.5, // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+          "TimeAfterRoundStart" : 0 // time after round start for the feature to start working
+        },
+        "FastDefuse": {
+          "Enabled": false,
+          "Modifier": 1, // 1 = normal speed, 0.5 = 50% faster, 0.1 = 10% of the normal speed required etc.
+          "TimeAfterRoundStart" : 0 // time after round start for the feature to start working
         },
         "NoFallDamageGlobal": false, // Disable fall damage globally for the VIP group
         "Gravity": 1, // Gravity level (1 = normal)
