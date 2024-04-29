@@ -31,25 +31,28 @@ public partial class Plugin
                 _playerCache.Add(player, playerData);
             }
 
-            playerData.Group = GroupManager!.GetPlayerBaseGroup(player);
-
-            if (playerData.Group == null)
+            Task.Run(async () =>
             {
-                return;
-            }
-
-            if (playerData.Group.Messages.Chat.Connect.Enabled)
-            {
-                var message = playerData.Group.Messages.Chat.Connect.Message.Replace("{playername}", player.PlayerName);
-                message = message.Replace("{playername}", player.PlayerName);
-
-                Server.PrintToChatAll($" {MessageFormatter.FormatColor(message)}");
-
-                if (playerData.Group.Messages.Chat.Connect.DontBroadcast)
+                await playerData.LoadData(player, GroupManager, DatabaseManager);
+                if (playerData.Group == null ||
+                    !playerData.Group.Messages.Chat.Connect.Enabled)
                 {
-                    info.DontBroadcast = true;
+                    return;
                 }
-            }
+
+                await Server.NextFrameAsync(() =>
+                {
+                    var message = playerData.Group.Messages.Chat.Connect.Message.Replace("{playername}", player.PlayerName);
+                    message = message.Replace("{playername}", player.PlayerName);
+
+                    Server.PrintToChatAll($" {MessageFormatter.FormatColor(message)}");
+
+                    if (playerData.Group.Messages.Chat.Connect.DontBroadcast)
+                    {
+                        info.DontBroadcast = true;
+                    }
+                });
+            });
         });
 
         return HookResult.Continue;
@@ -156,12 +159,12 @@ public partial class Plugin
             NightVipManager.GiveNightVip(player);
         }
 
-        var playerGroup = playerData.Group = GroupManager!.GetPlayerBaseGroup(player);
-        if (playerGroup != null)
+        playerData.LoadBaseGroup(player, GroupManager);
+        if (playerData.Group != null)
         {
             AddTimer(1.0f, () =>
             {
-                PlayerSpawnn_TimerGive(player, playerGroup);
+                PlayerSpawnn_TimerGive(player, playerData.Group);
             });
         }
 

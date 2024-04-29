@@ -49,7 +49,7 @@ public partial class Plugin
             throw new ArgumentException("Hexadecimal color string must be exactly 6 characters long.");
         }
 
-        int red = Convert.ToInt32(hex.Substring(0, 2), 16);
+        int red = Convert.ToInt32(hex[..2], 16);
         int green = Convert.ToInt32(hex.Substring(2, 2), 16);
         int blue = Convert.ToInt32(hex.Substring(4, 2), 16);
 

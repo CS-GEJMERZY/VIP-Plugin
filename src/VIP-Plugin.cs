@@ -12,12 +12,14 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "1.0.27";
+    public override string ModuleVersion => "1.1.0";
     public required PluginConfig Config { get; set; }
 
     private GroupManager? GroupManager { get; set; }
     private RandomVipManager? RandomVipManager { get; set; }
     private NightVipManager? NightVipManager { get; set; }
+
+    private DatabaseManager? DatabaseManager { get; set; }
 
     private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
 
@@ -32,6 +34,7 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         GroupManager = new GroupManager(Config.VIPGroups);
         RandomVipManager = new RandomVipManager(Config.RandomVip, Prefix);
         NightVipManager = new NightVipManager(Config.NightVip);
+        DatabaseManager = new DatabaseManager(Config.Settings.Database);
 
         foreach (var _ in Config.VIPGroups)
         {
@@ -62,8 +65,12 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
             foreach (var player in Utilities.GetPlayers()
                 .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV))
             {
-
-                _playerCache.Add(player, new PlayerData { Group = GroupManager!.GetPlayerBaseGroup(player) });
+                var playerData = new PlayerData();
+                _playerCache.Add(player, playerData);
+                Task.Run(async () =>
+                {
+                    await playerData.LoadData(player, GroupManager, DatabaseManager);
+                });
             }
         }
 

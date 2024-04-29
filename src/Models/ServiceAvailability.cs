@@ -1,6 +1,6 @@
 ﻿namespace Core.Models;
 
-public enum ServiceAvailability : int
+public enum ServiceAvailability
 {
     Disabled = 1 << 0,
     Enabled = 1 << 1,
