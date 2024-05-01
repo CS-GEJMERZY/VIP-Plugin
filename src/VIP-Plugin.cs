@@ -130,16 +130,7 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     {
         if (config.Enabled)
         {
-            RegisterCommandWithAlias(commandName, description, callback, config.Alias);
-        }
-    }
-
-    public void RegisterCommandWithAlias(string commandName, string description, CommandInfo.CommandCallback callback, List<String> alias)
-    {
-        AddCommand(commandName, description, callback);
-        foreach (var aliasName in alias)
-        {
-            AddCommand(aliasName, description, callback);
+            AddCommand(commandName, description, callback);
         }
     }
 }
