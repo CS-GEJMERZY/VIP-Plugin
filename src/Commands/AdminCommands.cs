@@ -182,7 +182,44 @@ public partial class Plugin
 	[CommandHelper(minArgs: 1, usage: "<steamid64>")]
 	public void OnPlayerInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
 	{
-		
+		HandleDatabaseCommand(player, commandInfo, () =>
+		{
+			string steamId64String = commandInfo.GetArg(1);
+			if (!ulong.TryParse(steamId64String, out ulong steamId64))
+			{
+				player!.PrintToChat(Localizer["player.info.invalid_command"]);
+				return;
+			}
+
+			Task.Run(async () =>
+			{
+				try
+				{
+					int playerId = await DatabaseManager!.GetPlayerIdRaw(steamId64);
+					List<PlayerServiceData> serviceData = await DatabaseManager!.GetPlayerServices(playerId, ServiceAvailability.Enabled);
+					await Server.NextFrameAsync(() =>
+					{
+						player!.PrintToChat(Localizer["player.info.id", playerId]);
+						player!.PrintToChat(Localizer["player.info.service_count", serviceData.Count]);
+						foreach(var service in serviceData) 
+						{
+							player!.PrintToChat(Localizer["service.info.id", service.Id]);
+							player!.PrintToChat(Localizer["service.info.availability", service.Availability]); // TO:DO format name
+							player!.PrintToChat(Localizer["service.info.start", service.Start]);
+							player!.PrintToChat(Localizer["service.info.end", service.End]);
+							player!.PrintToChat(Localizer["service.info.flags", service.Flags]);
+							player!.PrintToChat(Localizer["service.info.group_id", service.GroupId]);
+							player!.PrintToChat(Localizer["service.info.notes", service.Notes]);
+						}
+					});
+				}
+				catch (Exception ex)
+				{
+					player?.PrintToChat(Localizer["database.invalid_query"]);
+					Logger.LogError("Error occured while performing player info: {error}", ex.ToString());
+				}
+			});
+		});
 		return;
 	}
 
