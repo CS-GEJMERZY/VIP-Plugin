@@ -2,7 +2,6 @@
   "picking": "{yellow}Trwa losowanie VIPa...",
   "winner": "{yellow}Gracz {red}{0} {yellow}został VIPem! Gratulacje!",
   "not_registered": "Nie zostałeś zarejestrowany przez plugin.",
-  "unauthorized": "{red}Nie masz uprawnień do wykonania tej komendy.",
   "service.invalid_id": "{red}Podano nieprawidłowy identyfikator usługi.",
   "service.not_found": "{red}Usługa nie została znaleziona.",
   "database.invalid_query": "{red}Błąd podczas wykonywania zapytania do bazy danych.",

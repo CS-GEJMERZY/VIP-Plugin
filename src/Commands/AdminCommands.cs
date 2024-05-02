@@ -21,7 +21,7 @@ public partial class Plugin
 			string serviceIdString = commandInfo.GetArg(1);
 			if (!int.TryParse(serviceIdString, out int serviceId))
 			{
-				player!.PrintToChat(Localizer["service.invalid_id"]);
+				player!.PrintToChat($"{PluginPrefix}{Localizer["service.invalid_id"]}");
 				return;
 			}
 
@@ -34,18 +34,18 @@ public partial class Plugin
 					{
 						if (rowsAffected == 0)
 						{
-							player!.PrintToChat(Localizer["service.not_found"]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.not_found"]}");
 						}
 						else
 						{
-							player!.PrintToChat(Localizer["service.enabled_success"]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.enabled_success"]}");
 							Logger.LogInformation("Player {name}({steamid}) enabled service id={id}", player.PlayerName, player.AuthorizedSteamID!.SteamId64, serviceId);
 						}
 					});
 				}
 				catch (Exception ex)
 				{
-					player?.PrintToChat(Localizer["database.invalid_query"]);
+					player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
 					Logger.LogError("Error occured while enabling service: {error}", ex.ToString());
 				}
 			});
@@ -60,7 +60,7 @@ public partial class Plugin
 			string serviceIdString = commandInfo.GetArg(1);
 			if (!int.TryParse(serviceIdString, out int serviceId))
 			{
-				player!.PrintToChat(Localizer["service.invalid_id"]);
+				player!.PrintToChat($"{PluginPrefix}{Localizer["service.invalid_id"]}");
 				return;
 			}
 
@@ -73,18 +73,18 @@ public partial class Plugin
 					{
 						if (rowsAffected == 0)
 						{
-							player!.PrintToChat(Localizer["service.not_found"]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.not_found"]}");
 						}
 						else
 						{
-							player!.PrintToChat(Localizer["service.disabled_success"]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.disabled_success"]}");
 							Logger.LogInformation("Player {name}({steamid}) disabled service id={id}", player.PlayerName, player.AuthorizedSteamID!.SteamId64, serviceId);
 						}
 					});
 				}
 				catch (Exception ex)
 				{
-					player?.PrintToChat(Localizer["database.invalid_query"]);
+					player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
 					Logger.LogError("Error occured while disabling service: {error}", ex.ToString());
 				}
 			});
@@ -99,7 +99,7 @@ public partial class Plugin
 			string serviceIdString = commandInfo.GetArg(1);
 			if (!int.TryParse(serviceIdString, out int serviceId))
 			{
-				player!.PrintToChat(Localizer["service.invalid_id"]);
+				player!.PrintToChat($"{PluginPrefix}{Localizer["service.invalid_id"]}");
 				return;
 			}
 
@@ -112,18 +112,18 @@ public partial class Plugin
 					{
 						if (rowsAffected == 0)
 						{
-							player!.PrintToChat(Localizer["service.not_found"]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.not_found"]}");
 						}
 						else
 						{
-							player!.PrintToChat(Localizer["service.deleted_success"]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.deleted_success"]}");
 							Logger.LogInformation("Player {name}({steamid}) deleted service id={id}", player.PlayerName, player.AuthorizedSteamID!.SteamId64, serviceId);
 						}
 					});
 				}
 				catch (Exception ex)
 				{
-					player?.PrintToChat(Localizer["database.invalid_query"]);
+					player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
 					Logger.LogError("Error occured while deleting service: {error}", ex.ToString());
 				}
 			});
@@ -138,7 +138,7 @@ public partial class Plugin
 			string serviceIdString = commandInfo.GetArg(1);
 			if (!int.TryParse(serviceIdString, out int serviceId))
 			{
-				player!.PrintToChat(Localizer["service.invalid_id"]);
+				player!.PrintToChat($"{PluginPrefix}{Localizer["service.invalid_id"]}");
 				return;
 			}
 
@@ -151,18 +151,18 @@ public partial class Plugin
 					{
 						if (service == null)
 						{
-							player!.PrintToChat(Localizer["service.not_found"]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.not_found"]}");
 						}
 						else
 						{
-							player!.PrintToChat(Localizer["service.info.id", service.Id]);
-							player!.PrintToChat(Localizer["service.info.player_id", service.PlayerId]);
-							player!.PrintToChat(Localizer["service.info.availability", service.Availability]); // TO:DO format name
-							player!.PrintToChat(Localizer["service.info.start", service.Start]);
-							player!.PrintToChat(Localizer["service.info.end", service.End]);
-							player!.PrintToChat(Localizer["service.info.flags", service.Flags]);
-							player!.PrintToChat(Localizer["service.info.group_id", service.GroupId]);
-							player!.PrintToChat(Localizer["service.info.notes", service.Notes]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.id", service.Id]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.player_id", service.PlayerId]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.availability", service.Availability]}"); // TO:DO format name
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.start", service.Start]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.end", service.End]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.flags", service.Flags]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.group_id", service.GroupId]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.notes", service.Notes]}");
 						}
 					});
 				}
@@ -170,8 +170,7 @@ public partial class Plugin
 				{
 					Server.NextFrame(() =>
 					{
-						player?.PrintToChat(Localizer["database.invalid_query"]);
-
+						player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
 					});
 					Logger.LogError("Error occured while retrieving service: {error}", ex.ToString());
 				}
@@ -187,7 +186,7 @@ public partial class Plugin
 			string steamId64String = commandInfo.GetArg(1);
 			if (!ulong.TryParse(steamId64String, out ulong steamId64))
 			{
-				player!.PrintToChat(Localizer["player.info.invalid_command"]);
+				player!.PrintToChat($"{PluginPrefix}{Localizer["player.info.invalid_command"]}");
 				return;
 			}
 
@@ -199,23 +198,23 @@ public partial class Plugin
 					List<PlayerServiceData> serviceData = await DatabaseManager!.GetPlayerServices(playerId, ServiceAvailability.Enabled);
 					await Server.NextFrameAsync(() =>
 					{
-						player!.PrintToChat(Localizer["player.info.id", playerId]);
-						player!.PrintToChat(Localizer["player.info.service_count", serviceData.Count]);
+						player!.PrintToChat($"{PluginPrefix}{Localizer["player.info.id", playerId]}");
+						player!.PrintToChat($"{PluginPrefix}{Localizer["player.info.service_count", serviceData.Count]}");
 						foreach(var service in serviceData) 
 						{
-							player!.PrintToChat(Localizer["service.info.id", service.Id]);
-							player!.PrintToChat(Localizer["service.info.availability", service.Availability]); // TO:DO format name
-							player!.PrintToChat(Localizer["service.info.start", service.Start]);
-							player!.PrintToChat(Localizer["service.info.end", service.End]);
-							player!.PrintToChat(Localizer["service.info.flags", service.Flags]);
-							player!.PrintToChat(Localizer["service.info.group_id", service.GroupId]);
-							player!.PrintToChat(Localizer["service.info.notes", service.Notes]);
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.id", service.Id]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.availability", service.Availability]}"); // TO:DO format name
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.start", service.Start]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.end", service.End]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.flags", service.Flags]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.group_id", service.GroupId]}");
+							player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.notes", service.Notes]}");
 						}
 					});
 				}
 				catch (Exception ex)
 				{
-					player?.PrintToChat(Localizer["database.invalid_query"]);
+					player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
 					Logger.LogError("Error occured while performing player info: {error}", ex.ToString());
 				}
 			});
@@ -240,7 +239,7 @@ public partial class Plugin
 			if (!ulong.TryParse(steamid64String, out ulong steamid64) ||
 				!ulong.TryParse(durationString, out ulong duration))
 			{
-				player!.PrintToChat(Localizer["player.add.invalid_command"]); // to:do better name
+				player!.PrintToChat($"{PluginPrefix}{Localizer["player.add.invalid_command"]}"); // to:do better name
 				return;
 			}
 
@@ -259,7 +258,7 @@ public partial class Plugin
 					int? targetId = await DatabaseManager!.GetPlayerIdRaw(steamid64);
 					if (targetId == null)
 					{
-						player!.PrintToChat(Localizer["database.player_not_found"]);
+						player!.PrintToChat($"{PluginPrefix}{Localizer["database.player_not_found"]}");
 						return;
 					}
 
@@ -271,7 +270,7 @@ public partial class Plugin
 					Logger.LogError("Encountered error while adding new service: {error}", ex.ToString());
 					Server.NextFrame(() =>
 					{
-						player?.PrintToChat(Localizer["database.invalid_query"]);
+						player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
 					});
 					return;
 				}
@@ -292,7 +291,7 @@ public partial class Plugin
 			if (!ulong.TryParse(steamid64String, out ulong steamid64) ||
 				!ulong.TryParse(durationString, out ulong duration))
 			{
-				player!.PrintToChat(Localizer["player.add.invalid_command"]); // to:do better name
+				player!.PrintToChat($"{PluginPrefix}{Localizer["player.add.invalid_command"]}"); // to:do better name
 				return;
 			}
 
@@ -305,7 +304,7 @@ public partial class Plugin
 			VipGroupConfig? group = GroupManager!.GetGroup(groupId);
 			if (group == null)
 			{
-				player!.PrintToChat(Localizer["service.not_found"]); // to:do better name
+				player!.PrintToChat($"{PluginPrefix}{Localizer["service.not_found"]}"); // to:do better name
 				return;
 			}
 
@@ -318,7 +317,7 @@ public partial class Plugin
 					int? targetId = await DatabaseManager!.GetPlayerIdRaw(steamid64);
 					if (targetId == null)
 					{
-						player!.PrintToChat(Localizer["database.player_not_found"]);
+						player!.PrintToChat($"{PluginPrefix}{Localizer["database.player_not_found"]}");
 						return;
 					}
 
@@ -329,7 +328,7 @@ public partial class Plugin
 					Logger.LogError("Encountered error while adding new service: {error}", ex.ToString());
 					Server.NextFrame(() =>
 					{
-						player?.PrintToChat(Localizer["database.invalid_query"]);
+						player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
 					});
 					return;
 				}
@@ -353,7 +352,7 @@ public partial class Plugin
 			return;
 		}
 
-		player.PrintToChat($"{ChatColors.Red}[VIP-Plugin] Debug info has been printed in the console.");
+		player.PrintToChat($"{PluginPrefix}{ChatColors.Red}[VIP-Plugin] Debug info has been printed in the console.");
 
 		player.PrintToConsole("---Group data ---");
 		if (!_playerCache.TryGetValue(player, out Models.PlayerData? playerData))
@@ -363,38 +362,38 @@ public partial class Plugin
 		else
 		{
 			var pGroup = playerData.Group!;
-			player.PrintToConsole($"Name: {pGroup.Name}");
-			player.PrintToConsole($"Priority: {pGroup.Priority}");
-			player.PrintToConsole($"UniqueId: {pGroup.UniqueId}");
-			player.PrintToConsole($"Permissions: {pGroup.Permissions}");
-			player.PrintToConsole($"---All group perms---");
+			player.PrintToConsole($"{PluginPrefix}Name: {pGroup.Name}");
+			player.PrintToConsole($"{PluginPrefix}Priority: {pGroup.Priority}");
+			player.PrintToConsole($"{PluginPrefix}UniqueId: {pGroup.UniqueId}");
+			player.PrintToConsole($"{PluginPrefix}Permissions: {pGroup.Permissions}");
+			player.PrintToConsole($"{PluginPrefix}---All group perms---");
 
 			foreach (var group in Config!.VIPGroups)
 			{
 				var hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);
-				player.PrintToChat($"{group.Name}-{group.Permissions}-{(hasPerms ? "yes" : "no")}");
+				player.PrintToChat($"{PluginPrefix}{group.Name}-{group.Permissions}-{(hasPerms ? "yes" : "no")}");
 			}
 		}
 
-		player.PrintToConsole($"---RandomVIP---");
+		player.PrintToConsole($"{PluginPrefix}---RandomVIP---");
 
-		player.PrintToConsole($"Enabled: {Config.RandomVip.Enabled}");
-		player.PrintToConsole($"AfterRound: {Config.RandomVip.AfterRound}");
-		player.PrintToConsole($"Minimum players: {Config.RandomVip.MinimumPlayers}");
-		player.PrintToConsole($"RepeatPicking: {Config.RandomVip.RepeatPickingMessage}");
-		player.PrintToConsole($"PermissionsGranted: {string.Join(", ", Config.RandomVip.PermissionsGranted)}");
-		player.PrintToConsole($"PermissionExclude: {string.Join(", ", Config.RandomVip.PermissionsExclude)}");
+		player.PrintToConsole($"{PluginPrefix}Enabled: {Config.RandomVip.Enabled}");
+		player.PrintToConsole($"{PluginPrefix}AfterRound: {Config.RandomVip.AfterRound}");
+		player.PrintToConsole($"{PluginPrefix}Minimum players: {Config.RandomVip.MinimumPlayers}");
+		player.PrintToConsole($"{PluginPrefix}RepeatPicking: {Config.RandomVip.RepeatPickingMessage}");
+		player.PrintToConsole($"{PluginPrefix}PermissionsGranted: {string.Join(", ", Config.RandomVip.PermissionsGranted)}");
+		player.PrintToConsole($"{PluginPrefix}PermissionExclude: {string.Join(", ", Config.RandomVip.PermissionsExclude)}");
 
-		player.PrintToConsole($"---NightVIP---");
+		player.PrintToConsole($"{PluginPrefix}---NightVIP---");
 
-		player.PrintToConsole($"Enabled: {Config.NightVip.Enabled}");
-		player.PrintToConsole($"is time: {NightVipManager!.IsNightVipTime()}");
-		player.PrintToConsole($"StartHour: {Config.NightVip.StartHour}");
-		player.PrintToConsole($"EndHour: {Config.NightVip.EndHour}");
-		player.PrintToConsole($"RequiredNickPhrase: {Config.NightVip.RequiredNickPhrase}");
-		player.PrintToConsole($"RequiredScoreboardTag: {Config.NightVip.RequiredScoreboardTag}");
-		player.PrintToConsole($"PermissionsGranted: {string.Join(", ", Config.NightVip.PermissionsGranted)}");
-		player.PrintToConsole($"PermissionExclude: {string.Join(", ", Config.NightVip.PermissionsExclude)}");
+		player.PrintToConsole($"{PluginPrefix}Enabled: {Config.NightVip.Enabled}");
+		player.PrintToConsole($"{PluginPrefix}is time: {NightVipManager!.IsNightVipTime()}");
+		player.PrintToConsole($"{PluginPrefix}StartHour: {Config.NightVip.StartHour}");
+		player.PrintToConsole($"{PluginPrefix}EndHour: {Config.NightVip.EndHour}");
+		player.PrintToConsole($"{PluginPrefix}RequiredNickPhrase: {Config.NightVip.RequiredNickPhrase}");
+		player.PrintToConsole($"{PluginPrefix}RequiredScoreboardTag: {Config.NightVip.RequiredScoreboardTag}");
+		player.PrintToConsole($"{PluginPrefix}PermissionsGranted: {string.Join(", ", Config.NightVip.PermissionsGranted)}");
+		player.PrintToConsole($"{PluginPrefix}PermissionExclude: {string.Join(", ", Config.NightVip.PermissionsExclude)}");
 	}
 
 	private void HandleDatabaseCommand(CCSPlayerController? player, CommandInfo commandInfo, Action action)
@@ -407,7 +406,7 @@ public partial class Plugin
 		if (DatabaseManager == null ||
 			!DatabaseManager.Initialized)
 		{
-			player.PrintToChat(Localizer["database.not_ready"]);
+			player.PrintToChat($"{PluginPrefix}{Localizer["database.not_ready"]}");
 			return;
 		}
 
