@@ -97,7 +97,7 @@ public class DatabaseManager
         return await reader.ReadAsync() ? reader.GetInt32(0) : throw new Exception("Couldn't retrieve player's id");
     }
 
-    public async Task<int> GetPlayerIdRaw(ulong steamid64)
+    public async Task<int?> GetPlayerIdRaw(ulong steamid64)
     {
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
@@ -111,7 +111,7 @@ public class DatabaseManager
 
         using var reader = await command.ExecuteReaderAsync();
 
-        return await reader.ReadAsync() ? reader.GetInt32(0) : throw new Exception("Couldn't retrieve player's id");
+        return await reader.ReadAsync() ? reader.GetInt32(0) : null;
     }
 
     public async Task<List<PlayerServiceData>> GetPlayerServices(int playerId, ServiceAvailability availability = ServiceAvailability.Enabled)

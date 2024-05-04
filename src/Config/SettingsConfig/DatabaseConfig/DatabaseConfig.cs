@@ -2,11 +2,11 @@
 
 namespace Core.Config;
 
-public class DatabaseVipsConfig
+public class DatabaseConfig
 {
     [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; } = false;
 
-    [JsonPropertyName("Commands")]
-    public DatabaseCommandsConfig Commands { get; set; } = new();
+    [JsonPropertyName("SqlServer")]
+    public DatabaseSqlConfig SqlServer { get; set; } = new();
 }

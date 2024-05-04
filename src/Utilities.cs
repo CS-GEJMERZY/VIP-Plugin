@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Core.Models;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Cvars;
@@ -8,6 +9,22 @@ namespace Core;
 
 public partial class Plugin
 {
+    public string GetServiceAvailabilityName(ServiceAvailability availability)
+    {
+        switch (availability)
+        {
+            case ServiceAvailability.Enabled:
+                return Localizer["service.enabled"];
+            case ServiceAvailability.Disabled:
+                return Localizer["service.disabled"];
+            case ServiceAvailability.Expired:
+                return Localizer["service.expired"];
+            default:
+                break;
+        }
+
+        return "invalid";
+    }
     public static int GetTeamScore(CsTeam team)
     {
         var teamManagers = Utilities.FindAllEntitiesByDesignerName<CCSTeam>("cs_team_manager");
