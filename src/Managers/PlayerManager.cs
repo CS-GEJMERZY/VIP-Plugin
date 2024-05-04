@@ -6,7 +6,7 @@ namespace Core.Managers;
 
 public class PlayerManager
 {
-    public static bool IsValid(CCSPlayerController player)
+    public static bool IsValid(CCSPlayerController? player)
     {
         return player != null &&
                player.IsValid &&

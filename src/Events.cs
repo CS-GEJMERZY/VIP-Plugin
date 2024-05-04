@@ -16,9 +16,9 @@ public partial class Plugin
     [GameEventHandler]
     public HookResult EventPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
     {
-        CCSPlayerController player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
-        if (!PlayerManager.IsValid(player) || player.IsBot || player.IsHLTV)
+        if (!PlayerManager.IsValid(player) || player!.IsBot || player.IsHLTV)
         {
             return HookResult.Continue;
         }
@@ -72,7 +72,7 @@ public partial class Plugin
     {
         CCSPlayerController? player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !_playerCache.TryGetValue(player, out PlayerData? playerData) ||
+            !_playerCache.TryGetValue(player!, out PlayerData? playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -80,7 +80,7 @@ public partial class Plugin
 
         if (playerData.Group.Messages.Chat.Disconnect.Enabled)
         {
-            var message = playerData.Group.Messages.Chat.Disconnect.Message.Replace("{playername}", player.PlayerName);
+            var message = playerData.Group.Messages.Chat.Disconnect.Message.Replace("{playername}", player!.PlayerName);
             Server.PrintToChatAll($" {MessageFormatter.FormatColor(message)}");
 
             if (playerData.Group.Messages.Chat.Disconnect.DontBroadcast)
@@ -89,7 +89,7 @@ public partial class Plugin
             }
         }
 
-        _playerCache.Remove(player);
+        _playerCache.Remove(player!);
 
         return HookResult.Continue;
     }
@@ -152,10 +152,10 @@ public partial class Plugin
     [GameEventHandler]
     public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
     {
-        CCSPlayerController player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
         if (!PlayerManager.IsValid(player) ||
-            player.IsBot ||
+            player!.IsBot ||
             !_playerCache.TryGetValue(player, out Models.PlayerData? playerData))
         {
             return HookResult.Continue;
@@ -316,10 +316,10 @@ public partial class Plugin
     [GameEventHandler]
     public HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
     {
-        CCSPlayerController attacker = @event.Attacker;
+        CCSPlayerController? attacker = @event.Attacker;
 
         if (!PlayerManager.IsValid(attacker) ||
-            attacker.IsBot ||
+            attacker!.IsBot ||
             !_playerCache.TryGetValue(attacker, out PlayerData? playerData) ||
             playerData.Group == null)
         {
@@ -349,10 +349,10 @@ public partial class Plugin
     [GameEventHandler]
     public HookResult OnBombPlanted(EventBombPlanted @event, GameEventInfo info)
     {
-        CCSPlayerController player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
         if (!PlayerManager.IsValid(player) ||
-            player.IsBot ||
+            player!.IsBot ||
             !_playerCache.TryGetValue(player, out PlayerData? playerData) ||
             playerData.Group == null)
         {
@@ -367,10 +367,10 @@ public partial class Plugin
     [GameEventHandler]
     public HookResult OnBombDefused(EventBombDefused @event, GameEventInfo info)
     {
-        CCSPlayerController player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
         if (!PlayerManager.IsValid(player) ||
-            player.IsBot ||
+            player!.IsBot ||
             !_playerCache.TryGetValue(player, out Models.PlayerData? playerData) ||
             playerData.Group == null)
         {
@@ -387,7 +387,7 @@ public partial class Plugin
     {
         var player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !_playerCache.TryGetValue(player, out var playerData) ||
+            !_playerCache.TryGetValue(player!, out var playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -431,7 +431,7 @@ public partial class Plugin
     {
         var player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !_playerCache.TryGetValue(player, out var playerData) ||
+            !_playerCache.TryGetValue(player!, out var playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
