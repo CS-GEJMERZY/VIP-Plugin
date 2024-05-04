@@ -47,7 +47,7 @@ public class DatabaseManager
             await ExecuteCommandAsync(connection, $@"
             CREATE TABLE IF NOT EXISTS Services (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            availability TINYINT(1) DEFAULT {(int)ServiceAvailability.Enabled},
+            availability INT DEFAULT {(int)ServiceAvailability.Enabled},
             player_id INT NOT NULL,
             start_date TIMESTAMP,
             end_date TIMESTAMP,
