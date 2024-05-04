@@ -26,9 +26,5 @@ public class DatabaseCommandsConfig
 
     [JsonPropertyName("css_vp_player_addgroup ")]
     public CommandConfig PlayerAddGroup { get; set; } = new();
-
-    // Player - player
-    [JsonPropertyName("css_services ")]
-    public CommandConfig Services { get; set; } = new();
 }
 
