@@ -229,7 +229,7 @@ public partial class Plugin
                 {
                     await Server.NextFrameAsync(() =>
                     {
-                        player?.PrintToChat($"{PluginPrefix}{Localizer["player.id.not_found"]}");
+                        player!.PrintToChat($"{PluginPrefix}{Localizer["command.invalid_syntax"]}");
                     });
 
                     return;
