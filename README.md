@@ -3,6 +3,17 @@
 ## Description
 VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to establish VIP groups through the CSS Permission system for authentication.
 
+## Features
+- Database Integration: Utilize a SQL database to store VIP services.
+- VIP Group Management: Define and configure VIP groups with various perks and limitations.
+- Custom Event Bonuses: Grant special bonuses to VIPs upon events like spawning, kills, or bomb interactions.
+- Dynamic Configuration: Customize VIP settings such as health, armor, money, grenades, and more.
+- Connect/Disconnect Messages: Display custom messages when VIPs join or leave the server.
+- Random VIP Selection: Automatically select a VIP after a specified number of rounds.
+- Night VIP System: Implement a special VIP status based on server time conditions.
+- Player Information Commands: Retrieve detailed information about players and their services.
+- Service Management Commands: Enable, disable, delete, and retrieve information about services.
+
 ## Dependencies
 - [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases) v201
 - [Metamod:Source](https://www.sourcemm.net/downloads.php/?branch=master)
