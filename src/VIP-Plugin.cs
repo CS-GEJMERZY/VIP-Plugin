@@ -37,7 +37,8 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         RandomVipManager = new RandomVipManager(Config.RandomVip, PluginPrefix);
         NightVipManager = new NightVipManager(Config.NightVip);
 
-        if (Config.Settings.DatabaseVips.Enabled)
+        if (Config.Settings.Database.Enabled &&
+            Config.Settings.DatabaseVips.Enabled)
         {
             DatabaseManager = new DatabaseManager(Config.Settings.Database.SqlServer);
             Task.Run(async () =>

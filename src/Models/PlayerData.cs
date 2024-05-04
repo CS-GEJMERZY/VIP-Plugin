@@ -33,7 +33,7 @@ public class PlayerData
             Group = baseGroup;
         }
     }
-    public async Task LoadData(CCSPlayerController player, GroupManager groupManager, DatabaseManager databaseManager)
+    public async Task LoadData(CCSPlayerController player, GroupManager groupManager, DatabaseManager? databaseManager)
     {
         ulong steamId64 = 0;
         string name = string.Empty;

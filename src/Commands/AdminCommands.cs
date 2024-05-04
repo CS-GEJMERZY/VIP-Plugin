@@ -174,7 +174,7 @@ public partial class Plugin
                 {
                     if (service == null)
                     {
-                        player!.PrintToChat($"{PluginPrefix}{Localizer["service.not_found"]}");
+                        player!.PrintToChat($"{PluginPrefix}{Localizer["service.not_found", serviceIdString]}");
                         return;
                     }
 
@@ -310,7 +310,11 @@ public partial class Plugin
                 int? targetId = await DatabaseManager!.GetPlayerIdRaw(steamid64);
                 if (targetId == null)
                 {
-                    player!.PrintToChat($"{PluginPrefix}{Localizer["player.id.not_found"]}");
+                    await Server.NextFrameAsync(() =>
+                    {
+                        player?.PrintToChat($"{PluginPrefix}{Localizer["player.id.not_found"]}");
+                    });
+
                     return;
                 }
 
@@ -319,7 +323,9 @@ public partial class Plugin
 
                 await Server.NextFrameAsync(() =>
                 {
-                    player?.PrintToChat($"{PluginPrefix}{Localizer["player.add.flags. success"]}");
+                    player?.PrintToChat($"{PluginPrefix}{Localizer["player.add.flags.success",
+                            flagString, steamid64, targetId, duration
+                        ]}");
                 });
             }
             catch (Exception ex)
@@ -363,7 +369,7 @@ public partial class Plugin
         VipGroupConfig? group = GroupManager!.GetGroup(groupId);
         if (group == null)
         {
-            player!.PrintToChat($"{PluginPrefix}{Localizer["service.not_found"]}");
+            player!.PrintToChat($"{PluginPrefix}{Localizer["group.not_found", groupId]}");
             return;
         }
 
@@ -376,11 +382,22 @@ public partial class Plugin
                 int? targetId = await DatabaseManager!.GetPlayerIdRaw(steamid64);
                 if (targetId == null)
                 {
-                    player!.PrintToChat($"{PluginPrefix}{Localizer["player.id.not_found"]}");
+                    await Server.NextFrameAsync(() =>
+                    {
+                        player?.PrintToChat($"{PluginPrefix}{Localizer["player.id.not_found"]}");
+                    });
+
                     return;
                 }
 
                 int serviceId = await DatabaseManager!.AddNewService((int)targetId, DateTime.UtcNow, endTime, "", groupId, $"cmd: {issuerSteamid64}");
+
+                await Server.NextFrameAsync(() =>
+                {
+                    player?.PrintToChat($"{PluginPrefix}{Localizer["player.add.group.success",
+                            group.Name, steamid64, targetId, duration
+                        ]}");
+                });
             }
             catch (Exception ex)
             {
