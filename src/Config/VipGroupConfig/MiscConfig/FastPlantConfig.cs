@@ -1,16 +1,15 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Core.Config
+namespace Core.Config;
+
+public class FastPlantConfig
 {
-    public class FastPlantConfig
-    {
-        [JsonPropertyName("Enabled")]
-        public bool Enabled { get; set; } = false;
+    [JsonPropertyName("Enabled")]
+    public bool Enabled { get; set; } = false;
 
-        [JsonPropertyName("Modifier")]
-        public float Modifier { get; set; } = 1.0f;
+    [JsonPropertyName("Modifier")]
+    public float Modifier { get; set; } = 1.0f;
 
-        [JsonPropertyName("TimeAfterRoundStart")]
-        public float TimeAfterRoundStart { get; set; } = 0;
-    }
+    [JsonPropertyName("TimeAfterRoundStart")]
+    public float TimeAfterRoundStart { get; set; } = 0;
 }

@@ -2,11 +2,11 @@
 
 namespace Core.Config;
 
-public class BhopConfig
+public class DatabaseVipsConfig
 {
     [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; } = false;
 
-    [JsonPropertyName("VelocityZ")]
-    public float VelocityZ { get; set; } = 260.0f;
+    [JsonPropertyName("Commands")]
+    public DatabaseCommandsConfig Commands { get; set; } = new();
 }

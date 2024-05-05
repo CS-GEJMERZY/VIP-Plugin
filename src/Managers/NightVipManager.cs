@@ -1,67 +1,61 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
-namespace Core.Managers
+namespace Core.Managers;
+
+public class NightVipManager(Config.NightVipConfig nightVipData)
 {
-    public class NightVipManager
+    private Config.NightVipConfig NightVipData { get; set; } = nightVipData;
+
+    public bool IsNightVipTime()
     {
-        private Config.NightVipConfig NightVipData { get; set; }
-
-        public NightVipManager(Config.NightVipConfig nightVipData)
+        if (!NightVipData.Enabled)
         {
-            this.NightVipData = nightVipData;
+            return false;
         }
 
-        public bool IsNightVipTime()
+        int currentHour = DateTime.Now.Hour;
+        if (NightVipData.StartHour <= NightVipData.EndHour)
         {
-            if (!NightVipData.Enabled)
-            {
-                return false;
-            }
-
-            int currentHour = DateTime.Now.Hour;
-            if (NightVipData.StartHour <= NightVipData.EndHour)
-            {
-                // Overnight scenario (e.g., 8:00 to 22:00)
-                return currentHour >= NightVipData.StartHour && currentHour < NightVipData.EndHour;
-            }
-            else
-            {
-                // Normal scenario (e.g., 22:00 to 8:00)
-                return currentHour >= NightVipData.StartHour || currentHour < NightVipData.EndHour;
-            }
+            // Overnight scenario (e.g., 8:00 to 22:00)
+            return currentHour >= NightVipData.StartHour && currentHour < NightVipData.EndHour;
         }
-
-        public bool PlayerQualifies(CCSPlayerController player)
+        else
         {
-            return NightVipData.Enabled &&
-                IsNightVipTime() &&
-                HasRequiredPhrase(player) &&
-                HasRequiredTag(player) &&
-                !HasAnyExcludedPermission(player);
+            // Normal scenario (e.g., 22:00 to 8:00)
+            return currentHour >= NightVipData.StartHour || currentHour < NightVipData.EndHour;
         }
+    }
 
-        private bool HasRequiredPhrase(CCSPlayerController player)
-        {
-            return NightVipData.RequiredNickPhrase == string.Empty ||
-                player.PlayerName.Contains(NightVipData.RequiredNickPhrase, StringComparison.OrdinalIgnoreCase);
-        }
+    public bool PlayerQualifies(CCSPlayerController player)
+    {
+        return NightVipData.Enabled &&
+            IsNightVipTime() &&
+            HasRequiredPhrase(player) &&
+            HasRequiredTag(player) &&
+            !HasAnyExcludedPermission(player);
+    }
 
-        private bool HasRequiredTag(CCSPlayerController player)
-        {
-            return NightVipData.RequiredScoreboardTag == string.Empty ||
-                player.Clan == NightVipData.RequiredScoreboardTag;
-        }
+    private bool HasRequiredPhrase(CCSPlayerController player)
+    {
+        return NightVipData.RequiredNickPhrase == string.Empty ||
+            player.PlayerName.Contains(NightVipData.RequiredNickPhrase, StringComparison.OrdinalIgnoreCase);
+    }
 
-        private bool HasAnyExcludedPermission(CCSPlayerController player)
-        {
-            return NightVipData.PermissionExclude.Any(perm => AdminManager.PlayerHasPermissions(player, perm));
-        }
+    private bool HasRequiredTag(CCSPlayerController player)
+    {
+        return NightVipData.RequiredScoreboardTag == string.Empty ||
+            player.Clan == NightVipData.RequiredScoreboardTag;
+    }
 
-        public void GiveNightVip(CCSPlayerController player)
-        {
-            PermissionManager.AddPermissions(player, NightVipData.PermissionsGranted);
-        }
+    private bool HasAnyExcludedPermission(CCSPlayerController player)
+    {
+        return NightVipData.PermissionsExclude.Any(perm => AdminManager.PlayerHasPermissions(player, perm));
+    }
+
+    public void GiveNightVip(CCSPlayerController player)
+    {
+        PermissionManager.AddPermissions(player, NightVipData.PermissionsGranted);
     }
 }
 

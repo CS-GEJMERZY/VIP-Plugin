@@ -1,28 +1,49 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using Core.Config;
+using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 
-namespace Core.Managers
+namespace Core.Managers;
+
+public class GroupManager
 {
-    public class GroupManager
+    private readonly List<VipGroupConfig> _groups = [];
+
+    public GroupManager(List<VipGroupConfig> groups)
     {
-        private readonly List<Config.VipGroupConfig> _groups;
-        public GroupManager(List<Config.VipGroupConfig> groups)
-        {
-            _groups = groups;
-        }
+        _groups = groups;
+        _groups.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+    }
 
-        public int GetPlayerGroup(CCSPlayerController player)
+    public VipGroupConfig? GetPlayerBaseGroup(CCSPlayerController player)
+    {
+        foreach (var group in _groups)
         {
-            for (int i = 0; i < _groups.Count; i++)
+            if (AdminManager.PlayerHasPermissions(player, group.Permissions))
             {
-                if (AdminManager.PlayerHasPermissions(player, _groups[i].Permissions))
-                {
-                    return i;
-                }
+                return group;
             }
-
-            return -1;
         }
+
+        return null;
+    }
+
+    public VipGroupConfig? GetGroup(string id)
+    {
+        return _groups.Find(x => x.UniqueId == id);
+    }
+
+    public List<VipGroupConfig> GetMatchingGroup(HashSet<string> Permsissions)
+    {
+        List<VipGroupConfig> result = [];
+        foreach (var group in _groups)
+        {
+            if (Permsissions.Contains(group.Permissions))
+            {
+                result.Add(group);
+            }
+        }
+
+        return result;
     }
 }
 
