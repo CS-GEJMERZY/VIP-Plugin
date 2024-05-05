@@ -191,6 +191,7 @@ public partial class Plugin
             }
 
             var playerPawn = player.PlayerPawn.Value!;
+            CCSPlayer_ItemServices itemServices = new(playerPawn.ItemServices!.Handle);
 
             playerPawn.GravityScale = playerGroup.Misc.Gravity;
             playerPawn.VelocityModifier = playerGroup.Misc.Speed;
@@ -209,18 +210,15 @@ public partial class Plugin
             if (playerGroup.Events.Spawn.Helmet &&
                 (!IsPistolRound() || playerGroup.Events.Spawn.HelmetOnPistolRound))
             {
-                CCSPlayer_ItemServices services = new(playerPawn.ItemServices!.Handle)
-                {
-                    HasHelmet = true
-                };
+                itemServices.HasHelmet = true;
             }
 
             // defuse kit
             if (playerGroup.Events.Spawn.DefuseKit &&
-                player.TeamNum is (int)CsTeam.CounterTerrorist &&
+                player.TeamNum == (int)CsTeam.CounterTerrorist &&
                 !player.PawnHasDefuser)
             {
-                PlayerManager.GiveItem(player, "item_defuser");
+                itemServices.HasDefuser = true;
             }
 
             // healthshot

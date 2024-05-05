@@ -8,5 +8,5 @@ public class DatabaseConfig
     public bool Enabled { get; set; } = false;
 
     [JsonPropertyName("SqlServer")]
-    public DatabaseSqlConfig SqlServer { get; set; } = new();
+    public DatabaseSqlServerConfig SqlServer { get; set; } = new();
 }
