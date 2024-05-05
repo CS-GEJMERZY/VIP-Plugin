@@ -13,6 +13,7 @@ namespace Core;
 
 public partial class Plugin
 {
+    [RequiresPermissions("@css/root")]
     [CommandHelper(minArgs: 1, usage: "<service id>")]
     public void OnServiceEnableCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
@@ -58,6 +59,7 @@ public partial class Plugin
         });
     }
 
+    [RequiresPermissions("@css/root")]
     [CommandHelper(minArgs: 1, usage: "<service id>")]
     public void OnServiceDisableCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
@@ -104,6 +106,7 @@ public partial class Plugin
 
     }
 
+    [RequiresPermissions("@css/root")]
     [CommandHelper(minArgs: 1, usage: "<service id>")]
     public void OnServiceDeleteCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
@@ -150,6 +153,7 @@ public partial class Plugin
 
     }
 
+    [RequiresPermissions("@css/root")]
     [CommandHelper(minArgs: 1, usage: "<service id>")]
     public void OnServiceInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
@@ -205,6 +209,7 @@ public partial class Plugin
 
     }
 
+    [RequiresPermissions("@css/root")]
     [CommandHelper(minArgs: 1, usage: "<steamid64>")]
     public void OnPlayerInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
@@ -271,6 +276,7 @@ public partial class Plugin
 
     }
 
+    [RequiresPermissions("@css/root")]
     [CommandHelper(minArgs: 3, usage: "<steamid64> <duration> <flag1> ...")]
     public void OnPlayerAddFlagsCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
@@ -341,6 +347,7 @@ public partial class Plugin
 
     }
 
+    [RequiresPermissions("@css/root")]
     [CommandHelper(minArgs: 3, usage: "<steamid64> <duration in minutes> <group id>")]
     public void OnPlayerAddGroupCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
