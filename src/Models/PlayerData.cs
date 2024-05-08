@@ -67,6 +67,11 @@ public class PlayerData
                     return;
                 }
 
+                if (service.Start > DateTime.UtcNow)
+                {
+                    continue;
+                }
+
                 if (service.End <= DateTime.UtcNow)
                 {
                     await databaseManager.SetServiceAvailability(service.Id, ServiceAvailability.Expired);
