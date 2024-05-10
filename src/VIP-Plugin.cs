@@ -15,6 +15,7 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
     public override string ModuleVersion => "1.1.5";
+    
     public required PluginConfig Config { get; set; }
     private GroupManager? GroupManager { get; set; }
     private RandomVipManager? RandomVipManager { get; set; }
@@ -82,7 +83,7 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         if (hotReload)
         {
             foreach (var player in Utilities.GetPlayers()
-                .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV))
+                .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV && !p.IsBot))
             {
                 var playerData = new PlayerData();
                 _playerCache.Add(player, playerData);
@@ -93,6 +94,11 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 
                     await Server.NextFrameAsync(() =>
                     {
+                        if (!PlayerManager.IsValid(player))
+                        {
+                            return;
+                        }
+
                         PermissionManager.AddPermissions(player, playerData.DatabaseData.AllFlags);
                     });
                 });

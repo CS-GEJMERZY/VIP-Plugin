@@ -10,7 +10,8 @@ public class PlayerManager
     {
         return player != null &&
                player.IsValid &&
-               player.PlayerPawn.IsValid;
+               player.PlayerPawn.IsValid &&
+               player.AuthorizedSteamID != null;
     }
 
     public static List<CCSPlayerController> GetValidPlayers()

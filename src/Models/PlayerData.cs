@@ -37,6 +37,7 @@ public class PlayerData
     {
         ulong steamId64 = 0;
         string name = string.Empty;
+        bool valid = true;
 
         SortedSet<VipGroupConfig> allGroups = new(
             Comparer<VipGroupConfig>.Create((a, b) => b.Priority.CompareTo(a.Priority))
@@ -44,6 +45,12 @@ public class PlayerData
 
         await Server.NextFrameAsync(() =>
         {
+            if (!PlayerManager.IsValid(player))
+            {
+                valid = false;
+                return;
+            }
+
             VipGroupConfig? baseGroup = groupManager.GetPlayerBaseGroup(player);
             if (baseGroup != null)
             {
@@ -53,6 +60,11 @@ public class PlayerData
             steamId64 = player!.AuthorizedSteamID!.SteamId64;
             name = player.PlayerName;
         });
+
+        if (!valid)
+        {
+            return;
+        }
 
         if (databaseManager != null)
         {
