@@ -161,31 +161,54 @@ public partial class Plugin
             return HookResult.Continue;
         }
 
-        if (Config.NightVip.Enabled &&
-            NightVipManager!.IsNightVipTime() &&
-            NightVipManager.PlayerQualifies(player))
+        bool qualifiesForNightVip = Config.NightVip.Enabled &&
+                                    NightVipManager!.IsNightVipTime() &&
+                                    NightVipManager.PlayerQualifies(player);
+
+        if (Config.Settings.DatabaseVips.ReloadPlayersOnSpawn)
         {
-            NightVipManager.GiveNightVip(player);
+            Task.Run(async () =>
+            {
+                await playerData.LoadData(player, GroupManager!, DatabaseManager);
+
+                if (qualifiesForNightVip)
+                {
+                    await Server.NextFrameAsync(() =>
+                    {
+                        NightVipManager!.GiveNightVip(player);
+                    });
+                }
+            });
+        }
+        else if (qualifiesForNightVip)
+        {
+            playerData.LoadBaseGroup(player, GroupManager!);
+            NightVipManager!.GiveNightVip(player);
         }
 
-        playerData.LoadBaseGroup(player, GroupManager!);
         if (playerData.Group != null)
         {
             AddTimer(1.0f, () =>
             {
-                PlayerSpawnn_TimerGive(player, playerData.Group);
+                PlayerSpawnn_TimerGive(player, playerData);
             });
         }
 
         return HookResult.Continue;
     }
 
-    private static void PlayerSpawnn_TimerGive(CCSPlayerController player, VipGroupConfig playerGroup)
+    private static void PlayerSpawnn_TimerGive(CCSPlayerController player, PlayerData playerData)
     {
         Server.NextFrame(() =>
         {
             if (!PlayerManager.IsValid(player) ||
                 !player.PawnIsAlive)
+            {
+                return;
+            }
+
+            var playerGroup = playerData.Group;
+            if (playerGroup == null)
             {
                 return;
             }
