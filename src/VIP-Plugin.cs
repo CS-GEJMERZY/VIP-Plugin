@@ -14,9 +14,9 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "1.1.4";
+    public override string ModuleVersion => "1.1.5";
+    
     public required PluginConfig Config { get; set; }
-
     private GroupManager? GroupManager { get; set; }
     private RandomVipManager? RandomVipManager { get; set; }
     private NightVipManager? NightVipManager { get; set; }
