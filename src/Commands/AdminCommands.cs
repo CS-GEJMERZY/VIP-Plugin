@@ -6,7 +6,6 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace Core;
@@ -428,10 +427,10 @@ public partial class Plugin
             return;
         }
 
-        player.PrintToChat($"{PluginPrefix}{ChatColors.Red}[VIP-Plugin] Debug info has been printed in the console.");
+        player.PrintToChat($"{PluginPrefix} [VIP-Plugin] Debug info has been printed in the console.");
 
         player.PrintToConsole("---Group data ---");
-        if (!_playerCache.TryGetValue(player, out Models.PlayerData? playerData))
+        if (!_playerCache.TryGetValue(player, out PlayerData? playerData))
         {
             player.PrintToConsole("* Your group is null");
         }
@@ -447,7 +446,7 @@ public partial class Plugin
             foreach (var group in Config!.VIPGroups)
             {
                 var hasPerms = AdminManager.PlayerHasPermissions(player, group.Permissions);
-                player.PrintToChat($"{PluginPrefix}{group.Name}-{group.Permissions}-{(hasPerms ? "yes" : "no")}");
+                player.PrintToConsole($"{PluginPrefix}{group.Name} | {group.Permissions}: {(hasPerms ? "yes" : "no")}");
             }
         }
 

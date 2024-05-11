@@ -1,6 +1,7 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
+using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Core.Managers;
 
@@ -21,13 +22,13 @@ public class PlayerManager
 
     public static void GiveItem(CCSPlayerController player, CsItem item, int count = 1)
     {
-        for (int i = 0; i < count; i++)
+        string? enumMemberAttributeValue = EnumUtils.GetEnumMemberAttributeValue(item);
+        if (string.IsNullOrWhiteSpace(enumMemberAttributeValue))
         {
-            player.GiveNamedItem(item);
+            return;
         }
 
-        var playerPawn = player!.PlayerPawn.Value;
-        Utilities.SetStateChanged(playerPawn!, "CBasePlayerPawn", "m_pItemServices");
+        GiveItem(player, enumMemberAttributeValue, count);
     }
 
     public static void GiveItem(CCSPlayerController player, string item, int count = 1)
@@ -37,21 +38,47 @@ public class PlayerManager
             player.GiveNamedItem(item);
         }
 
-        var playerPawn = player!.PlayerPawn.Value;
-        Utilities.SetStateChanged(playerPawn!, "CBasePlayerPawn", "m_pItemServices");
+        CCSPlayerPawn playerPawn = player!.PlayerPawn!.Value!;
+
+        Utilities.SetStateChanged(playerPawn, "CBasePlayerPawn", "m_pItemServices");
+    }
+
+    public static bool HasWeapon(CCSPlayerController player, string weaponName)
+    {
+
+        CCSPlayerPawn playerPawn = player.PlayerPawn!.Value!;
+
+        return HasWeapon(playerPawn, weaponName);
+    }
+
+    public static bool HasWeapon(CCSPlayerPawn playerPawn, string weaponName)
+    {
+        foreach (var weapon in playerPawn.WeaponServices!.MyWeapons)
+        {
+            if (weapon.IsValid &&
+                weapon!.Value!.IsValid &&
+                weapon.Value.DesignerName == weaponName)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static int GetHealth(CCSPlayerController player)
     {
-        return player!.PlayerPawn!.Value!.Health;
+        CCSPlayerPawn playerPawn = player!.PlayerPawn!.Value!;
+
+        return playerPawn.Health;
     }
 
     public static void SetHealth(CCSPlayerController player, int amount, int maxHealth = (int)1e6)
     {
-        var playerPawn = player!.PlayerPawn.Value;
+        CCSPlayerPawn playerPawn = player!.PlayerPawn!.Value!;
 
         playerPawn!.Health = Math.Min(amount, maxHealth);
-        Utilities.SetStateChanged(playerPawn!, "CBaseEntity", "m_iHealth");
+        Utilities.SetStateChanged(playerPawn, "CBaseEntity", "m_iHealth");
     }
 
     public static void AddHealth(CCSPlayerController player, int amount, int maxHealth = (int)1e6)
@@ -69,31 +96,35 @@ public class PlayerManager
     {
         player!.InGameMoneyServices!.Account = Math.Min(GetMoney(player) + amount, maxMoney);
 
-        var playerPawn = player!.PlayerPawn.Value;
-        Utilities.SetStateChanged(playerPawn!, "CCSPlayerController_InGameMoneyServices", "m_iAccount");
+        CCSPlayerPawn playerPawn = player!.PlayerPawn!.Value!;
+
+        Utilities.SetStateChanged(playerPawn, "CCSPlayerController", "m_pInGameMoneyServices");
     }
 
     public static int GetArmor(CCSPlayerController player)
     {
-        return player!.PlayerPawn!.Value!.ArmorValue;
+        CCSPlayerPawn playerPawn = player!.PlayerPawn!.Value!;
+
+        return playerPawn.ArmorValue;
     }
 
     public static void SetArmor(CCSPlayerController player, int amount)
     {
-        var playerPawn = player!.PlayerPawn.Value;
+        CCSPlayerPawn playerPawn = player!.PlayerPawn!.Value!;
 
-        playerPawn!.ArmorValue = amount;
-        Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawn", "m_ArmorValue");
+        playerPawn.ArmorValue = amount;
+
+        Utilities.SetStateChanged(playerPawn, "CCSPlayerPawn", "m_ArmorValue");
     }
 
     public static void AddArmor(CCSPlayerController player, int amount)
     {
-        var playerPawn = player!.PlayerPawn.Value;
+        CCSPlayerPawn playerPawn = player!.PlayerPawn!.Value!;
 
         int newValue = Math.Max(100, GetArmor(player) + amount);
         playerPawn!.ArmorValue = newValue;
 
-        Utilities.SetStateChanged(playerPawn!, "CCSPlayerPawn", "m_ArmorValue");
+        Utilities.SetStateChanged(playerPawn, "CCSPlayerPawn", "m_ArmorValue");
     }
 }
 
