@@ -45,7 +45,6 @@ public class PlayerManager
 
     public static bool HasWeapon(CCSPlayerController player, string weaponName)
     {
-
         CCSPlayerPawn playerPawn = player.PlayerPawn!.Value!;
 
         return HasWeapon(playerPawn, weaponName);
