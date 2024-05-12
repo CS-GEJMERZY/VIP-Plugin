@@ -62,8 +62,8 @@ public class DatabaseManager
             id INT PRIMARY KEY AUTO_INCREMENT,
             player_id INT NOT NULL,
             mode INT NOT NULL,
-            start_date TIMESTAMP,
-            end_date TIMESTAMP NULL,
+            start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            end_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             timeleft INT NULL,
             completed BOOLEAN,
             FOREIGN KEY (player_id) REFERENCES Players(id)
