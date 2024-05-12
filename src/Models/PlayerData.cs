@@ -10,6 +10,7 @@ public class PlayerData
 {
     public VipGroupConfig? Group { get; set; } = null;
     public PlayerDatabaseData DatabaseData { get; set; } = new();
+    public PlayerTestVipData TestVipData { get; set; } = new();
     public int JumpsUsed { get; set; } = 0;
     public PlayerButtons LastButtons { get; set; }
     public PlayerFlags LastFlags { get; set; }
