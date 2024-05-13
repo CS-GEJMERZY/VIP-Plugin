@@ -9,7 +9,7 @@ public partial class Plugin
     [CommandHelper(whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public void OnTestVipCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
-        var menu = new CenterHtmlMenu(Localizer["testvip.menu.title"], this); 
+        var menu = new CenterHtmlMenu(Localizer["testvip.menu.title"], this);
     }
 }
 

@@ -350,7 +350,24 @@ public class DatabaseManager
         return rowsAffected;
     }
 
-    public async Task<DateTime?> GetLatestUsedDate(int playerId)
+    public async Task<int> UpdateTestVipEndTime(int TestVipId, DateTime End)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            UPDATE TestVip SET end_date = @End WHERE id = @TestVipId;";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@TestVipId", TestVipId);
+        command.Parameters.AddWithValue("@End", End);
+
+        int rowsAffected = await command.ExecuteNonQueryAsync();
+
+        return rowsAffected;
+    }
+
+    public async Task<DateTime?> GetPlayerTestVipLatestUsedDate(int playerId)
     {
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();

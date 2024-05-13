@@ -18,7 +18,9 @@ public partial class Plugin
     {
         CCSPlayerController? player = @event.Userid;
 
-        if (!PlayerManager.IsValid(player) || player!.IsBot || player.IsHLTV)
+        if (!PlayerManager.IsValid(player) ||
+            player!.IsBot ||
+            player.IsHLTV)
         {
             return HookResult.Continue;
         }
@@ -35,16 +37,28 @@ public partial class Plugin
             {
                 try
                 {
-                    await playerData.LoadData(player, GroupManager!, DatabaseManager!);
+                    await Server.NextFrameAsync(() =>
+                    {
+                        playerData.LoadBaseGroup(player, GroupManager!);
+                    });
+
+                    if (DatabaseVipsEnabled)
+                    {
+                        await playerData.LoadDatabaseVipDataAsync(player, GroupManager!, DatabaseManager!);
+                    }
+
+                    if (TestVipEnabled)
+                    {
+                        await playerData.LoadTestVipDataAsync(player, GroupManager!, DatabaseManager!, Config.TestVip);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError("Error while loading player data on join: {message}", ex.ToString());
+                    Logger.LogError("Error while loading DB player data on join: {message}", ex.ToString());
                 }
 
                 await Server.NextFrameAsync(() =>
                 {
-                    PermissionManager.AddPermissions(player, playerData.DatabaseData.AllFlags);
                     if (playerData.Group == null ||
                         !playerData.Group.Messages.Chat.Connect.Enabled)
                     {

@@ -28,6 +28,12 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     private List<Timer?> ArmorRegenTimers { get; set; } = [];
     public string PluginPrefix { get; set; } = string.Empty;
 
+    public bool DatabaseVipsEnabled => Config.Settings.Database.Enabled &&
+                                       Config.Settings.DatabaseVips.Enabled;
+
+    public bool TestVipEnabled => Config.Settings.Database.Enabled &&
+                                   Config.TestVip.Enabled;
+
     public void OnConfigParsed(PluginConfig _Config)
     {
         Config = _Config;
@@ -90,12 +96,27 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 
                 Task.Run(async () =>
                 {
-                    await playerData.LoadData(player, GroupManager!, DatabaseManager!);
-
-                    await Server.NextFrameAsync(() =>
+                    try
                     {
-                        PermissionManager.AddPermissions(player, playerData.DatabaseData.AllFlags);
-                    });
+                        await Server.NextFrameAsync(() =>
+                        {
+                            playerData.LoadBaseGroup(player, GroupManager!);
+                        });
+
+                        if (DatabaseVipsEnabled)
+                        {
+                            await playerData.LoadDatabaseVipDataAsync(player, GroupManager!, DatabaseManager!);
+                        }
+
+                        if (TestVipEnabled)
+                        {
+                            await playerData.LoadTestVipDataAsync(player, GroupManager!, DatabaseManager!, Config.TestVip);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("Error while hotreloading player: {error}", ex.ToString());
+                    }
                 });
             }
         }

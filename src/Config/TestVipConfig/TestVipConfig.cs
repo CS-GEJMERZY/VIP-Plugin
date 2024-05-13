@@ -5,22 +5,22 @@ namespace Core.Config;
 
 public class TestVipConfig
 {
-    [JsonPropertyName("Enabled ")]
+    [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; } = false;
 
     [JsonPropertyName("Mode")]
     public TestVipMode Mode { get; set; } = TestVipMode.Playtime;
 
-    [JsonPropertyName("Time ")]
+    [JsonPropertyName("Time")]
     public int Time { get; set; } = 120;
 
-    [JsonPropertyName("UniqueGroupId ")]
+    [JsonPropertyName("UniqueGroupId")]
     public string UniqueGroupId { get; set; } = "vip1";
 
-    [JsonPropertyName("FlagsGranted ")]
-    public List<string> FlagsGranted { get; set; } = [];
+    [JsonPropertyName("PermissionsGranted")]
+    public List<string> PermissionsGranted { get; set; } = [];
 
-    [JsonPropertyName("FlagsRestrict ")]
-    public List<string> FlagsRestrict { get; set; } = [];
+    [JsonPropertyName("PermissionsRestricted")]
+    public List<string> PermissionsRestricted { get; set; } = [];
 }
 
