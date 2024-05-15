@@ -10,28 +10,29 @@ using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace Core;
 
-public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
+public sealed partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
     public override string ModuleVersion => "1.2.0";
+
     public required PluginConfig Config { get; set; }
 
-    private GroupManager? GroupManager { get; set; }
-    private RandomVipManager? RandomVipManager { get; set; }
-    private NightVipManager? NightVipManager { get; set; }
+    public required GroupManager GroupManager { get; set; }
+    public required RandomVipManager RandomVipManager { get; set; }
+    public required NightVipManager NightVipManager { get; set; }
+    public required DatabaseManager DatabaseManager { get; set; }
 
-    private DatabaseManager? DatabaseManager { get; set; }
+    private readonly Dictionary<CCSPlayerController, PlayerData> playerCache = [];
+    private readonly List<Timer?> healthRegenTimers = [];
+    private readonly List<Timer?> armorRegenTimers = [];
 
-    private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
-    private List<Timer?> HealthRegenTimers { get; set; } = [];
-    private List<Timer?> ArmorRegenTimers { get; set; } = [];
     public string PluginPrefix { get; set; } = string.Empty;
 
-    public bool DatabaseVipsEnabled => Config.Settings.Database.Enabled &&
+    private bool DatabaseVipsEnabled => Config.Settings.Database.Enabled &&
                                        Config.Settings.DatabaseVips.Enabled;
 
-    public bool TestVipEnabled => Config.Settings.Database.Enabled &&
+    private bool TestVipEnabled => Config.Settings.Database.Enabled &&
                                    Config.TestVip.Enabled;
 
     public void OnConfigParsed(PluginConfig _Config)
@@ -43,10 +44,10 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         RandomVipManager = new RandomVipManager(Config.RandomVip, PluginPrefix);
         NightVipManager = new NightVipManager(Config.NightVip);
 
-        if (Config.Settings.Database.Enabled &&
-            Config.Settings.DatabaseVips.Enabled)
+        if (Config.Settings.Database.Enabled)
         {
             DatabaseManager = new DatabaseManager(Config.Settings.Database.SqlServer);
+
             Task.Run(async () =>
             {
                 try
@@ -62,8 +63,8 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 
         foreach (var _ in Config.VIPGroups)
         {
-            HealthRegenTimers.Add(null);
-            ArmorRegenTimers.Add(null);
+            healthRegenTimers.Add(null);
+            armorRegenTimers.Add(null);
         }
     }
 
@@ -71,11 +72,12 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     {
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
 
+        RegisterListener<OnEntitySpawned>(OnEntitySpawned);
         RegisterListener<OnTick>(() =>
         {
             foreach (var player in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && p.PawnIsAlive))
             {
-                if (!_playerCache.ContainsKey(player))
+                if (!playerCache.ContainsKey(player))
                 {
                     continue;
                 }
@@ -84,15 +86,13 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
             }
         });
 
-        RegisterListener<OnEntitySpawned>(OnEntitySpawned);
-
         if (hotReload)
         {
             foreach (var player in Utilities.GetPlayers()
-                .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV))
+                .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV && !p.IsBot))
             {
                 var playerData = new PlayerData();
-                _playerCache.Add(player, playerData);
+                playerCache.Add(player, playerData);
 
                 Task.Run(async () =>
                 {
@@ -121,12 +121,12 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
             }
         }
 
-        if (Config.Settings.Database.Enabled &&
-            Config.Settings.DatabaseVips.Enabled)
+        if (DatabaseVipsEnabled)
         {
             RegisterCommands();
         }
     }
+
     public override void Unload(bool hotReload)
     {
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);

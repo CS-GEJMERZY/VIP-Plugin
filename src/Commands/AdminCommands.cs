@@ -431,7 +431,7 @@ public partial class Plugin
         player.PrintToChat($"{PluginPrefix}{ChatColors.Red}[VIP-Plugin] Debug info has been printed in the console.");
 
         player.PrintToConsole("---Group data ---");
-        if (!_playerCache.TryGetValue(player, out Models.PlayerData? playerData))
+        if (!playerCache.TryGetValue(player, out Models.PlayerData? playerData))
         {
             player.PrintToConsole("* Your group is null");
         }
