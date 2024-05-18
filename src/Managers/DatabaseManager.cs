@@ -279,7 +279,7 @@ public class DatabaseManager
             WHERE player_id = @playerId AND completed = false;";
 
         using var command = new MySqlCommand(query, connection);
-        command.Parameters.AddWithValue("@player_id", playerId);
+        command.Parameters.AddWithValue("@playerId", playerId);
 
         var reader = await command.ExecuteReaderAsync();
 
@@ -308,7 +308,7 @@ public class DatabaseManager
         await connection.OpenAsync();
 
         const string query = @"
-            INSERT INTO TestVip(player_id, mode, start_date, end_date, timeleft, completed
+            INSERT INTO TestVip(player_id, mode, start_date, end_date, timeleft, completed)
             VALUES(@PlayerId, @Mode, @Start, @End, @TimeLeft, @Completed);
             SELECT LAST_INSERT_ID();";
 
@@ -381,12 +381,6 @@ public class DatabaseManager
         command.Parameters.AddWithValue("@playerId", playerId);
 
         var reader = await command.ExecuteReaderAsync();
-        if (await reader.ReadAsync())
-        {
-            DateTime time = reader.GetDateTime(0);
-            return time;
-        }
-
-        return null;
+        return await reader.ReadAsync() ? reader.IsDBNull(0) ? null : reader.GetDateTime(0) : null;
     }
 }

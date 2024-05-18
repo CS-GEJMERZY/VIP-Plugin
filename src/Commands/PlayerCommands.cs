@@ -20,22 +20,22 @@ public partial class Plugin
 
         if (!playerCache.TryGetValue(player!, out var playerData))
         {
-            player!.PrintToChat(Localizer["not_registered"]);
+            player!.PrintToChat($"{PluginPrefix}{Localizer["not_registered"]}");
             return;
         }
 
         if (playerData.TestVipData.ActiveTestVip != null)
         {
             TestVipData activeTestVip = playerData.TestVipData.ActiveTestVip!;
-            player!.PrintToChat(Localizer["testvip.command.already_active"]);
+            player!.PrintToChat($"{PluginPrefix}{Localizer["testvip.command.already_active"]}");
 
             if (activeTestVip.Mode == TestVipMode.Playtime)
             {
-                player!.PrintToChat(Localizer["testvip.command.active_end.playtime", activeTestVip.TimeLeft!]);
+                player!.PrintToChat($"{PluginPrefix}{Localizer["testvip.command.active_end.playtime", activeTestVip.TimeLeft!]}");
             }
             else
             {
-                player!.PrintToChat(Localizer["testvip.command.active_end.fixed", activeTestVip.End!]);
+                player!.PrintToChat($"{PluginPrefix}{Localizer["testvip.command.active_end.fixed", activeTestVip.End!]}");
             }
 
             return;
@@ -43,7 +43,7 @@ public partial class Plugin
 
         if (playerData.TestVipData.UsedCount >= Config.TestVip.Plan.MaxUses)
         {
-            player!.PrintToChat(Localizer["testvip.command.max_uses", Config.TestVip.Plan.MaxUses]);
+            player!.PrintToChat($"{PluginPrefix}{Localizer["testvip.command.max_uses", Config.TestVip.Plan.MaxUses]}");
             return;
         }
 
@@ -53,7 +53,7 @@ public partial class Plugin
             int timeLeft = Config.TestVip.Plan.Delay - (int)delta.TotalMinutes;
             if (timeLeft > 0)
             {
-                player!.PrintToChat(Localizer["testvip.command.max_uses", Config.TestVip.Plan.MaxUses]);
+                player!.PrintToChat($"{PluginPrefix}{Localizer["testvip.command.max_uses", Config.TestVip.Plan.MaxUses]}");
                 return;
             }
         }
@@ -61,6 +61,7 @@ public partial class Plugin
         var menu = new CenterHtmlMenu(Localizer["testvip.menu.title"], this);
 
         menu.AddMenuOption(Localizer["testvip.menu.redeem"], (Player, option) => TestVipMenuRedeemHandler(Player));
+        menu.Open(player!);
     }
 
     private void TestVipMenuRedeemHandler(CCSPlayerController player)
@@ -72,11 +73,12 @@ public partial class Plugin
 
         if (!playerCache.TryGetValue(player!, out var playerData))
         {
-            player!.PrintToChat(Localizer["not_registered"]);
+            player!.PrintToChat($"{PluginPrefix}{Localizer["not_registered"]}");
             return;
         }
 
-        if (!HandleDatabaseCommand(player))
+        if (!HandleDatabaseCommand(player) ||
+            playerData.TestVipData.ActiveTestVip != null)
         {
             return;
         }
@@ -91,12 +93,12 @@ public partial class Plugin
 
         switch (Config.TestVip.Mode)
         {
-            case Models.TestVipMode.Playtime:
+            case TestVipMode.Playtime:
                 {
                     data.TimeLeft = Config.TestVip.Time;
                     break;
                 }
-            case Models.TestVipMode.FixedDate:
+            case TestVipMode.FixedDate:
                 {
                     data.End = DateTime.UtcNow.AddMinutes(Config.TestVip.Time);
                     break;
@@ -122,12 +124,12 @@ public partial class Plugin
             {
                 if (failed)
                 {
-                    player.PrintToChat(Localizer["testvip.redeem.fail"]);
+                    player.PrintToChat($"{PluginPrefix}{Localizer["testvip.redeem.fail"]}");
 
                     return;
                 }
 
-                player.PrintToChat(Localizer["testvip.redeem.success"]);
+                player.PrintToChat($"{PluginPrefix}{Localizer["testvip.redeem.success"]}");
             });
         });
 

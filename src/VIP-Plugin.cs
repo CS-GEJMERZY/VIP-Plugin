@@ -125,6 +125,12 @@ public sealed partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         {
             RegisterCommands();
         }
+
+        if (TestVipEnabled)
+        {
+            AddCommand("css_testvip", "Test vipe", OnTestVipCommand);
+
+        }
     }
 
     public override void Unload(bool hotReload)
