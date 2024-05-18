@@ -18,7 +18,7 @@ public partial class Plugin
             return;
         }
 
-        if (!playerCache.TryGetValue(player!, out var playerData))
+        if (!_playerData.TryGetValue(player!, out var playerData))
         {
             player!.PrintToChat($"{PluginPrefix}{Localizer["not_registered"]}");
             return;
@@ -71,7 +71,7 @@ public partial class Plugin
             return;
         }
 
-        if (!playerCache.TryGetValue(player!, out var playerData))
+        if (!_playerData.TryGetValue(player!, out var playerData))
         {
             player!.PrintToChat($"{PluginPrefix}{Localizer["not_registered"]}");
             return;

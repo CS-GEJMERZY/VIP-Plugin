@@ -27,10 +27,10 @@ public partial class Plugin
 
         AddTimer(1.0f, () =>
         {
-            if (!playerCache.TryGetValue(player, out PlayerData? playerData))
+            if (!_playerData.TryGetValue(player, out PlayerData? playerData))
             {
                 playerData = new PlayerData();
-                playerCache.Add(player, playerData);
+                _playerData.Add(player, playerData);
             }
 
             Task.Run(async () =>
@@ -69,11 +69,6 @@ public partial class Plugin
                     message = message.Replace("{playername}", player.PlayerName);
 
                     Server.PrintToChatAll($" {MessageFormatter.FormatColor(message)}");
-
-                    if (playerData.Group.Messages.Chat.Connect.DontBroadcast)
-                    {
-                        info.DontBroadcast = true;
-                    }
                 });
             });
         });
@@ -86,7 +81,7 @@ public partial class Plugin
     {
         CCSPlayerController? player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !playerCache.TryGetValue(player!, out PlayerData? playerData) ||
+            !_playerData.TryGetValue(player!, out PlayerData? playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -96,14 +91,9 @@ public partial class Plugin
         {
             var message = playerData.Group.Messages.Chat.Disconnect.Message.Replace("{playername}", player!.PlayerName);
             Server.PrintToChatAll($" {MessageFormatter.FormatColor(message)}");
-
-            if (playerData.Group.Messages.Chat.Disconnect.DontBroadcast)
-            {
-                info.DontBroadcast = true;
-            }
         }
 
-        playerCache.Remove(player!);
+        _playerData.Remove(player!);
 
         return HookResult.Continue;
     }
@@ -123,17 +113,17 @@ public partial class Plugin
         {
             var group = Config.VIPGroups[i];
 
-            if (i < healthRegenTimers.Count)
+            if (i < _healthRegenTimers.Count)
             {
-                if (healthRegenTimers[i] != null)
+                if (_healthRegenTimers[i] != null)
                 {
-                    healthRegenTimers[i]!.Dispose();
-                    healthRegenTimers[i] = null;
+                    _healthRegenTimers[i]!.Dispose();
+                    _healthRegenTimers[i] = null;
                 }
 
                 if (group.Misc.HealthRegen.Enabled)
                 {
-                    healthRegenTimers[i] = new Timer(HealthRegenCallback!, group, group.Misc.HealthRegen.Delay * 1000, group.Misc.HealthRegen.Interval * 1000);
+                    _healthRegenTimers[i] = new Timer(HealthRegenCallback!, group, group.Misc.HealthRegen.Delay * 1000, group.Misc.HealthRegen.Interval * 1000);
                 }
             }
             else
@@ -141,17 +131,17 @@ public partial class Plugin
                 Logger.LogError("Registered {GroupCount} groups, but there's only HealthRegenTimers.Count place for timer. i = {i}", Config.VIPGroups.Count, i);
             }
 
-            if (i < armorRegenTimers.Count)
+            if (i < _armorRegenTimers.Count)
             {
-                if (armorRegenTimers[i] != null)
+                if (_armorRegenTimers[i] != null)
                 {
-                    armorRegenTimers[i]!.Dispose();
-                    armorRegenTimers[i] = null;
+                    _armorRegenTimers[i]!.Dispose();
+                    _armorRegenTimers[i] = null;
                 }
 
                 if (group.Misc.ArmorRegen.Enabled)
                 {
-                    armorRegenTimers[i] = new Timer(ArmorRegenCallback!, group, group.Misc.ArmorRegen.Delay * 1000, group.Misc.ArmorRegen.Interval * 1000);
+                    _armorRegenTimers[i] = new Timer(ArmorRegenCallback!, group, group.Misc.ArmorRegen.Delay * 1000, group.Misc.ArmorRegen.Interval * 1000);
                 }
             }
             else
@@ -170,7 +160,7 @@ public partial class Plugin
 
         if (!PlayerManager.IsValid(player) ||
             player!.IsBot ||
-            !playerCache.TryGetValue(player, out Models.PlayerData? playerData))
+            !_playerData.TryGetValue(player, out Models.PlayerData? playerData))
         {
             return HookResult.Continue;
         }
@@ -179,7 +169,7 @@ public partial class Plugin
                                     NightVipManager!.IsNightVipTime() &&
                                     NightVipManager.PlayerQualifies(player);
 
-        playerData.LoadBaseGroup(player, GroupManager);
+        playerData.LoadBaseGroup(player, GroupManager!);
 
         if (DatabaseVipsEnabled &&
             Config.Settings.DatabaseVips.ReloadPlayersOnSpawn)
@@ -309,7 +299,7 @@ public partial class Plugin
                 continue;
             }
 
-            if (!playerCache.TryGetValue(player, out PlayerData? playerData) ||
+            if (!_playerData.TryGetValue(player, out PlayerData? playerData) ||
                 playerData.Group == null)
             {
                 return HookResult.Continue;
@@ -339,7 +329,7 @@ public partial class Plugin
 
         if (!PlayerManager.IsValid(attacker) ||
             attacker!.IsBot ||
-            !playerCache.TryGetValue(attacker, out PlayerData? playerData) ||
+            !_playerData.TryGetValue(attacker, out PlayerData? playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -372,7 +362,7 @@ public partial class Plugin
 
         if (!PlayerManager.IsValid(player) ||
             player!.IsBot ||
-            !playerCache.TryGetValue(player, out PlayerData? playerData) ||
+            !_playerData.TryGetValue(player, out PlayerData? playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -390,7 +380,7 @@ public partial class Plugin
 
         if (!PlayerManager.IsValid(player) ||
             player!.IsBot ||
-            !playerCache.TryGetValue(player, out Models.PlayerData? playerData) ||
+            !_playerData.TryGetValue(player, out Models.PlayerData? playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -406,7 +396,7 @@ public partial class Plugin
     {
         var player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !playerCache.TryGetValue(player!, out var playerData) ||
+            !_playerData.TryGetValue(player!, out var playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -450,7 +440,7 @@ public partial class Plugin
     {
         var player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
-            !playerCache.TryGetValue(player!, out var playerData) ||
+            !_playerData.TryGetValue(player!, out var playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -514,7 +504,7 @@ public partial class Plugin
 
         if (!PlayerManager.IsValid(player) ||
             player.IsBot ||
-            !playerCache.TryGetValue(player, out PlayerData? playerData) ||
+            !_playerData.TryGetValue(player, out PlayerData? playerData) ||
             playerData.Group == null)
         {
             return HookResult.Continue;
@@ -534,7 +524,9 @@ public partial class Plugin
     {
         if (!PlayerManager.IsValid(player) ||
             player.IsBot ||
-             !playerCache.TryGetValue(player, out Models.PlayerData? playerData))
+            player.IsHLTV ||
+            !player.PawnIsAlive ||
+             !_playerData.TryGetValue(player, out PlayerData? playerData))
         {
             return;
         }
@@ -620,7 +612,7 @@ public partial class Plugin
             var player = new CCSPlayerController(throwerValueController.Handle);
 
             if (!PlayerManager.IsValid(player) ||
-                !playerCache.TryGetValue(player, out PlayerData? playerData))
+                !_playerData.TryGetValue(player, out PlayerData? playerData))
             {
                 return;
             }

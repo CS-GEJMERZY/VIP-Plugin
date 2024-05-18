@@ -15,17 +15,20 @@ public sealed partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
     public override string ModuleVersion => "1.2.0";
+    public override string ModuleDescription => "https://github.com/CS-GEJMERZY/VIP-Plugin";
 
     public required PluginConfig Config { get; set; }
 
-    public required GroupManager GroupManager { get; set; }
-    public required RandomVipManager RandomVipManager { get; set; }
-    public required NightVipManager NightVipManager { get; set; }
-    public required DatabaseManager DatabaseManager { get; set; }
+    public DatabaseManager? DatabaseManager { get; set; }
+    public GroupManager? GroupManager { get; set; }
+    public RandomVipManager? RandomVipManager { get; set; }
+    public NightVipManager? NightVipManager { get; set; }
+    public TestVipManager? TestVipManager { get; set; }
 
-    private readonly Dictionary<CCSPlayerController, PlayerData> playerCache = [];
-    private readonly List<Timer?> healthRegenTimers = [];
-    private readonly List<Timer?> armorRegenTimers = [];
+    private readonly Dictionary<CCSPlayerController, PlayerData> _playerData = [];
+
+    private readonly List<Timer?> _healthRegenTimers = [];
+    private readonly List<Timer?> _armorRegenTimers = [];
 
     public string PluginPrefix { get; set; } = string.Empty;
 
@@ -63,8 +66,8 @@ public sealed partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 
         foreach (var _ in Config.VIPGroups)
         {
-            healthRegenTimers.Add(null);
-            armorRegenTimers.Add(null);
+            _healthRegenTimers.Add(null);
+            _armorRegenTimers.Add(null);
         }
     }
 
@@ -75,13 +78,8 @@ public sealed partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         RegisterListener<OnEntitySpawned>(OnEntitySpawned);
         RegisterListener<OnTick>(() =>
         {
-            foreach (var player in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && p.PawnIsAlive))
+            foreach (var player in Utilities.GetPlayers())
             {
-                if (!playerCache.ContainsKey(player))
-                {
-                    continue;
-                }
-
                 OnTick(player);
             }
         });
@@ -92,7 +90,7 @@ public sealed partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
                 .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV && !p.IsBot))
             {
                 var playerData = new PlayerData();
-                playerCache.Add(player, playerData);
+                _playerData.Add(player, playerData);
 
                 Task.Run(async () =>
                 {

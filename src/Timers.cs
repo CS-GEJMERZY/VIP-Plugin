@@ -23,12 +23,12 @@ public partial class Plugin
             {
                 if (!player.IsValid ||
                     !player.PawnIsAlive ||
-                    !playerCache.ContainsKey(player))
+                    !_playerData.ContainsKey(player))
                 {
                     continue;
                 }
 
-                var playerData = playerCache[player];
+                var playerData = _playerData[player];
                 if (playerData.Group != group)
                 {
                     continue;
@@ -55,12 +55,12 @@ public partial class Plugin
             {
                 if (!player.IsValid ||
                     !player.PawnIsAlive ||
-                    !playerCache.ContainsKey(player))
+                    !_playerData.ContainsKey(player))
                 {
                     continue;
                 }
 
-                var playerData = playerCache[player];
+                var playerData = _playerData[player];
                 if (playerData.Group != group)
                 {
                     continue;

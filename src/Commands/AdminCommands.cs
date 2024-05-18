@@ -431,7 +431,7 @@ public partial class Plugin
 
         player.PrintToConsole("---Group data ---");
 
-        if (!playerCache.TryGetValue(player, out PlayerData? playerData))
+        if (!_playerData.TryGetValue(player, out PlayerData? playerData))
         {
             player.PrintToConsole("* Your group is null");
         }
