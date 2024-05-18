@@ -175,42 +175,77 @@ public partial class Plugin
             return HookResult.Continue;
         }
 
-        if (Config.NightVip.Enabled &&
-            NightVipManager!.IsNightVipTime() &&
-            NightVipManager.PlayerQualifies(player))
-        {
-            NightVipManager.GiveNightVip(player);
-        }
+        bool qualifiesForNightVip = Config.NightVip.Enabled &&
+                                    NightVipManager!.IsNightVipTime() &&
+                                    NightVipManager.PlayerQualifies(player);
 
-        playerData.LoadBaseGroup(player, GroupManager!);
-        if (playerData.Group != null)
+        playerData.LoadBaseGroup(player, GroupManager);
+
+        if (DatabaseVipsEnabled &&
+            Config.Settings.DatabaseVips.ReloadPlayersOnSpawn)
         {
-            AddTimer(1.0f, () =>
+            Task.Run(async () =>
             {
-                PlayerSpawnn_TimerGive(player, playerData.Group);
+                try
+                {
+
+                    await playerData.LoadDatabaseVipDataAsync(player, GroupManager!, DatabaseManager!);
+
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("Error while realoding player on spawn: {error}", ex.ToString());
+                }
             });
         }
 
-        return HookResult.Continue;
-    }
+        if (qualifiesForNightVip)
+        {
+            NightVipManager!.GiveNightVip(player);
+        }
 
-    private static void PlayerSpawnn_TimerGive(CCSPlayerController player, VipGroupConfig playerGroup)
-    {
+        var playerGroup = playerData.Group;
+        if (playerGroup == null)
+        {
+            return HookResult.Continue;
+        }
+
         Server.NextFrame(() =>
         {
+            CCSPlayerPawn? playerPawn = player?.PlayerPawn?.Value;
+
             if (!PlayerManager.IsValid(player) ||
-                !player.PawnIsAlive)
+                !player!.PawnIsAlive ||
+                playerGroup == null ||
+                playerPawn == null ||
+                playerPawn.ItemServices == null ||
+                playerPawn.WeaponServices == null)
             {
                 return;
             }
 
-            var playerPawn = player.PlayerPawn.Value!;
             CCSPlayer_ItemServices itemServices = new(playerPawn.ItemServices!.Handle);
 
+            // Helmet
+            if (playerGroup.Events.Spawn.Helmet &&
+                (!IsPistolRound() || playerGroup.Events.Spawn.HelmetOnPistolRound))
+            {
+                itemServices.HasHelmet = true;
+            }
+
+            // Defuser
+            if (playerGroup.Events.Spawn.DefuseKit &&
+                player.TeamNum == (int)CsTeam.CounterTerrorist &&
+                !player.PawnHasDefuser)
+            {
+                itemServices.HasDefuser = true;
+            }
+
+            // Gravity and velocity
             playerPawn.GravityScale = playerGroup.Misc.Gravity;
             playerPawn.VelocityModifier = playerGroup.Misc.Speed;
 
-            // Armor and health
+            // health and armor
             PlayerManager.SetHealth(player, playerGroup.Events.Spawn.HpValue, playerGroup.Limits.MaxHp);
             PlayerManager.SetArmor(player, playerGroup.Events.Spawn.ArmorValue);
 
@@ -220,28 +255,13 @@ public partial class Plugin
                 PlayerManager.AddMoney(player, playerGroup.Events.Spawn.ExtraMoney, playerGroup.Limits.MaxMoney);
             }
 
-            // helmet
-            if (playerGroup.Events.Spawn.Helmet &&
-                (!IsPistolRound() || playerGroup.Events.Spawn.HelmetOnPistolRound))
-            {
-                itemServices.HasHelmet = true;
-            }
-
-            // defuse kit
-            if (playerGroup.Events.Spawn.DefuseKit &&
-                player.TeamNum == (int)CsTeam.CounterTerrorist &&
-                !player.PawnHasDefuser)
-            {
-                itemServices.HasDefuser = true;
-            }
-
             // healthshot
             if (playerGroup.Events.Spawn.HealthshotOnPistolRound || !IsPistolRound())
             {
                 PlayerManager.GiveItem(player, CsItem.Healthshot, playerGroup.Events.Spawn.HealthshotAmount);
             }
 
-            // nades
+            // grenades
             PlayerManager.GiveItem(player, CsItem.Smoke, playerGroup.Events.Spawn.Grenades.Smoke);
             PlayerManager.GiveItem(player, CsItem.HE, playerGroup.Events.Spawn.Grenades.HE);
             PlayerManager.GiveItem(player, CsItem.Flashbang, playerGroup.Events.Spawn.Grenades.Flashbang);
@@ -265,21 +285,7 @@ public partial class Plugin
             // zeus
             if (playerGroup.Events.Spawn.Zeus && (playerGroup.Events.Spawn.ZeusOnPistolRound || !IsPistolRound()))
             {
-                bool hasZeus = false;
-
-                foreach (var weapon in player!.PlayerPawn!.Value!.WeaponServices!.MyWeapons)
-                {
-                    if (weapon.IsValid && weapon!.Value!.IsValid)
-                    {
-                        if (weapon.Value.DesignerName == "weapon_taser")
-                        {
-                            hasZeus = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!hasZeus)
+                if (!PlayerManager.HasWeapon(playerPawn, "weapon_taser"))
                 {
                     PlayerManager.GiveItem(player, CsItem.Zeus, 1);
                 }
@@ -288,6 +294,7 @@ public partial class Plugin
             Utilities.SetStateChanged(playerPawn!, "CBasePlayerPawn", "m_pItemServices");
         });
 
+        return HookResult.Continue;
     }
 
     [GameEventHandler]

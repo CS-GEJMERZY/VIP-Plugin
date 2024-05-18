@@ -35,12 +35,24 @@ public class PlayerData
     {
         ulong steamId64 = 0;
         string name = string.Empty;
+        bool valid = true;
 
         await Server.NextFrameAsync(() =>
         {
+            if (!PlayerManager.IsValid(player))
+            {
+                valid = false;
+                return;
+            }
+
             steamId64 = player!.AuthorizedSteamID!.SteamId64;
             name = player.PlayerName;
         });
+
+        if (!valid)
+        {
+            return;
+        }
 
         DatabaseData.Id = await databaseManager.GetPlayerId(steamId64, name);
         DatabaseData.Services = await databaseManager.GetPlayerServices(DatabaseData.Id);
