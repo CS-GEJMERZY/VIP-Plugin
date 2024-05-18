@@ -41,19 +41,19 @@ public partial class Plugin
             return;
         }
 
-        if (playerData.TestVipData.UsedCount >= Config.TestVip.MaxUses)
+        if (playerData.TestVipData.UsedCount >= Config.TestVip.Plan.MaxUses)
         {
-            player!.PrintToChat(Localizer["testvip.command.max_uses", Config.TestVip.MaxUses]);
+            player!.PrintToChat(Localizer["testvip.command.max_uses", Config.TestVip.Plan.MaxUses]);
             return;
         }
 
         if (playerData.TestVipData.LastEndTime != null)
         {
             TimeSpan delta = DateTime.UtcNow - (DateTime)playerData.TestVipData.LastEndTime;
-            int timeLeft = Config.TestVip.UseDelayMinutes - (int)delta.TotalMinutes;
+            int timeLeft = Config.TestVip.Plan.Delay - (int)delta.TotalMinutes;
             if (timeLeft > 0)
             {
-                player!.PrintToChat(Localizer["testvip.command.max_uses", Config.TestVip.MaxUses]);
+                player!.PrintToChat(Localizer["testvip.command.max_uses", Config.TestVip.Plan.MaxUses]);
                 return;
             }
         }

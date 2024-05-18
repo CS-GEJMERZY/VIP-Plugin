@@ -11,11 +11,8 @@ public class TestVipConfig
     [JsonPropertyName("Mode")]
     public TestVipMode Mode { get; set; } = TestVipMode.Playtime;
 
-    [JsonPropertyName("MaxUses")]
-    public int MaxUses { get; set; } = 1;
-
-    [JsonPropertyName("UseDelayMinutes")]
-    public int UseDelayMinutes { get; set; } = 1400;
+    [JsonPropertyName("Plan")]
+    public TestVipPlanConfig Plan { get; set; } = new();
 
     [JsonPropertyName("Time")]
     public int Time { get; set; } = 120;

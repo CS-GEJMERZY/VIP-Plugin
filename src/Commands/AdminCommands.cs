@@ -431,7 +431,7 @@ public partial class Plugin
 
         player.PrintToConsole("---Group data ---");
 
-        if (!playerCache.TryGetValue(player, out Models.PlayerData? playerData))
+        if (!playerCache.TryGetValue(player, out PlayerData? playerData))
         {
             player.PrintToConsole("* Your group is null");
         }
@@ -451,25 +451,30 @@ public partial class Plugin
             }
         }
 
-        player.PrintToConsole($"{PluginPrefix}---RandomVIP---");
-
-        player.PrintToConsole($"{PluginPrefix}Enabled: {Config.RandomVip.Enabled}");
-        player.PrintToConsole($"{PluginPrefix}AfterRound: {Config.RandomVip.AfterRound}");
-        player.PrintToConsole($"{PluginPrefix}Minimum players: {Config.RandomVip.MinimumPlayers}");
-        player.PrintToConsole($"{PluginPrefix}RepeatPicking: {Config.RandomVip.RepeatPickingMessage}");
-        player.PrintToConsole($"{PluginPrefix}PermissionsGranted: {string.Join(", ", Config.RandomVip.PermissionsGranted)}");
-        player.PrintToConsole($"{PluginPrefix}PermissionExclude: {string.Join(", ", Config.RandomVip.PermissionsExclude)}");
-
         player.PrintToConsole($"{PluginPrefix}---NightVIP---");
-
-        player.PrintToConsole($"{PluginPrefix}Enabled: {Config.NightVip.Enabled}");
         player.PrintToConsole($"{PluginPrefix}is time: {NightVipManager!.IsNightVipTime()}");
-        player.PrintToConsole($"{PluginPrefix}StartHour: {Config.NightVip.StartHour}");
-        player.PrintToConsole($"{PluginPrefix}EndHour: {Config.NightVip.EndHour}");
-        player.PrintToConsole($"{PluginPrefix}RequiredNickPhrase: {Config.NightVip.RequiredNickPhrase}");
-        player.PrintToConsole($"{PluginPrefix}RequiredScoreboardTag: {Config.NightVip.RequiredScoreboardTag}");
-        player.PrintToConsole($"{PluginPrefix}PermissionsGranted: {string.Join(", ", Config.NightVip.PermissionsGranted)}");
-        player.PrintToConsole($"{PluginPrefix}PermissionExclude: {string.Join(", ", Config.NightVip.PermissionsExclude)}");
+
+        if (playerData != null)
+        {
+            player.PrintToConsole($"{PluginPrefix}---TestVIP---");
+            player.PrintToConsole($"{PluginPrefix}Enabled: {Config.TestVip.Enabled}");
+            player.PrintToConsole($"{PluginPrefix}LastEndTime: {playerData!.TestVipData.LastEndTime}");
+            player.PrintToConsole($"{PluginPrefix}UsedCount: {playerData!.TestVipData.UsedCount}");
+
+            if (playerData.TestVipData.ActiveTestVip != null)
+            {
+                var data = playerData.TestVipData.ActiveTestVip;
+                player.PrintToConsole($"{PluginPrefix}Start: {data.Start}");
+                player.PrintToConsole($"{PluginPrefix}End: {data.End}");
+                player.PrintToConsole($"{PluginPrefix}Mode: {data.Mode}");
+                player.PrintToConsole($"{PluginPrefix}TimeLeft: {data.TimeLeft}");
+                player.PrintToConsole($"{PluginPrefix}Completed: {data.Completed}");
+            }
+            else
+            {
+                player.PrintToConsole($"{PluginPrefix}ActiveVIP: no");
+            }
+        }
     }
 
     private bool HandleDatabaseCommand(CCSPlayerController? player)
