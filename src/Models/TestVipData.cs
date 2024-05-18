@@ -2,7 +2,7 @@
 
 public class TestVipData
 {
-    public int Id { get; set; }
+    public int Id { get; set; } = -1;
     public int PlayerId { get; set; }
     public TestVipMode Mode { get; set; }
     public DateTime Start { get; set; }
