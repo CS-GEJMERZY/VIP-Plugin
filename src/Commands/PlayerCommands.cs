@@ -107,29 +107,24 @@ public partial class Plugin
 
         Task.Run(async () =>
         {
-            bool failed = false;
+            bool success = true;
 
             try
             {
-                await DatabaseManager.InsertTestVip(data);
+                await DatabaseManager!.InsertTestVip(data);
                 await playerData.LoadTestVipDataAsync(player, GroupManager!, DatabaseManager!, Config.TestVip);
             }
             catch (Exception ex)
             {
-                failed = true;
+                success = false;
                 Logger.LogError("Error while adding testvip: {error}", ex.ToString());
             }
 
             await Server.NextFrameAsync(() =>
             {
-                if (failed)
-                {
-                    player.PrintToChat($"{PluginPrefix}{Localizer["testvip.redeem.fail"]}");
-
-                    return;
-                }
-
-                player.PrintToChat($"{PluginPrefix}{Localizer["testvip.redeem.success"]}");
+                player.PrintToChat(success
+                    ? $"{PluginPrefix}{Localizer["testvip.redeem.success"]}"
+                    : $"{PluginPrefix}{Localizer["testvip.redeem.fail"]}");
             });
         });
 

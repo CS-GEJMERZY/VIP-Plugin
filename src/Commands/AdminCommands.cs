@@ -42,7 +42,7 @@ public partial class Plugin
                     }
 
                     player!.PrintToChat($"{PluginPrefix}{Localizer["service.enabled_success", serviceId]}");
-                    Logger.LogInformation("Player {name}({steamid}) enabled service id={id}", player.PlayerName, player.AuthorizedSteamID!.SteamId64, serviceId);
+                    Logger.LogInformation("Player {name} ({steamid}) enabled service ID({id})", player.PlayerName, player.AuthorizedSteamID!.SteamId64, serviceId);
 
                 });
             }
@@ -53,7 +53,7 @@ public partial class Plugin
                     player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
                 });
 
-                Logger.LogError("Error occured while enabling service: {error}", ex.ToString());
+                Logger.LogError("Error occured while setting service availability: {error}", ex.ToString());
             }
         });
     }
@@ -99,10 +99,9 @@ public partial class Plugin
                     player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
                 });
 
-                Logger.LogError("Error occured while disabling service: {error}", ex.ToString());
+                Logger.LogError("Error occured while setting service availability: {error}", ex.ToString());
             }
         });
-
     }
 
     [RequiresPermissions("@css/root")]
@@ -202,10 +201,9 @@ public partial class Plugin
                     player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
                 });
 
-                Logger.LogError("Error occured while retrieving service: {error}", ex.ToString());
+                Logger.LogError("Error occured while retrieving service information: {error}", ex.ToString());
             }
         });
-
     }
 
     [RequiresPermissions("@css/root")]
@@ -239,18 +237,18 @@ public partial class Plugin
                     return;
                 }
 
-                List<PlayerServiceData> serviceData = await DatabaseManager!.GetPlayerServices((int)playerId, ServiceAvailability.Enabled);
+                List<PlayerServiceData> services = await DatabaseManager!.GetPlayerServices((int)playerId, ServiceAvailability.Enabled);
                 await Server.NextFrameAsync(() =>
                 {
                     player!.PrintToChat($"{PluginPrefix}{Localizer["player.info.id", playerId]}");
-                    player!.PrintToChat($"{PluginPrefix}{Localizer["player.info.service_count", serviceData.Count]}");
+                    player!.PrintToChat($"{PluginPrefix}{Localizer["player.info.service_count", services.Count]}");
 
-                    int counter = 1;
-                    foreach (var service in serviceData)
+                    for(int i = 0; i < services.Count; i++) 
                     {
+                        var service = services[i];
                         string flagString = string.Join(", ", service.Flags);
 
-                        player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.title", counter++]}");
+                        player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.title", i + 1]}");
                         player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.id", service.Id]}");
                         player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.player_id", service.PlayerId]}");
                         player!.PrintToChat($"{PluginPrefix}{Localizer["service.info.availability", GetServiceAvailabilityName(service.Availability)]}");
@@ -269,7 +267,7 @@ public partial class Plugin
                     player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
                 });
 
-                Logger.LogError("Error occured while performing player info: {error}", ex.ToString());
+                Logger.LogError("Error occurred while retrieving player information: {error}", ex.ToString());
             }
         });
 
@@ -284,8 +282,13 @@ public partial class Plugin
             return;
         }
 
-        string steamid64String = commandInfo.GetArg(1);
-        string durationString = commandInfo.GetArg(2);
+        if (commandInfo.ArgCount <= 2 ||
+            !ulong.TryParse(commandInfo.GetArg(1), out ulong steamid64) ||
+            !ulong.TryParse(commandInfo.GetArg(2), out ulong duration))
+        {
+            player!.PrintToChat($"{PluginPrefix}{Localizer["command.invalid_syntax"]}");
+            return;
+        }
 
         List<string> flags = [];
         for (int i = 3; i < commandInfo.ArgCount; i++)
@@ -293,19 +296,7 @@ public partial class Plugin
             flags.Add(commandInfo.GetArg(i));
         }
 
-        if (!ulong.TryParse(steamid64String, out ulong steamid64) ||
-            !ulong.TryParse(durationString, out ulong duration))
-        {
-            player!.PrintToChat($"{PluginPrefix}{Localizer["command.invalid_syntax"]}");
-            return;
-        }
-
-        ulong issuerSteamid64 = 0;
-        if (player!.AuthorizedSteamID != null)
-        {
-            issuerSteamid64 = player.AuthorizedSteamID.SteamId64;
-        }
-
+        ulong issuerSteamid64 = player!.AuthorizedSteamID?.SteamId64 ?? 0;
         DateTime endTime = DateTime.UtcNow.AddMinutes(duration);
 
         Task.Run(async () =>
@@ -340,7 +331,7 @@ public partial class Plugin
                     player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
                 });
 
-                Logger.LogError("Encountered error while adding new service: {error}", ex.ToString());
+                Logger.LogError("Error occurred while adding new service: {error}", ex.ToString());
             }
         });
 
@@ -355,22 +346,17 @@ public partial class Plugin
             return;
         }
 
-        string steamid64String = commandInfo.GetArg(1);
-        string durationString = commandInfo.GetArg(2);
-        string groupId = commandInfo.GetArg(3);
-
-        if (!ulong.TryParse(steamid64String, out ulong steamid64) ||
-            !ulong.TryParse(durationString, out ulong duration))
+        if (commandInfo.ArgCount <= 2 ||
+            !ulong.TryParse(commandInfo.GetArg(1), out ulong steamid64) ||
+            !ulong.TryParse(commandInfo.GetArg(2), out ulong duration))
         {
             player!.PrintToChat($"{PluginPrefix}{Localizer["command.invalid_syntax"]}");
             return;
         }
 
-        ulong issuerSteamid64 = 0;
-        if (player!.AuthorizedSteamID != null)
-        {
-            issuerSteamid64 = player.AuthorizedSteamID.SteamId64;
-        }
+        string groupId = commandInfo.GetArg(3);
+
+        ulong issuerSteamid64 = player!.AuthorizedSteamID?.SteamId64 ?? 0;
 
         VipGroupConfig? group = GroupManager!.GetGroup(groupId);
         if (group == null)
@@ -412,7 +398,7 @@ public partial class Plugin
                     player?.PrintToChat($"{PluginPrefix}{Localizer["database.invalid_query"]}");
                 });
 
-                Logger.LogError("Encountered error while adding new service: {error}", ex.ToString());
+                Logger.LogError("Error occurred while adding new service: {error}", ex.ToString());
             }
         });
 
