@@ -17,6 +17,9 @@ public class PluginConfig : BasePluginConfig
     [JsonPropertyName("NightVIP")]
     public NightVipConfig NightVip { get; set; } = new();
 
+    [JsonPropertyName("TestVip")]
+    public TestVipConfig TestVip { get; set; } = new();
+
     public PluginConfig()
     {
         if (VIPGroups.Count == 0)

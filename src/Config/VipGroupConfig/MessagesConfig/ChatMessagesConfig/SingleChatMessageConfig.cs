@@ -9,7 +9,4 @@ public class SingleChatMessageConfig
 
     [JsonPropertyName("Message")]
     public string Message { get; set; } = "MSG";
-
-    [JsonPropertyName("DontBroadcast")]
-    public bool DontBroadcast { get; set; } = true;
 }

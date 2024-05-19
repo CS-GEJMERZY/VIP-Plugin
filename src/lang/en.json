@@ -6,7 +6,7 @@
   "database.not_ready": "{lightred}Database is {red}not ready{lightred}. Please try again later.",
   "database.invalid_query": "{lightred}Error while executing database query.",
   "database.player_not_found": "{lime}Player {red}not found {lime}in the database.",
-  "group.not_found" : "{lightred}Group {gold}{0} {lightred}doesn't exist.",
+  "group.not_found": "{lightred}Group {gold}{0} {lightred}doesn't exist.",
   "service.invalid_id": "{gold}{0} is {lightred}not a valid {lightred}service ID.",
   "service.not_found": "{lightred}Service {gold}{0} {lightred}doesn't exist.",
   "service.enabled_success": "{lime}Service {gold}{0} {lime}has been {lime}enabled successfully.",
@@ -28,5 +28,14 @@
   "player.info.id": "{gold}ID: {purple}{0}",
   "player.info.service_count": "{gold}Service count: {purple}{0}",
   "player.add.flags.success": "{lime}Succesfully added {gold}{0} {lime}flags to {gold}{1}{default}({gold}{2}{default}) {lime}for {gold}{3} {lime}minutes.",
-  "player.add.group.success": "{lime}Succesfully added Group {gold}{0} {lime}to {gold}{1}{default}({gold}{2}{default}) {lime}for {gold}{3} {lime}minutes."
+  "player.add.group.success": "{lime}Succesfully added Group {gold}{0} {lime}to {gold}{1}{default}({gold}{2}{default}) {lime}for {gold}{3} {lime}minutes.",
+  "testvip.command.already_active": "{lime}You currently have an active Test VIP.",
+  "testvip.command.active_end.playtime": "{lime}This Test VIP will expire in {gold}{0} {lime}minutes.",
+  "testvip.command.active_end.fixed": "{lime}This Test VIP will expire on {gold}{0}.",
+  "testvip.command.max_uses": "{lime}You have reached the maximum number of Test VIP uses ({gold}{0}{lime}).",
+  "testvip.command.cooldown": "{lime}You must wait {gold}{0} {lime}minutes before using Test VIP again.",
+  "testvip.menu.title": "Test VIP",
+  "testvip.menu.redeem": "Redeem Test VIP",
+  "testvip.redeem.success": "{lime}You have successfully redeemed a Test VIP!",
+  "testvip.redeem.fail": "{lightred}Failed to redeem Test VIP."
 }

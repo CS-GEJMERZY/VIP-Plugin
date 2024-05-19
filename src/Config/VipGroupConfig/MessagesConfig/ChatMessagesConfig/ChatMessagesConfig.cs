@@ -9,7 +9,6 @@ public class ChatMessagesConfig
     {
         Enabled = true,
         Message = "VIP {playername} joined the server",
-        DontBroadcast = true
     };
 
     [JsonPropertyName("Disconnect")]
@@ -17,6 +16,5 @@ public class ChatMessagesConfig
     {
         Enabled = true,
         Message = "VIP {playername} left the server",
-        DontBroadcast = true
     };
 }

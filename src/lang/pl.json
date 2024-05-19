@@ -28,5 +28,14 @@
   "player.info.id": "{gold}ID: {purple}{0}",
   "player.info.service_count": "{gold}Liczba usług: {purple}{0}",
   "player.add.flags.success": "{lime}Pomyślnie dodano {gold}{0} {lime}flagi dla {gold}{1}{default}({gold}{2}{default}) {lime}na {gold}{3} {lime}minut.",
-  "player.add.group.success": "{lime}Pomyślnie dodano Grupę {gold}{0} {lime}dla {gold}{1}{default}({gold}{2}{default}) {lime}na {gold}{3} {lime}minut."
+  "player.add.group.success": "{lime}Pomyślnie dodano Grupę {gold}{0} {lime}dla {gold}{1}{default}({gold}{2}{default}) {lime}na {gold}{3} {lime}minut.",
+  "testvip.command.already_active": "{lime}Masz aktywne Testowe VIP.",
+  "testvip.command.active_end.playtime": "{lime}To Testowe VIP wygaśnie za {gold}{0} {lime}minut.",
+  "testvip.command.active_end.fixed": "{lime}To Testowe VIP wygaśnie {gold}{0}.",
+  "testvip.command.max_uses": "{lime}Osiągnąłeś maksymalną liczbę użyć Testowego VIP ({gold}{0}{lime}).",
+  "testvip.command.cooldown": "{lime}Musisz odczekać {gold}{0} {lime}minut zanim będziesz mógł ponownie użyć Testowego VIP.",
+  "testvip.menu.title": "Testowe VIP",
+  "testvip.menu.redeem": "Aktywuj Testowe VIP",
+  "testvip.redeem.success": "{lime}Pomyślnie aktywowano Testowe VIP!",
+  "testvip.redeem.fail": "{lightred}Nie udało się aktywować Testowego VIP."
 }

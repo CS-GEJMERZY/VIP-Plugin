@@ -56,6 +56,18 @@ public class DatabaseManager
             notes TEXT,
             FOREIGN KEY (player_id) REFERENCES Players(id)
             );");
+
+            await ExecuteCommandAsync(connection, @"
+            CREATE TABLE IF NOT EXISTS TestVip (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            player_id INT NOT NULL,
+            mode INT NOT NULL,
+            start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            end_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            timeleft INT NULL,
+            completed BOOLEAN,
+            FOREIGN KEY (player_id) REFERENCES Players(id)
+             );");
         }
         catch (Exception e)
         {
@@ -103,8 +115,7 @@ public class DatabaseManager
         await connection.OpenAsync();
 
         const string query = @"
-            SELECT id FROM Players WHERE steamid64 = @steamid64;
-        ";
+            SELECT id FROM Players WHERE steamid64 = @steamid64;";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@steamid64", steamid64);
@@ -123,8 +134,8 @@ public class DatabaseManager
             SELECT id, availability, start_date, end_date, flags, group_id, notes
             FROM Services WHERE 
             player_id = @playerId
-            AND (availability & @availability) !=0
-            ";
+            AND (availability & @availability) != 0;";
+
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@playerId", playerId);
         command.Parameters.AddWithValue("@availability", (int)availability);
@@ -256,5 +267,120 @@ public class DatabaseManager
         int rowsAffected = await command.ExecuteNonQueryAsync();
 
         return rowsAffected;
+    }
+
+    public async Task<TestVipData?> GetPlayerTestVipData(int playerId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            SELECT id, player_id, mode, start_date, end_date, timeleft, completed FROM TestVip
+            WHERE player_id = @playerId AND completed = false;";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@playerId", playerId);
+
+        var reader = await command.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            var testVipData = new TestVipData
+            {
+                Id = reader.GetInt32("id"),
+                PlayerId = playerId,
+                Mode = (TestVipMode)reader.GetInt32("mode"),
+                Start = reader.GetDateTime("start_date"),
+                End = reader.IsDBNull(reader.GetOrdinal("end_date")) ? null : reader.GetDateTime("end_date"),
+                TimeLeft = reader.IsDBNull(reader.GetOrdinal("timeleft")) ? null : reader.GetInt32("timeleft"),
+                Completed = reader.GetBoolean("completed")
+            };
+
+            return testVipData;
+        }
+
+        return null;
+    }
+
+    public async Task<int> InsertTestVip(TestVipData testVipData)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            INSERT INTO TestVip(player_id, mode, start_date, end_date, timeleft, completed)
+            VALUES(@PlayerId, @Mode, @Start, @End, @TimeLeft, @Completed);
+            SELECT LAST_INSERT_ID();";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@PlayerId", testVipData.PlayerId);
+        command.Parameters.AddWithValue("@Mode", testVipData.Mode);
+        command.Parameters.AddWithValue("@Start", testVipData.Start);
+        command.Parameters.AddWithValue("@End", testVipData.End);
+        command.Parameters.AddWithValue("@TimeLeft", testVipData.TimeLeft);
+        command.Parameters.AddWithValue("@Completed", testVipData.Completed);
+
+        using var reader = await command.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            int id = reader.GetInt32(0);
+            testVipData.Id = id;
+            return id;
+        }
+        else
+        {
+            throw new Exception("Inserted test vip, but didn't get the last inserted id");
+        }
+    }
+
+    public async Task<int> UpdateTestVipCompleted(int TestVipId, bool Completed)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            UPDATE TestVip SET completed = @Completed WHERE id = @TestVipId;";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@TestVipId", TestVipId);
+        command.Parameters.AddWithValue("@Completed", Completed);
+
+        int rowsAffected = await command.ExecuteNonQueryAsync();
+
+        return rowsAffected;
+    }
+
+    public async Task<int> UpdateTestVipEndTime(int TestVipId, DateTime End)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            UPDATE TestVip SET end_date = @End WHERE id = @TestVipId;";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@TestVipId", TestVipId);
+        command.Parameters.AddWithValue("@End", End);
+
+        int rowsAffected = await command.ExecuteNonQueryAsync();
+
+        return rowsAffected;
+    }
+
+    public async Task<DateTime?> GetPlayerTestVipLatestUsedDate(int playerId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        const string query = @"
+            SELECT MAX(start_date) AS latest_used_date
+                    FROM TestVip
+                    WHERE player_id = @playerId AND completed = true;";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@playerId", playerId);
+
+        var reader = await command.ExecuteReaderAsync();
+        return await reader.ReadAsync() ? reader.IsDBNull(0) ? null : reader.GetDateTime(0) : null;
     }
 }

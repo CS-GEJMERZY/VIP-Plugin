@@ -10,23 +10,33 @@ using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace Core;
 
-public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
+public sealed partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "1.1.6";
+    public override string ModuleVersion => "1.2.0";
+    public override string ModuleDescription => "https://github.com/CS-GEJMERZY/VIP-Plugin";
 
     public required PluginConfig Config { get; set; }
-    private GroupManager? GroupManager { get; set; }
-    private RandomVipManager? RandomVipManager { get; set; }
-    private NightVipManager? NightVipManager { get; set; }
 
-    private DatabaseManager? DatabaseManager { get; set; }
+    public DatabaseManager? DatabaseManager { get; set; }
+    public GroupManager? GroupManager { get; set; }
+    public RandomVipManager? RandomVipManager { get; set; }
+    public NightVipManager? NightVipManager { get; set; }
+    public TestVipManager? TestVipManager { get; set; }
 
-    private readonly Dictionary<CCSPlayerController, PlayerData> _playerCache = [];
-    private List<Timer?> HealthRegenTimers { get; set; } = [];
-    private List<Timer?> ArmorRegenTimers { get; set; } = [];
+    private readonly Dictionary<CCSPlayerController, PlayerData> _playerData = [];
+
+    private readonly List<Timer?> _healthRegenTimers = [];
+    private readonly List<Timer?> _armorRegenTimers = [];
+
     public string PluginPrefix { get; set; } = string.Empty;
+
+    private bool DatabaseVipsEnabled => Config.Settings.Database.Enabled &&
+                                       Config.Settings.DatabaseVips.Enabled;
+
+    private bool TestVipEnabled => Config.Settings.Database.Enabled &&
+                                   Config.TestVip.Enabled;
 
     public void OnConfigParsed(PluginConfig _Config)
     {
@@ -37,10 +47,10 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
         RandomVipManager = new RandomVipManager(Config.RandomVip, PluginPrefix);
         NightVipManager = new NightVipManager(Config.NightVip);
 
-        if (Config.Settings.Database.Enabled &&
-            Config.Settings.DatabaseVips.Enabled)
+        if (Config.Settings.Database.Enabled)
         {
             DatabaseManager = new DatabaseManager(Config.Settings.Database.SqlServer);
+
             Task.Run(async () =>
             {
                 try
@@ -56,8 +66,8 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 
         foreach (var _ in Config.VIPGroups)
         {
-            HealthRegenTimers.Add(null);
-            ArmorRegenTimers.Add(null);
+            _healthRegenTimers.Add(null);
+            _armorRegenTimers.Add(null);
         }
     }
 
@@ -65,20 +75,14 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     {
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
 
+        RegisterListener<OnEntitySpawned>(OnEntitySpawned);
         RegisterListener<OnTick>(() =>
         {
-            foreach (var player in Utilities.GetPlayers().Where(p => p.IsValid && !p.IsBot && p.PawnIsAlive))
+            foreach (var player in Utilities.GetPlayers())
             {
-                if (!_playerCache.ContainsKey(player))
-                {
-                    continue;
-                }
-
                 OnTick(player);
             }
         });
-
-        RegisterListener<OnEntitySpawned>(OnEntitySpawned);
 
         if (hotReload)
         {
@@ -86,31 +90,47 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
                 .Where(p => PlayerManager.IsValid(p) && !p.IsHLTV && !p.IsBot))
             {
                 var playerData = new PlayerData();
-                _playerCache.Add(player, playerData);
+                _playerData.Add(player, playerData);
 
                 Task.Run(async () =>
                 {
-                    await playerData.LoadData(player, GroupManager!, DatabaseManager!);
-
-                    await Server.NextFrameAsync(() =>
+                    try
                     {
-                        if (!PlayerManager.IsValid(player))
+                        await Server.NextFrameAsync(() =>
                         {
-                            return;
+                            playerData.LoadBaseGroup(player, GroupManager!);
+                        });
+
+                        if (DatabaseVipsEnabled)
+                        {
+                            await playerData.LoadDatabaseVipDataAsync(player, GroupManager!, DatabaseManager!);
                         }
 
-                        PermissionManager.AddPermissions(player, playerData.DatabaseData.AllFlags);
-                    });
+                        if (TestVipEnabled)
+                        {
+                            await playerData.LoadTestVipDataAsync(player, GroupManager!, DatabaseManager!, Config.TestVip);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("Error while hotreloading player: {error}", ex.ToString());
+                    }
                 });
             }
         }
 
-        if (Config.Settings.Database.Enabled &&
-            Config.Settings.DatabaseVips.Enabled)
+        if (DatabaseVipsEnabled)
         {
             RegisterCommands();
         }
+
+        if (TestVipEnabled)
+        {
+            AddCommand("css_testvip", "Test vipe", OnTestVipCommand);
+
+        }
     }
+
     public override void Unload(bool hotReload)
     {
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
