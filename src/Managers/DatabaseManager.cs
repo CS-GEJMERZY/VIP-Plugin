@@ -7,6 +7,7 @@ public class DatabaseManager
 {
     private readonly string _connectionString;
     public bool Initialized = false;
+    private string prefix = "";
 
     public DatabaseManager(Config.DatabaseSqlServerConfig databaseConfig)
     {
@@ -18,7 +19,7 @@ public class DatabaseManager
             Password = databaseConfig.Password,
             Port = databaseConfig.Port,
         };
-
+        prefix = databaseConfig.Prefix;
         _connectionString = builder.ConnectionString;
     }
 
@@ -36,8 +37,8 @@ public class DatabaseManager
             using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            await ExecuteCommandAsync(connection, @"
-            CREATE TABLE IF NOT EXISTS Players (
+            await ExecuteCommandAsync(connection, $@"
+            CREATE TABLE IF NOT EXISTS {prefix}Players (
             id INT PRIMARY KEY AUTO_INCREMENT,
             steamid64 VARCHAR(63) NOT NULL UNIQUE,
             name VARCHAR(255),
@@ -45,7 +46,7 @@ public class DatabaseManager
             );");
 
             await ExecuteCommandAsync(connection, $@"
-            CREATE TABLE IF NOT EXISTS Services (
+            CREATE TABLE IF NOT EXISTS {prefix}Services (
             id INT PRIMARY KEY AUTO_INCREMENT,
             availability INT DEFAULT {(int)ServiceAvailability.Enabled},
             player_id INT NOT NULL,
@@ -54,7 +55,7 @@ public class DatabaseManager
             flags VARCHAR(255),
             group_id VARCHAR(64),
             notes TEXT,
-            FOREIGN KEY (player_id) REFERENCES Players(id)
+            FOREIGN KEY (player_id) REFERENCES {prefix}Players(id)
             );");
         }
         catch (Exception e)
@@ -81,11 +82,11 @@ public class DatabaseManager
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        const string query = @"
-            INSERT INTO Players(steamid64, name, lastconnect) 
+        string query = $@"
+            INSERT INTO {prefix}Players(steamid64, name, lastconnect) 
             VALUES (@steamid64, @name, @lastconnect)
             ON DUPLICATE KEY UPDATE name = @name, lastconnect = @lastconnect;
-            SELECT id FROM Players WHERE steamid64 = @steamid64;
+            SELECT id FROM {prefix}Players WHERE steamid64 = @steamid64;
         ";
 
         using var command = new MySqlCommand(query, connection);
@@ -102,8 +103,8 @@ public class DatabaseManager
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        const string query = @"
-            SELECT id FROM Players WHERE steamid64 = @steamid64;
+        string query = $@"
+            SELECT id FROM {prefix}Players WHERE steamid64 = @steamid64;
         ";
 
         using var command = new MySqlCommand(query, connection);
@@ -119,12 +120,11 @@ public class DatabaseManager
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        const string query = @"
+        string query = $@"
             SELECT id, availability, start_date, end_date, flags, group_id, notes
-            FROM Services WHERE 
+            FROM {prefix}Services WHERE 
             player_id = @playerId
-            AND (availability & @availability) !=0
-            ";
+            AND (availability & @availability) !=0";
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@playerId", playerId);
         command.Parameters.AddWithValue("@availability", (int)availability);
@@ -156,9 +156,9 @@ public class DatabaseManager
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        const string query = @"
+        string query = $@"
             SELECT availability, player_id, start_date, end_date, flags, group_id, notes 
-            FROM Services WHERE id = @serviceId";
+            FROM {prefix}Services WHERE id = @serviceId";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);
@@ -190,8 +190,8 @@ public class DatabaseManager
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        const string query = @"
-            INSERT INTO Services(availability, player_id, start_date, end_date, flags, group_id, notes)
+        string query = $@"
+            INSERT INTO {prefix}Services(availability, player_id, start_date, end_date, flags, group_id, notes)
             VALUES(@availability, @playerId, @start, @end, @flags, @groupId, @notes);
             SELECT LAST_INSERT_ID();";
 
@@ -213,8 +213,8 @@ public class DatabaseManager
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        const string query = @"
-            DELETE FROM Services WHERE id = @serviceId;";
+        string query = $@"
+            DELETE FROM {prefix}Services WHERE id = @serviceId;";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);
@@ -229,8 +229,8 @@ public class DatabaseManager
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        const string query = @"
-            UPDATE Services SET availability = @availability WHERE id = @serviceId;";
+        string query = $@"
+            UPDATE {prefix}Services SET availability = @availability WHERE id = @serviceId;";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);
@@ -246,8 +246,8 @@ public class DatabaseManager
         using var connection = new MySqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        const string query = @"
-            UPDATE Services SET end = @end WHERE id = @serviceId;";
+        string query = $@"
+            UPDATE {prefix}Services SET end = @end WHERE id = @serviceId;";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);

@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿﻿using System.Text.Json.Serialization;
 
 namespace Core.Config;
 
@@ -18,4 +18,7 @@ public class DatabaseSqlServerConfig
 
     [JsonPropertyName("password")]
     public string Password { get; set; } = "password";
+
+    [JsonPropertyName("prefix")]
+    public string Prefix { get; set; } = "";
 }
