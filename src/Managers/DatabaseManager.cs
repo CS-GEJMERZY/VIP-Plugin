@@ -20,6 +20,10 @@ public class DatabaseManager
             Port = databaseConfig.Port,
         };
         prefix = databaseConfig.Prefix;
+        if (!prefix.EndsWith("_"))
+        {
+            prefix += "_";
+        }
         _connectionString = builder.ConnectionString;
     }
 
@@ -39,24 +43,26 @@ public class DatabaseManager
 
             await ExecuteCommandAsync(connection, $@"
             CREATE TABLE IF NOT EXISTS {prefix}Players (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            steamid64 VARCHAR(63) NOT NULL UNIQUE,
-            name VARCHAR(255),
-            lastconnect TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );");
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                steamid64 VARCHAR(63) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL UNIQUE,
+                name VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                lastconnect TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 
             await ExecuteCommandAsync(connection, $@"
             CREATE TABLE IF NOT EXISTS {prefix}Services (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            availability INT DEFAULT {(int)ServiceAvailability.Enabled},
-            player_id INT NOT NULL,
-            start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            end_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            flags VARCHAR(255),
-            group_id VARCHAR(64),
-            notes TEXT,
-            FOREIGN KEY (player_id) REFERENCES {prefix}Players(id)
-            );");
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                availability INT DEFAULT {(int)ServiceAvailability.Enabled},
+                player_id INT NOT NULL,
+                start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                end_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                flags VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                group_id VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                notes TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+                FOREIGN KEY (player_id) REFERENCES {prefix}Players(id)
+            ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
+
+
         }
         catch (Exception e)
         {
