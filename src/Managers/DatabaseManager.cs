@@ -20,7 +20,7 @@ public class DatabaseManager
             Port = databaseConfig.Port,
         };
         prefix = databaseConfig.Prefix;
-        if (!prefix.EndsWith("_"))
+        if (!string.IsNullOrEmpty(prefix) && !prefix.EndsWith("_"))
         {
             prefix += "_";
         }
@@ -40,7 +40,9 @@ public class DatabaseManager
         {
             using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
-
+            //EACH PLAYER MUST HAVE ONE SERVICE FOR GIVEN GROUP ID, START AND ENDTIME.
+            //AVOIDING DUBLICATION
+            //ALSO ADD UPDATE QUIERY.
             await ExecuteCommandAsync(connection, $@"
             CREATE TABLE IF NOT EXISTS {prefix}Players (
                 id INT PRIMARY KEY AUTO_INCREMENT,

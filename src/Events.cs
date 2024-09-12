@@ -176,7 +176,7 @@ public partial class Plugin
                 {
                     await Server.NextFrameAsync(() =>
                     {
-                        NightVipManager!.GiveNightVip(player);
+                        NightVipManager!.GiveNightVip(player,Localizer);
                     });
                 }
             });
@@ -184,7 +184,7 @@ public partial class Plugin
         else if (qualifiesForNightVip)
         {
             playerData.LoadBaseGroup(player, GroupManager!);
-            NightVipManager!.GiveNightVip(player);
+            NightVipManager!.GiveNightVip(player,Localizer);
         }
 
         var playerGroup = playerData.Group;

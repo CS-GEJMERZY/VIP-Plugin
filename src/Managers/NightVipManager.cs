@@ -1,31 +1,53 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using Core.Config;
+using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
+using Microsoft.Extensions.Localization;
 
 namespace Core.Managers;
 
-public class NightVipManager(Config.NightVipConfig nightVipData)
+public class NightVipManager(Config.NightVipConfig nightVipData, string prefix)
 {
     private Config.NightVipConfig NightVipData { get; set; } = nightVipData;
+    internal string Prefix { get; set; } = prefix;
+
 
     public bool IsNightVipTime()
     {
+        string timeZone = NightVipData.TimeZone;
+        TimeZoneInfo timeZoneInfo;
+        try
+        {
+            timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            timeZoneInfo = TimeZoneInfo.Utc;
+        }
+        catch (InvalidTimeZoneException)
+        {
+            timeZoneInfo = TimeZoneInfo.Utc;
+        }
+      
         if (!NightVipData.Enabled)
         {
             return false;
         }
+        DateTime currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
+        int currentHour = currentTime.Hour;
 
-        int currentHour = DateTime.Now.Hour;
+        // Check if the current time is within the Night VIP time window
         if (NightVipData.StartHour <= NightVipData.EndHour)
         {
-            // Overnight scenario (e.g., 8:00 to 22:00)
+            // Normal scenario (e.g., 8:00 to 22:00)
             return currentHour >= NightVipData.StartHour && currentHour < NightVipData.EndHour;
         }
         else
         {
-            // Normal scenario (e.g., 22:00 to 8:00)
+            // Overnight scenario (e.g., 22:00 to 8:00)
             return currentHour >= NightVipData.StartHour || currentHour < NightVipData.EndHour;
         }
     }
+
 
     public bool PlayerQualifies(CCSPlayerController player)
     {
@@ -53,9 +75,13 @@ public class NightVipManager(Config.NightVipConfig nightVipData)
         return NightVipData.PermissionsExclude.Any(perm => AdminManager.PlayerHasPermissions(player, perm));
     }
 
-    public void GiveNightVip(CCSPlayerController player)
+    public void GiveNightVip(CCSPlayerController player, IStringLocalizer Localizer)
     {
         PermissionManager.AddPermissions(player, NightVipData.PermissionsGranted);
+        if (NightVipData.SendMessageOnVIPReserved)
+        {
+            player.PrintToCenterAlert($"{prefix}{Localizer["nightvip.resaved"]}");
+        }
     }
 }
 
