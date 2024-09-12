@@ -334,8 +334,6 @@ public partial class Plugin
 
     }
 
-
-
     public void OnPlayerVIPInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
         if (!HandleDatabaseCommand(player, commandInfo) && player == null)
@@ -362,7 +360,7 @@ public partial class Plugin
                 // Check if player qualifies for NightVIP
                 bool isNightVIP = NightVipManager.PlayerQualifies(player);
 
-                
+
 
                 Server.NextWorldUpdate(() =>
                 {
@@ -373,7 +371,7 @@ public partial class Plugin
                         player.PrintToChat($"{PluginPrefix}{Localizer["player.info.nightvip"]}");
                     }
 
-               
+
                     if (serviceData.Any())
                     {
                         player.PrintToChat($"{PluginPrefix}{Localizer["player.info.service_count", serviceData.Count]}");
@@ -746,7 +744,7 @@ public partial class Plugin
 
         Type nestedType = nestedObject.GetType();
         var properties = nestedType.GetProperties()
-            .Where(p => !ShouldExcludeProperty(p.Name)) 
+            .Where(p => !ShouldExcludeProperty(p.Name))
             .ToList();
 
         int lineNumber = 2;

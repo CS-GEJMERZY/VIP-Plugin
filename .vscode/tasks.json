@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Publish Project",
+            "command": "dotnet",
+            "args": [
+                "publish",
+				"src/VIP-Plugin.csproj",
+                "-c",
+                "Release",
+                "-o",
+                "./../plugins/VIP-Plugin"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
