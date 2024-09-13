@@ -37,7 +37,8 @@ VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to e
         "port": 3306,
         "database": "vip-plugin",
         "username": "user",
-        "password": "password"
+        "password": "password",
+        "prefix": "" // table prefix 
       }
     },
     "DatabaseVipsConfig": {
@@ -53,6 +54,9 @@ VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to e
           "Enabled": true
         },
         "css_vp_service_info": {
+          "Enabled": true
+        },
+        "css_vp_player_info": {
           "Enabled": true
         },
         "css_vp_player_info": {
@@ -180,8 +184,10 @@ VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to e
   },
   "NightVIP": {
     "Enabled": false,
+    "SendMessageOnVIPReserved": false, // res
     "StartHour": 22, // The hours can be 8-22 or 22-8(which mean from 22 to 24 and 00 to 08)
     "EndHour": 8,
+    "TimeZone": "UTC", // TZ indentifier
     "RequiredNickPhrase": "YourSite.com", // Required nickname phrase(empty = pass)
     "RequiredScoreboardTag": "YourSite.com", // Required scoreboard tag(empty = pass)
     "PermissionsGranted ": [], // List of CSS permissions
@@ -239,6 +245,16 @@ View detailed information about a service.
 **Syntax**: `css_vp_service_info <service_id>`
 
 **Example**: `css_vp_service_info 4`
+</details>
+
+<details>
+<summary><strong>css_vp_player_info</strong></summary>
+
+View service info menu.
+
+**Syntax**: `css_vp_player_info`
+
+**Example**: `css_vp_player_info`
 </details>
 
 <details>
