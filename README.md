@@ -281,4 +281,10 @@ Add a group to a player for a specified duration.
 **Example**: `css_vp_player_addgroup 76561198012345678 60 vip1`
 </details>
 
+##  Timezone
+<details>
+<summary><strong>Available Timezones</strong></summary>
 
+- You can find the list of available timezones on the wikipedia: [wiki](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+- The value in config shall match *TZ identifier*, e.g. **Africa/Abidjan**.
+</details>

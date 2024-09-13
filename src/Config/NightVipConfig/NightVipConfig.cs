@@ -9,7 +9,7 @@ public class NightVipConfig
     
     
     [JsonPropertyName("SendMessageOnVIPReserved")]
-    public bool SendMessageOnVIPReserved {get;set;} = false;
+    public bool SendMessageOnVIPReserved {get;set;} = false; // center text
 
     [JsonPropertyName("StartHour")]
     public int StartHour { get; set; } = 22;
