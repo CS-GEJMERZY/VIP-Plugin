@@ -18,6 +18,7 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 
     public required PluginConfig Config { get; set; }
     public GroupManager? GroupManager { get; set; }
+    
     private RandomVipManager? RandomVipManager { get; set; }
     private NightVipManager? NightVipManager { get; set; }
 
