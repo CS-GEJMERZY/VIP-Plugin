@@ -25,7 +25,7 @@ public class DatabaseManager
         {
             Prefix += '_';
         }
-
+      
         _connectionString = builder.ConnectionString;
     }
 
@@ -42,9 +42,7 @@ public class DatabaseManager
         {
             using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
-            //EACH PLAYER MUST HAVE ONE SERVICE FOR GIVEN GROUP ID, START AND ENDTIME.
-            //AVOIDING DUBLICATION
-            //ALSO ADD UPDATE QUIERY.
+
             await ExecuteCommandAsync(connection, $@"
             CREATE TABLE IF NOT EXISTS {Prefix}Players (
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -54,6 +52,7 @@ public class DatabaseManager
             ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 
             await ExecuteCommandAsync(connection, $@"
+
             CREATE TABLE IF NOT EXISTS {Prefix}Services (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 availability INT DEFAULT {(int)ServiceAvailability.Enabled},
@@ -66,6 +65,7 @@ public class DatabaseManager
                 FOREIGN KEY (player_id) REFERENCES {Prefix}Players(id)
             ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
         }
+                                      
         catch (Exception e)
         {
             throw new Exception("Encountered exception while creating tables", e);
@@ -263,7 +263,7 @@ public class DatabaseManager
         string query = $@"
             UPDATE {Prefix}Services SET end_date = @end WHERE id = @serviceId;
         ";
-
+      
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);
         command.Parameters.AddWithValue("@end", end);
