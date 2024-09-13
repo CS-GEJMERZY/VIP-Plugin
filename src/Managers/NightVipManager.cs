@@ -77,7 +77,7 @@ public class NightVipManager(NightVipConfig nightVipData, string prefix)
     public void GiveNightVip(CCSPlayerController player, IStringLocalizer Localizer)
     {
         PermissionManager.AddPermissions(player, NightVipData.PermissionsGranted);
-        if (NightVipData.SendMessageOnVIPReserved)
+        if (NightVipData.SendMessageOnVIPResaved)
         {
             player.PrintToCenterAlert($"{Prefix}{Localizer["nightvip.resaved"]}");
         }

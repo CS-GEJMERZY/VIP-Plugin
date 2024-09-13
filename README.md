@@ -184,7 +184,7 @@ VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to e
   },
   "NightVIP": {
     "Enabled": false,
-    "SendMessageOnVIPReserved": false, // res
+    "SendMessageOnVIPResaved": false, // res
     "StartHour": 22, // The hours can be 8-22 or 22-8(which mean from 22 to 24 and 00 to 08)
     "EndHour": 8,
     "TimeZone": "UTC", // TZ indentifier
@@ -296,6 +296,14 @@ Add a group to a player for a specified duration.
 
 **Example**: `css_vp_player_addgroup 76561198012345678 60 vip1`
 </details>
+
+<details>
+<summary><strong>css_vip</strong></summary>
+Open menu with service info.
+
+**Example**: `css_vip`
+</details>
+
 
 ##  Timezone
 <details>

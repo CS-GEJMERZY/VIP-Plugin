@@ -261,7 +261,7 @@ public class DatabaseManager
         await connection.OpenAsync();
 
         string query = $@"
-            UPDATE {Prefix}Services SET end = @end WHERE id = @serviceId;
+            UPDATE {Prefix}Services SET end_date = @end WHERE id = @serviceId;
         ";
 
         using var command = new MySqlCommand(query, connection);
