@@ -10,7 +10,6 @@ public class NightVipManager(NightVipConfig nightVipData, string prefix)
     private NightVipConfig NightVipData { get; set; } = nightVipData;
     internal string Prefix { get; set; } = prefix;
 
-
     public bool IsNightVipTime()
     {
         string timeZone = NightVipData.TimeZone;
@@ -32,6 +31,7 @@ public class NightVipManager(NightVipConfig nightVipData, string prefix)
         {
             return false;
         }
+
         DateTime currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
         int currentHour = currentTime.Hour;
 
@@ -47,7 +47,6 @@ public class NightVipManager(NightVipConfig nightVipData, string prefix)
             return currentHour >= NightVipData.StartHour || currentHour < NightVipData.EndHour;
         }
     }
-
 
     public bool PlayerQualifies(CCSPlayerController player)
     {

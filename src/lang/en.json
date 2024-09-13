@@ -29,12 +29,11 @@
   "player.info.id": "{gold}ID: {purple}{0}",
   "player.info.nightvip": "{gold}You're a Night VIP!",
   "player.info.no_service": "{red}You don't have any services!",
-  "nightvip.resaved": "{gold}You have resived {lightred}Night VIP",
+  "nightvip.resaved": "{gold}You have resaved {lightred}Night VIP",
   "player.info.service_count": "{gold}Service count: {purple}{0}",
   "player.add.flags.success": "{lime}Succesfully added {gold}{0} {lime}flags to {gold}{1}{default}({gold}{2}{default}) {lime}for {gold}{3} {lime}minutes.",
   "player.add.group.success": "{lime}Succesfully added Group {gold}{0} {lime}to {gold}{1}{default}({gold}{2}{default}) {lime}for {gold}{3} {lime}minutes.",
   "Go Back":"Go Back",
-
   "events":"Events",
   "limits":"Limits",
   "misc":"Misc",
