@@ -14,10 +14,11 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "VIP Plugin";
     public override string ModuleAuthor => "Hacker";
-    public override string ModuleVersion => "1.1.8";
+    public override string ModuleVersion => "1.1.9";
 
     public required PluginConfig Config { get; set; }
-    private GroupManager? GroupManager { get; set; }
+    public GroupManager? GroupManager { get; set; }
+
     private RandomVipManager? RandomVipManager { get; set; }
     private NightVipManager? NightVipManager { get; set; }
 
@@ -35,7 +36,7 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
 
         GroupManager = new GroupManager(Config.VIPGroups);
         RandomVipManager = new RandomVipManager(Config.RandomVip, PluginPrefix);
-        NightVipManager = new NightVipManager(Config.NightVip);
+        NightVipManager = new NightVipManager(Config.NightVip, PluginPrefix);
 
         if (Config.Settings.Database.Enabled &&
             Config.Settings.DatabaseVips.Enabled)
@@ -124,11 +125,13 @@ public partial class Plugin : BasePlugin, IPluginConfig<PluginConfig>
     public void RegisterCommands()
     {
         var cmdConfig = Config.Settings.DatabaseVips.Commands;
+        RegisterCommandIfEnabled("css_vp_services_reload", "Reload services for a player", OnReloadServicesCommand, cmdConfig.ServiceEnable);
         RegisterCommandIfEnabled("css_vp_service_enable", "Enable service", OnServiceEnableCommand, cmdConfig.ServiceEnable);
         RegisterCommandIfEnabled("css_vp_service_disable", "Disable service", OnServiceDisableCommand, cmdConfig.ServiceDisable);
         RegisterCommandIfEnabled("css_vp_service_delete", "Delete service", OnServiceDeleteCommand, cmdConfig.ServiceDelete);
         RegisterCommandIfEnabled("css_vp_service_info", "Service information", OnServiceInfoCommand, cmdConfig.ServiceInfo);
         RegisterCommandIfEnabled("css_vp_player_info", "Player information", OnPlayerInfoCommand, cmdConfig.PlayerInfo);
+        RegisterCommandIfEnabled("css_vip", "Player information", OnPlayerVIPInfoCommand, cmdConfig.PlayerInfo);
         RegisterCommandIfEnabled("css_vp_player_addflags", "Add flags to player", OnPlayerAddFlagsCommand, cmdConfig.PlayerAddFlags);
         RegisterCommandIfEnabled("css_vp_player_addgroup", "Add group to player", OnPlayerAddGroupCommand, cmdConfig.PlayerAddGroup);
     }

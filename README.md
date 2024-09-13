@@ -37,7 +37,8 @@ VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to e
         "port": 3306,
         "database": "vip-plugin",
         "username": "user",
-        "password": "password"
+        "password": "password",
+        "prefix": "" // table prefix 
       }
     },
     "DatabaseVipsConfig": {
@@ -53,6 +54,9 @@ VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to e
           "Enabled": true
         },
         "css_vp_service_info": {
+          "Enabled": true
+        },
+        "css_vp_player_info": {
           "Enabled": true
         },
         "css_vp_player_info": {
@@ -180,8 +184,10 @@ VIP-Plugin is a simple plugin designed for CS2 server owners, enabling them to e
   },
   "NightVIP": {
     "Enabled": false,
+    "SendMessageOnVIPResaved": false, // res
     "StartHour": 22, // The hours can be 8-22 or 22-8(which mean from 22 to 24 and 00 to 08)
     "EndHour": 8,
+    "TimeZone": "UTC", // TZ indentifier
     "RequiredNickPhrase": "YourSite.com", // Required nickname phrase(empty = pass)
     "RequiredScoreboardTag": "YourSite.com", // Required scoreboard tag(empty = pass)
     "PermissionsGranted ": [], // List of CSS permissions
@@ -244,6 +250,16 @@ View detailed information about a service.
 <details>
 <summary><strong>css_vp_player_info</strong></summary>
 
+View service info menu.
+
+**Syntax**: `css_vp_player_info`
+
+**Example**: `css_vp_player_info`
+</details>
+
+<details>
+<summary><strong>css_vp_player_info</strong></summary>
+
 Get information about a player.
 
 - `<steamid64>`: The Steam ID of the player to retrieve information for.
@@ -281,4 +297,18 @@ Add a group to a player for a specified duration.
 **Example**: `css_vp_player_addgroup 76561198012345678 60 vip1`
 </details>
 
+<details>
+<summary><strong>css_vip</strong></summary>
+Open menu with service info.
 
+**Example**: `css_vip`
+</details>
+
+
+##  Timezone
+<details>
+<summary><strong>Available Timezones</strong></summary>
+
+- You can find the list of available timezones on the wikipedia: [wiki](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+- The value in config shall match *TZ identifier*, e.g. **Africa/Abidjan**.
+</details>
