@@ -7,7 +7,7 @@ namespace Core.Managers;
 
 public class NightVipManager(NightVipConfig nightVipData, string prefix)
 {
-    private Config.NightVipConfig NightVipData { get; set; } = nightVipData;
+    private NightVipConfig NightVipData { get; set; } = nightVipData;
     internal string Prefix { get; set; } = prefix;
 
 
