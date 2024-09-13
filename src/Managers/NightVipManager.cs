@@ -80,7 +80,7 @@ public class NightVipManager(NightVipConfig nightVipData, string prefix)
         PermissionManager.AddPermissions(player, NightVipData.PermissionsGranted);
         if (NightVipData.SendMessageOnVIPReserved)
         {
-            player.PrintToCenterAlert($"{prefix}{Localizer["nightvip.resaved"]}");
+            player.PrintToCenterAlert($"{Prefix}{Localizer["nightvip.resaved"]}");
         }
     }
 }
