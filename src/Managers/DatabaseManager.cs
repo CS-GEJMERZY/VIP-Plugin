@@ -65,8 +65,6 @@ public class DatabaseManager
                 notes TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
                 FOREIGN KEY (player_id) REFERENCES {Prefix}Players(id)
             ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
-
-
         }
         catch (Exception e)
         {
@@ -134,7 +132,9 @@ public class DatabaseManager
             SELECT id, availability, start_date, end_date, flags, group_id, notes
             FROM {Prefix}Services WHERE 
             player_id = @playerId
-            AND (availability & @availability) !=0";
+            AND (availability & @availability) != 0;
+        ";
+
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@playerId", playerId);
         command.Parameters.AddWithValue("@availability", (int)availability);
@@ -168,7 +168,8 @@ public class DatabaseManager
 
         string query = $@"
             SELECT availability, player_id, start_date, end_date, flags, group_id, notes 
-            FROM {Prefix}Services WHERE id = @serviceId";
+            FROM {Prefix}Services WHERE id = @serviceId;
+        ";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);
@@ -203,7 +204,8 @@ public class DatabaseManager
         string query = $@"
             INSERT INTO {Prefix}Services(availability, player_id, start_date, end_date, flags, group_id, notes)
             VALUES(@availability, @playerId, @start, @end, @flags, @groupId, @notes);
-            SELECT LAST_INSERT_ID();";
+            SELECT LAST_INSERT_ID();
+        ";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@availability", (int)ServiceAvailability.Enabled);
@@ -224,7 +226,8 @@ public class DatabaseManager
         await connection.OpenAsync();
 
         string query = $@"
-            DELETE FROM {Prefix}Services WHERE id = @serviceId;";
+            DELETE FROM {Prefix}Services WHERE id = @serviceId;
+        ";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);
@@ -240,7 +243,8 @@ public class DatabaseManager
         await connection.OpenAsync();
 
         string query = $@"
-            UPDATE {Prefix}Services SET availability = @availability WHERE id = @serviceId;";
+            UPDATE {Prefix}Services SET availability = @availability WHERE id = @serviceId;
+        ";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);
@@ -257,7 +261,8 @@ public class DatabaseManager
         await connection.OpenAsync();
 
         string query = $@"
-            UPDATE {Prefix}Services SET end = @end WHERE id = @serviceId;";
+            UPDATE {Prefix}Services SET end = @end WHERE id = @serviceId;
+        ";
 
         using var command = new MySqlCommand(query, connection);
         command.Parameters.AddWithValue("@serviceId", serviceId);
