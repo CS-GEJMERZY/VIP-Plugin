@@ -334,9 +334,10 @@ public partial class Plugin
 
     }
 
+    [CommandHelper(whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public void OnPlayerVIPInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
-        if (!HandleDatabaseCommand(player, commandInfo) && player == null)
+        if (!HandleDatabaseCommand(player, commandInfo) || player == null)
         {
             return;
         }
