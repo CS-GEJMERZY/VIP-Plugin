@@ -578,7 +578,7 @@ public partial class Plugin
                     return;
                 }
 
-                int serviceId = await DatabaseManager!.AddNewService((int)targetId, DateTime.UtcNow, endTime, "", groupId, $"cmd: {issuerSteamid64}");
+                int serviceId = await DatabaseManager!.AddNewService((int)targetId, DateTime.UtcNow, endTime, group.Permissions, groupId, $"cmd: {issuerSteamid64}");
 
                 Server.NextWorldUpdate(() => commandInfo.ReplyToCommand($"{PluginPrefix}{Localizer["player.add.group.success", group.Name, steamId64, targetId, duration]}"));
             }
