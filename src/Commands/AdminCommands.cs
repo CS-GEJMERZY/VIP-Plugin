@@ -351,6 +351,11 @@ public partial class Plugin
     [CommandHelper(whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public void OnPlayerVIPInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
+        if (!HandleDatabaseCommand(player, commandInfo) && player == null)
+        {
+            return;
+        }
+
         ulong? steamId64 = player!.SteamID;
 
         Task.Run(async () =>
