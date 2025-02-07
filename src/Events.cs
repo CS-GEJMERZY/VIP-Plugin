@@ -483,7 +483,7 @@ public partial class Plugin
         var entity = h.GetParam<CEntityInstance>(0);
         var damageInfo = h.GetParam<CTakeDamageInfo>(1);
 
-        if ((int)damageInfo.BitsDamageType != (int)DamageTypes_t.DMG_FALL)
+      if ((damageInfo.BitsDamageType & DamageTypes_t.DMG_FALL) == 0)
         {
             return HookResult.Continue;
         }
