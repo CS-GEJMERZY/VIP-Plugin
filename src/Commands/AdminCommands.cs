@@ -378,7 +378,7 @@ public partial class Plugin
 
                         if (groupConfig != null)
                         {
-                            player.PrintToChat($"{PluginPrefix} VIP Group: {groupConfig.Name}");
+                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.title", groupConfig.Name]}");
                             DisplayVIPGroupInfo(player, groupConfig);
                         }
 
@@ -400,7 +400,7 @@ public partial class Plugin
                                 if (service.Flags.Any())
                                 {
                                     string flags = string.Join(", ", service.Flags);
-                                    player.PrintToChat($" Flags: {flags}");
+                                    player.PrintToChat($"{PluginPrefix}{Localizer["service.info.flags", flags]}");
                                 }
                                 else if (service.GroupId != "")
                                 {
