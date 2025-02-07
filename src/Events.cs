@@ -44,7 +44,7 @@ public partial class Plugin
 
                 await Server.NextFrameAsync(() =>
                 {
-                    PermissionManager.AddPermissions(player, playerData.DatabaseData.AllFlags);
+            
                     if (playerData.Group == null ||
                         !playerData.Group.Messages.Chat.Connect.Enabled)
                     {
@@ -176,7 +176,7 @@ public partial class Plugin
                 {
                     await Server.NextFrameAsync(() =>
                     {
-                        NightVipManager!.GiveNightVip(player,Localizer);
+                        NightVipManager!.GiveNightVip(player, Localizer);
                     });
                 }
             });
@@ -184,7 +184,7 @@ public partial class Plugin
         else if (qualifiesForNightVip)
         {
             playerData.LoadBaseGroup(player, GroupManager!);
-            NightVipManager!.GiveNightVip(player,Localizer);
+            NightVipManager!.GiveNightVip(player, Localizer);
         }
 
         var playerGroup = playerData.Group;
@@ -483,10 +483,11 @@ public partial class Plugin
         var entity = h.GetParam<CEntityInstance>(0);
         var damageInfo = h.GetParam<CTakeDamageInfo>(1);
 
-        if (damageInfo.BitsDamageType != (int)DamageTypes_t.DMG_FALL)
+        if ((int)damageInfo.BitsDamageType != (int)DamageTypes_t.DMG_FALL)
         {
             return HookResult.Continue;
         }
+
 
         if (entity.DesignerName != "player")
         {

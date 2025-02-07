@@ -21,13 +21,16 @@ public partial class Plugin
     private Dictionary<CCSPlayerController, List<Action>> ChatCommandActions = new Dictionary<CCSPlayerController, List<Action>>();
     private Stack<Action> navigationStack = new Stack<Action>();
 
-
-    [RequiresPermissions("@css/root")]
-    [CommandHelper(minArgs: 1, usage: "<steamid>")]
     public void OnReloadServicesCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
-
         string steamId64String = commandInfo.GetArg(1);
+
+        if (string.IsNullOrWhiteSpace(steamId64String))
+        {
+            commandInfo.ReplyToCommand($"{PluginPrefix}{Localizer["player.id.invalid"]}");
+            return;
+        }
+
         ulong? steamId64 = GetSteamId(steamId64String);
         if (steamId64 == null)
         {
@@ -35,7 +38,11 @@ public partial class Plugin
             return;
         }
 
-        CCSPlayerController? target = Utilities.GetPlayers().Find(u => u.AuthorizedSteamID!.SteamId64.Equals(steamId64));
+        CCSPlayerController? target = Utilities.GetPlayers().Find(u =>
+            u != null &&
+            u.AuthorizedSteamID != null &&
+            u.AuthorizedSteamID.SteamId64 == steamId64
+        );
 
         if (target == null)
         {
@@ -48,24 +55,31 @@ public partial class Plugin
             playerData = new PlayerData();
             _playerCache.Add(target, playerData);
         }
+
+
         Task.Run(async () =>
         {
-            bool qualifiesForNightVip = Config.NightVip.Enabled &&
-                               NightVipManager!.IsNightVipTime() &&
-                               NightVipManager.PlayerQualifies(target);
-
-            await playerData.LoadData(target, GroupManager!, DatabaseManager);
-
-            if (qualifiesForNightVip)
+            try
             {
-                await Server.NextFrameAsync(() =>
+                await playerData.LoadData(target, GroupManager!, DatabaseManager!);
+                Server.NextWorldUpdate(() =>
                 {
-                    NightVipManager!.GiveNightVip(target, Localizer);
+                    commandInfo.ReplyToCommand($"{PluginPrefix}{Localizer["player.services.reloaded"]}");
                 });
             }
-            Server.NextWorldUpdate(() => commandInfo.ReplyToCommand($"{PluginPrefix}{Localizer["player.services.reloaded"]}"));
+            catch (Exception ex)
+            {
+                Logger.LogError("Error occurred while reloading services: {error}", ex.ToString());
+                Server.NextWorldUpdate(() =>
+                {
+                    commandInfo.ReplyToCommand($"{PluginPrefix}{Localizer["error.unknown"]}");
+                });
+            }
         });
     }
+
+
+
 
     [RequiresPermissions("@css/root")]
     [CommandHelper(minArgs: 1, usage: "<service id>")]
@@ -337,117 +351,75 @@ public partial class Plugin
     [CommandHelper(whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public void OnPlayerVIPInfoCommand(CCSPlayerController? player, CommandInfo commandInfo)
     {
-        if (!HandleDatabaseCommand(player, commandInfo) || player == null)
-        {
-            return;
-        }
-
         ulong? steamId64 = player!.SteamID;
 
         Task.Run(async () =>
         {
             try
             {
-                int? playerId = await DatabaseManager!.GetPlayerIdRaw((ulong)steamId64);
-                if (playerId == null)
+                PlayerData playerData;
+                if (!_playerCache.TryGetValue(player, out playerData!))
                 {
-                    Server.NextWorldUpdate(() => commandInfo.ReplyToCommand($"{PluginPrefix}{Localizer["command.invalid_syntax"]}"));
-                    return;
+                    playerData = new PlayerData();
+                    await playerData.LoadData(player, GroupManager!, DatabaseManager!);
                 }
-
-                // Get the player's services
-                List<PlayerServiceData> serviceData = await DatabaseManager!.GetPlayerServices((int)playerId, ServiceAvailability.Enabled);
-
-                // Check if player qualifies for NightVIP
-                bool isNightVIP = NightVipManager.PlayerQualifies(player);
-
-
 
                 Server.NextWorldUpdate(() =>
                 {
-                    player.PrintToChat($"{PluginPrefix}{Localizer["player.info.id", playerId]}");
-
-                    if (isNightVIP)
+                    try
                     {
-                        player.PrintToChat($"{PluginPrefix}{Localizer["player.info.nightvip"]}");
-                    }
+                        playerData.LoadBaseGroup(player, GroupManager!);
+                        VipGroupConfig? groupConfig = playerData.Group;
 
-
-                    if (serviceData.Any())
-                    {
-                        player.PrintToChat($"{PluginPrefix}{Localizer["player.info.service_count", serviceData.Count]}");
-
-                        var servicesWithGroups = serviceData.Where(s => GroupManager.GetGroup(s.GroupId) != null).ToList();
-                        var servicesWithoutGroups = serviceData.Where(s => GroupManager.GetGroup(s.GroupId) == null).ToList();
-
-                        //handle multiple groups menu.
-                        if (servicesWithGroups.Count > 1)
+                        if (groupConfig != null)
                         {
-                            CenterHtmlMenu groupMenu = new CenterHtmlMenu(Localizer["Group Selection"], this);
-
-                            foreach (var service in servicesWithGroups)
-                            {
-                                VipGroupConfig groupConfig = GroupManager.GetGroup(service.GroupId);
-                                if (groupConfig != null)
-                                {
-                                    groupMenu.AddMenuOption($"{groupConfig.Name}", (controller, option) =>
-                                    {
-                                        DisplayVIPGroupInfo(player, groupConfig);
-
-                                        string flagString = string.Join(", ", service.Flags);
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.title", service.GroupId]}");
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.id", service.Id]}");
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.player_id", service.PlayerId]}");
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.availability", GetServiceAvailabilityName(service.Availability)]}");
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.start", service.Start]}");
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.end", service.End]}");
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.flags", flagString]}");
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.group_id", service.GroupId]}");
-                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.notes", service.Notes]}");
-                                    });
-                                }
-                            }
-
-                            MenuManager.OpenCenterHtmlMenu(this, player, groupMenu);
+                            player.PrintToChat($"{PluginPrefix} VIP Group: {groupConfig.Name}");
+                            DisplayVIPGroupInfo(player, groupConfig);
                         }
-                        else if (servicesWithGroups.Count == 1)
-                        {
-                            var service = servicesWithGroups.First();
-                            VipGroupConfig groupConfig = GroupManager.GetGroup(service.GroupId);
-                            if (groupConfig != null)
-                            {
-                                DisplayVIPGroupInfo(player, groupConfig);
 
-                                string flagString = string.Join(", ", service.Flags);
-                                player.PrintToChat($"{PluginPrefix}{Localizer["service.info.title", service.GroupId]}");
+
+                        if (playerData.DatabaseData.Services.Any())
+                        {
+                            foreach (var service in playerData.DatabaseData.Services)
+                            {
                                 player.PrintToChat($"{PluginPrefix}{Localizer["service.info.id", service.Id]}");
                                 player.PrintToChat($"{PluginPrefix}{Localizer["service.info.player_id", service.PlayerId]}");
                                 player.PrintToChat($"{PluginPrefix}{Localizer["service.info.availability", GetServiceAvailabilityName(service.Availability)]}");
                                 player.PrintToChat($"{PluginPrefix}{Localizer["service.info.start", service.Start]}");
                                 player.PrintToChat($"{PluginPrefix}{Localizer["service.info.end", service.End]}");
-                                player.PrintToChat($"{PluginPrefix}{Localizer["service.info.flags", flagString]}");
-                                player.PrintToChat($"{PluginPrefix}{Localizer["service.info.group_id", service.GroupId]}");
-                                player.PrintToChat($"{PluginPrefix}{Localizer["service.info.notes", service.Notes]}");
+                                if (service.Notes != "")
+                                {
+                                    player.PrintToChat($"{PluginPrefix}{Localizer["service.info.notes", service.Notes]}");
+                                }
+
+                                if (service.Flags.Any())
+                                {
+                                    string flags = string.Join(", ", service.Flags);
+                                    player.PrintToChat($" Flags: {flags}");
+                                }
+                                else if (service.GroupId != "")
+                                {
+                                    VipGroupConfig? findGroup = GroupManager?.GetGroup(service.GroupId)!;
+                                    if (findGroup != null)
+                                    {
+                                        player.PrintToChat($"{PluginPrefix}{Localizer["service.info.title", findGroup.Name]}");
+                                    }
+                                }
+
                             }
                         }
-                        foreach (var service in servicesWithoutGroups)
+                        else
                         {
-                            string flagString = string.Join(", ", service.Flags);
-                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.title", service.Id]}");
-                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.id", service.Id]}");
-                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.player_id", service.PlayerId]}");
-                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.availability", GetServiceAvailabilityName(service.Availability)]}");
-                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.start", service.Start]}");
-                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.end", service.End]}");
-                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.flags", flagString]}");
-                            player.PrintToChat($"{PluginPrefix}{Localizer["service.info.notes", service.Notes]}");
+                            if (groupConfig == null)
+                            {
+                                player.PrintToChat($"{PluginPrefix} {Localizer["player.info.no_service"]}");
+                            }
                         }
                     }
-                    else
+                    catch (Exception innerEx)
                     {
-                        player.PrintToChat($"{PluginPrefix}{Localizer["player.info.no_service"]}");
+                        Server.NextWorldUpdate(() => player.PrintToCenter($"{PluginPrefix} Error while accessing player data: {innerEx.ToString()}"));
                     }
-
                 });
             }
             catch (Exception ex)
@@ -457,6 +429,7 @@ public partial class Plugin
             }
         });
     }
+
 
 
     [RequiresPermissions("@css/root")]
