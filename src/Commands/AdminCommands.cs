@@ -755,11 +755,12 @@ public partial class Plugin
     }
 
 
-    private string FormatValue(object value, string propertyName)
+    private string FormatValue(object? value, string propertyName)
     {
-        string formattedValue = GetDisplayValue(value);
+        string formattedValue = value != null ? GetDisplayValue(value) : "N/A";
         return $"{propertyName}: {formattedValue}";
     }
+
 
     private string GetDisplayValue(object value)
     {
