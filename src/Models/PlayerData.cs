@@ -17,10 +17,10 @@ public class PlayerData
 
     public bool UsingExtraJump { get; set; }
 
+
     public void LoadBaseGroup(CCSPlayerController player, GroupManager groupManager)
     {
         Group = null;
-        DatabaseData.AllFlags.Clear();
 
         var baseGroup = groupManager.GetPlayerBaseGroup(player);
         if (baseGroup == null)
@@ -74,6 +74,10 @@ public class PlayerData
         {
             await AddNewPermissions(player);
         }
+        //if no group is loaded from the database
+        //load base group, that is based on use permissions.
+        if (Group == null)
+            this.LoadBaseGroup(player,groupManager);
     }
 
     private async Task RemoveOldGroupPermissions(CCSPlayerController player, VipGroupConfig? oldGroup)
@@ -151,11 +155,13 @@ public class PlayerData
             DatabaseData.AllFlags.UnionWith(service.Flags);
         }
 
+
+        Console.Write($"Groups Count {allGroups.Count}");
+        
         if (allGroups.Count > 0)
         {
             Group = allGroups.First();
         }
-
         // Compare old and new flags to find obsolete ones
         await RemoveObsoleteFlags(steamId64, oldFlags, DatabaseData.AllFlags);
     }

@@ -44,7 +44,7 @@ public partial class Plugin
 
                 await Server.NextFrameAsync(() =>
                 {
-            
+
                     if (playerData.Group == null ||
                         !playerData.Group.Messages.Chat.Connect.Enabled)
                     {
@@ -171,7 +171,6 @@ public partial class Plugin
             Task.Run(async () =>
             {
                 await playerData.LoadData(player, GroupManager!, DatabaseManager);
-
                 if (qualifiesForNightVip)
                 {
                     await Server.NextFrameAsync(() =>
@@ -188,11 +187,11 @@ public partial class Plugin
         }
 
         var playerGroup = playerData.Group;
+
         if (playerGroup == null)
         {
             return HookResult.Continue;
         }
-
         Server.NextFrame(() =>
         {
             CCSPlayerPawn? playerPawn = player?.PlayerPawn?.Value;
@@ -245,6 +244,7 @@ public partial class Plugin
             }
 
             // grenades
+            Logger.LogInformation($"HE {playerGroup.Events.Spawn.Grenades.HE}");
             PlayerManager.GiveItem(player, CsItem.Smoke, playerGroup.Events.Spawn.Grenades.Smoke);
             PlayerManager.GiveItem(player, CsItem.HE, playerGroup.Events.Spawn.Grenades.HE);
             PlayerManager.GiveItem(player, CsItem.Flashbang, playerGroup.Events.Spawn.Grenades.Flashbang);
@@ -429,7 +429,7 @@ public partial class Plugin
     }
 
     [GameEventHandler]
-    public HookResult OnBombBeginPlant(EventBombBeginplant @event, GameEventInfo info)
+ public HookResult OnBombBeginPlant(EventBombBeginplant @event, GameEventInfo info)
     {
         var player = @event.Userid;
         if (!PlayerManager.IsValid(player) ||
@@ -477,6 +477,7 @@ public partial class Plugin
 
         return HookResult.Continue;
     }
+
 
     private HookResult OnTakeDamage(DynamicHook h)
     {
@@ -618,10 +619,37 @@ public partial class Plugin
             {
                 case SmokeConfigType.Fixed:
                     {
-                        var Color = HexToRgb(playerData.Group.Misc.Smoke.Color);
-                        smokeGrenadeEntity.SmokeColor.X = Color.R;
-                        smokeGrenadeEntity.SmokeColor.Y = Color.G;
-                        smokeGrenadeEntity.SmokeColor.Z = Color.B;
+                        string colorValue = playerData.Group.Misc.Smoke.Color;
+
+                        //quick check if is rgb.
+                        if (colorValue.Contains(","))
+                        {
+                            var rgbParts = colorValue.Split(',');
+                            if (rgbParts.Length == 3)
+                            {
+                                float.TryParse(rgbParts[0], out float x);
+                                float.TryParse(rgbParts[1], out float y);
+                                float.TryParse(rgbParts[2], out float z);
+                                smokeGrenadeEntity.SmokeColor.X = x;
+                                smokeGrenadeEntity.SmokeColor.Y = y;
+                                smokeGrenadeEntity.SmokeColor.Z = z;
+                            }
+                            else
+                            {
+                                smokeGrenadeEntity.SmokeColor.X = Random.Shared.NextSingle() * 255.0f;
+                                smokeGrenadeEntity.SmokeColor.Y = Random.Shared.NextSingle() * 255.0f;
+                                smokeGrenadeEntity.SmokeColor.Z = Random.Shared.NextSingle() * 255.0f;
+                                Logger.LogWarning("Invalid RGB format. Using random color for Smoke.");
+                            }
+                        }
+                        else
+                        {
+                            var Color = HexToRgb(playerData.Group.Misc.Smoke.Color);
+                            smokeGrenadeEntity.SmokeColor.X = Color.R;
+                            smokeGrenadeEntity.SmokeColor.Y = Color.G;
+                            smokeGrenadeEntity.SmokeColor.Z = Color.B;
+                        }
+
                         break;
                     }
                 case SmokeConfigType.Random:
