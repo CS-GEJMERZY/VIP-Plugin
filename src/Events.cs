@@ -244,7 +244,6 @@ public partial class Plugin
             }
 
             // grenades
-            Logger.LogInformation($"HE {playerGroup.Events.Spawn.Grenades.HE}");
             PlayerManager.GiveItem(player, CsItem.Smoke, playerGroup.Events.Spawn.Grenades.Smoke);
             PlayerManager.GiveItem(player, CsItem.HE, playerGroup.Events.Spawn.Grenades.HE);
             PlayerManager.GiveItem(player, CsItem.Flashbang, playerGroup.Events.Spawn.Grenades.Flashbang);

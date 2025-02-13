@@ -77,7 +77,9 @@ public class PlayerData
         //if no group is loaded from the database
         //load base group, that is based on use permissions.
         if (Group == null)
-            this.LoadBaseGroup(player,groupManager);
+            Server.NextWorldUpdate(()=>{
+                this.LoadBaseGroup(player,groupManager);
+            });
     }
 
     private async Task RemoveOldGroupPermissions(CCSPlayerController player, VipGroupConfig? oldGroup)
@@ -154,10 +156,6 @@ public class PlayerData
 
             DatabaseData.AllFlags.UnionWith(service.Flags);
         }
-
-
-        Console.Write($"Groups Count {allGroups.Count}");
-        
         if (allGroups.Count > 0)
         {
             Group = allGroups.First();
